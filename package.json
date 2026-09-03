@@ -1,0 +1,8 @@
+{
+  "name": "buildotron",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ]
+}
