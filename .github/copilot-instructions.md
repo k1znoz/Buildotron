@@ -15,3 +15,16 @@ Tu travailles sur Buildotron.
 * Toujours partir d'un Starter.
 * Aucun code libre généré.
 * Toute nouvelle fonctionnalité doit préserver la réutilisabilité du système.
+
+## Méthode de travail
+
+Toujours travailler par sprint.
+
+Ne jamais implémenter plusieurs fonctionnalités majeures en une seule fois.
+
+Pour chaque demande :
+
+1. Identifier les fichiers concernés.
+2. Respecter l'architecture existante.
+3. Éviter toute dépendance non validée.
+4. Préférer plusieurs petits commits cohérents.

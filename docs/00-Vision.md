@@ -77,6 +77,8 @@ Chaque nouveau composant enrichit la bibliothèque et accélère les futurs proj
 * Les Blueprints définissent la structure.
 * Les Primitives composent les Sections.
 * Aucun export sans validation complète.
+* Tout projet généré par Buildotron doit être "Quality by Default" : SEO, accessibilité et confidentialité sont intégrés dès la conception, pas ajoutés après coup.
+
 
 ## Le premier objectif
 
