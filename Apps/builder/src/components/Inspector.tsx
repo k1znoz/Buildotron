@@ -10,6 +10,9 @@ type Props = {
     key: 'title' | 'body' | 'actionLabel' | 'actionHref',
     value: string,
   ) => void
+  onFeatureItem: (index: number, key: 'title' | 'body', value: string) => void
+  onAddFeatureItem: () => void
+  onRemoveFeatureItem: (index: number) => void
   onDuplicate: () => void
   onRemove: () => void
   onMove: (id: string, slot: Slot) => void
@@ -22,6 +25,9 @@ export function Inspector({
   section,
   onName,
   onProperty,
+  onFeatureItem,
+  onAddFeatureItem,
+  onRemoveFeatureItem,
   onDuplicate,
   onRemove,
   onMove,
@@ -105,6 +111,49 @@ export function Inspector({
                   renseigné.
                 </p>
               </>
+            )}
+            {section.type === 'Features' && (
+              <div className="feature-editor">
+                <h4>Éléments</h4>
+                {(section.properties.items ?? []).map((item, index) => (
+                  <fieldset key={index} className="feature-editor__item">
+                    <legend>Élément {index + 1}</legend>
+                    <label className="field">
+                      <span className="field__label">Titre</span>
+                      <input
+                        className="field__value"
+                        value={item.title}
+                        onChange={(event) =>
+                          onFeatureItem(index, 'title', event.target.value)
+                        }
+                      />
+                    </label>
+                    <label className="field">
+                      <span className="field__label">Texte</span>
+                      <textarea
+                        className="field__value"
+                        rows={2}
+                        value={item.body}
+                        onChange={(event) =>
+                          onFeatureItem(index, 'body', event.target.value)
+                        }
+                      />
+                    </label>
+                    <Button
+                      onClick={() => onRemoveFeatureItem(index)}
+                      disabled={section.properties.items?.length === 1}
+                    >
+                      Retirer cet élément
+                    </Button>
+                  </fieldset>
+                ))}
+                <Button
+                  onClick={onAddFeatureItem}
+                  disabled={(section.properties.items?.length ?? 0) >= 12}
+                >
+                  Ajouter un élément
+                </Button>
+              </div>
             )}
             <label className="field">
               <span className="field__label">Slot</span>

@@ -124,6 +124,28 @@ function App() {
     }))
   }
 
+  function updateFeatureItems(
+    update: (
+      items: NonNullable<Project['sections'][number]['properties']['items']>,
+    ) => NonNullable<Project['sections'][number]['properties']['items']>,
+  ) {
+    if (!selected || selected.type !== 'Features') return
+    setProject((current) => ({
+      ...current,
+      sections: current.sections.map((section) =>
+        section.id === selected.id
+          ? {
+              ...section,
+              properties: {
+                ...section.properties,
+                items: update(section.properties.items ?? []),
+              },
+            }
+          : section,
+      ),
+    }))
+  }
+
   function save() {
     if (!project.name.trim()) {
       setMessage('Donnez un nom au projet avant de le sauvegarder.')
@@ -178,6 +200,30 @@ function App() {
           section={selected}
           onName={setName}
           onProperty={setProperty}
+          onFeatureItem={(index, key, value) =>
+            updateFeatureItems((items) =>
+              items.map((item, position) =>
+                position === index ? { ...item, [key]: value } : item,
+              ),
+            )
+          }
+          onAddFeatureItem={() =>
+            updateFeatureItems((items) =>
+              items.length >= 12
+                ? items
+                : [
+                    ...items,
+                    { title: 'New feature', body: 'Describe the benefit.' },
+                  ],
+            )
+          }
+          onRemoveFeatureItem={(index) =>
+            updateFeatureItems((items) =>
+              items.length <= 1
+                ? items
+                : items.filter((_, position) => position !== index),
+            )
+          }
           onDuplicate={duplicate}
           onRemove={remove}
           onMove={move}

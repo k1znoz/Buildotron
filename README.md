@@ -43,16 +43,16 @@ L'objectif est de réutiliser des idées éprouvées sans reproduire ces produit
 
 Le détail des objectifs et critères de validation se trouve dans [la roadmap](docs/03-Roadmap.md).
 
-| Jalon               | État                      | Étapes accomplies                                                                                                                                                                                                           |
-| ------------------- | ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1 — Socle           | Vérifié localement        | Monorepo, React, Vite, TypeScript, ESLint et Prettier opérationnels. Workflow GitHub CI ajouté ; son exécution sur GitHub reste à confirmer après push.                                                                     |
-| 1.5 — Audit         | OK                        | Audit documentaire d'OpenPage réalisé et décisions consignées dans `docs/research/openpage-audit.md`.                                                                                                                       |
-| 2 — Canvas          | Validé dans le navigateur | Ajout, sélection, déplacement, duplication, suppression, slots et override explicite ; déplacement par glisser-déposer, boutons et flèches.                                                                                 |
-| 3 — JSON canonique  | Validé dans le navigateur | Format versionné, propriétés éditables, téléchargement d'un fichier JSON, réouverture et validation des données.                                                                                                            |
-| 3.5 — Design System | Vérifié localement        | Couleurs, typographies, espacements, rayons et ombres centralisés dans le package partagé et utilisés par le Builder ; build validé.                                                                                        |
-| 4 — Primitives      | Vérifié localement        | Button, Text, Image et Card disponibles dans le package partagé ; build validé, validation visuelle complète à faire.                                                                                                       |
-| 5 — Sections        | En cours                  | Aperçus et rendus React de Hero, Features, Gallery, FAQ, CTA et Footer reliés au registre des plugins. Libellé et lien CTA configurables et validés dans le navigateur ; listes, images et formulaires CMS restent à créer. |
-| 6 et suivants       | À faire                   | Blueprints, générateur React, CMS puis BIOGRIND.                                                                                                                                                                            |
+| Jalon               | État                      | Étapes accomplies                                                                                                                                                                                                         |
+| ------------------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1 — Socle           | Vérifié localement        | Monorepo, React, Vite, TypeScript, ESLint et Prettier opérationnels. Workflow GitHub CI ajouté ; son exécution sur GitHub reste à confirmer après push.                                                                   |
+| 1.5 — Audit         | OK                        | Audit documentaire d'OpenPage réalisé et décisions consignées dans `docs/research/openpage-audit.md`.                                                                                                                     |
+| 2 — Canvas          | Validé dans le navigateur | Ajout, sélection, déplacement, duplication, suppression, slots et override explicite ; déplacement par glisser-déposer, boutons et flèches.                                                                               |
+| 3 — JSON canonique  | Validé dans le navigateur | Format versionné, propriétés éditables, téléchargement d'un fichier JSON, réouverture et validation des données.                                                                                                          |
+| 3.5 — Design System | Vérifié localement        | Couleurs, typographies, espacements, rayons et ombres centralisés dans le package partagé et utilisés par le Builder ; build validé.                                                                                      |
+| 4 — Primitives      | Vérifié localement        | Button, Text, Image et Card disponibles dans le package partagé ; build validé, validation visuelle complète à faire.                                                                                                     |
+| 5 — Sections        | En cours                  | Six plugins reliés au registre ; CTA et liste Features validés dans le navigateur. Le contrôle des titres et textes vides est prêt à revérifier ; images de Gallery, questions de FAQ et formulaires CMS restent à créer. |
+| 6 et suivants       | À faire                   | Blueprints, générateur React, CMS puis BIOGRIND.                                                                                                                                                                          |
 
 ## Essayer le Builder
 
@@ -79,4 +79,4 @@ Le [parcours de validation du CTA](docs/testing/cta-validation.md) a été confi
 - Jalon 3 — OK : projet JSON enregistré et rouvert avec succès.
 - Jalon 3.5 — vérifié localement : tokens du Design System centralisés et build OK.
 - Jalon 4 — vérifié localement : quatre Primitives disponibles et build OK ; validation visuelle complète restante.
-- Jalon 5 — en cours : six plugins de Section intégrés ; sous-étape CTA validée dans le navigateur.
+- Jalon 5 — en cours : six plugins de Section intégrés ; CTA et liste Features validés dans le navigateur. Le contrôle des champs vides reste à revérifier via [ce parcours](docs/testing/features-validation.md).

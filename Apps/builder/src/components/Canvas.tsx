@@ -116,6 +116,7 @@ export function Canvas({
                       body={section.properties.body}
                       actionLabel={section.properties.actionLabel}
                       actionHref={section.properties.actionHref}
+                      items={section.properties.items}
                     />
                   )}
                 </section>

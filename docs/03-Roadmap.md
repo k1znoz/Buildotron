@@ -119,7 +119,9 @@ Créer Hero, Features, Gallery, FAQ, CTA et Footer comme plugins réutilisables 
 
 Première tranche réalisée : chaque plugin déclare un manifeste, un schéma des champs `title` et `body`, un rendu React et un aperçu Builder. Les six aperçus sont chargés par un registre commun. Le Builder peut toujours sélectionner, déplacer et éditer ces Sections depuis le JSON canonique. Le CTA dispose aussi d'un libellé et d'un lien configurables, avec validation du lien et lecture des anciens JSON. Le parcours de validation du CTA a été confirmé dans le navigateur ; le jalon 5 reste en cours.
 
-Reste à produire avant de considérer ce jalon terminé : les éléments de Features, les images de Gallery, les questions de FAQ, les formulaires CMS, les images de prévisualisation et les validations d'export propres aux plugins. Les placeholders actuels ne constituent pas un site BIOGRIND livrable.
+Les éléments de Features sont maintenant éditables, validés dans le JSON et rendus en cartes. Leur parcours manuel a été confirmé dans le navigateur. La validation du JSON refuse maintenant les titres et textes vides des sections ; ce correctif reste à revérifier manuellement avec `docs/testing/features-validation.md`.
+
+Reste à produire avant de considérer ce jalon terminé : les images de Gallery, les questions de FAQ, les formulaires CMS, les images de prévisualisation et les validations d'export propres aux plugins. Les placeholders actuels ne constituent pas un site BIOGRIND livrable.
 
 ## Milestone 6 — Blueprints
 

@@ -3,4 +3,5 @@ export type SectionContentProps = {
   body: string
   actionLabel?: string
   actionHref?: string
+  items?: { title: string; body: string }[]
 }

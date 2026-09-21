@@ -272,6 +272,24 @@
   gap: var(--space-sm);
   margin-top: var(--space-md);
 }
+.feature-editor {
+  display: grid;
+  gap: var(--space-sm);
+  margin: var(--space-md) 0;
+}
+.feature-editor h4 {
+  margin: 0;
+}
+.feature-editor__item {
+  display: grid;
+  gap: var(--space-sm);
+  min-width: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+.feature-editor__item legend {
+  font-weight: 600;
+}
 .inspector-actions .ds-button {
   border-color: var(--color-border);
 }

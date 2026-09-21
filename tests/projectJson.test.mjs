@@ -37,6 +37,21 @@ test('invalid sections are rejected', () => {
   )
 })
 
+test('every section needs a nonempty title and body before saving or opening', () => {
+  const project = parseProjectJson(sample)
+  for (const section of project.sections) {
+    for (const key of ['title', 'body']) {
+      const invalid = structuredClone(project)
+      invalid.sections.find((item) => item.id === section.id).properties[key] =
+        '  '
+      assert.throws(
+        () => parseProjectJson(serializeProject(invalid)),
+        /titre et le texte sont obligatoires/,
+      )
+    }
+  }
+})
+
 test('unsupported versions and malformed JSON are rejected', () => {
   assert.throws(() => parseProjectJson('{'), /JSON valide/)
   const project = JSON.parse(sample)
@@ -84,4 +99,25 @@ test('CTA links accept web and local destinations and reject unsafe schemes', ()
   const project = JSON.parse(sample)
   project.sections[2].properties.actionHref = 'javascript:alert(1)'
   assert.throws(() => parseProjectJson(JSON.stringify(project)), /lien du CTA/)
+})
+
+test('Features items survive JSON reopening and invalid lists are refused', () => {
+  const project = parseProjectJson(sample)
+  const features = project.sections.find(
+    (section) => section.type === 'Features',
+  )
+  assert.equal(features.properties.items.length, 3)
+  features.properties.items[0].title = 'Custom benefit'
+  const reopened = parseProjectJson(serializeProject(project))
+  assert.equal(
+    reopened.sections.find((section) => section.type === 'Features').properties
+      .items[0].title,
+    'Custom benefit',
+  )
+
+  features.properties.items = [{ title: '', body: 'Text' }]
+  assert.throws(
+    () => parseProjectJson(serializeProject(project)),
+    /éléments de Features/,
+  )
 })

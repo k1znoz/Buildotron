@@ -51,6 +51,15 @@
   place-items: center;
   background: var(--color-surface-muted);
 }
+.features-grid .ds-card {
+  display: grid;
+  align-content: start;
+  gap: var(--space-sm);
+}
+.features-grid__title {
+  color: var(--color-ink);
+  font-weight: 700;
+}
 .plugin-content--cta {
   justify-items: start;
 }

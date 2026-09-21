@@ -1,5 +1,6 @@
 import {
   defaultCTAActionLabel,
+  defaultFeatureItems,
   defaultSlot,
   sectionTypes,
   slots,
@@ -66,10 +67,12 @@ export function parseProjectJson(json: string): Project {
     }
     if (
       !record(raw.properties) ||
-      typeof raw.properties.title !== 'string' ||
-      typeof raw.properties.body !== 'string'
+      !nonempty(raw.properties.title) ||
+      !nonempty(raw.properties.body)
     ) {
-      throw new Error(`${label} : propriétés invalides.`)
+      throw new Error(
+        `${label} : le titre et le texte sont obligatoires et ne peuvent pas être vides.`,
+      )
     }
     const properties: SectionProperties = {
       title: raw.properties.title,
@@ -88,6 +91,25 @@ export function parseProjectJson(json: string): Project {
       }
       properties.actionLabel = actionLabel
       properties.actionHref = actionHref
+    }
+    if (type === 'Features') {
+      const items = raw.properties.items ?? defaultFeatureItems
+      if (
+        !Array.isArray(items) ||
+        items.length < 1 ||
+        items.length > 12 ||
+        !items.every(
+          (item) => record(item) && nonempty(item.title) && nonempty(item.body),
+        )
+      ) {
+        throw new Error(
+          `${label} : renseignez entre 1 et 12 éléments de Features, chacun avec un titre et un texte.`,
+        )
+      }
+      properties.items = items.map((item) => ({
+        title: item.title as string,
+        body: item.body as string,
+      }))
     }
     return { id: raw.id, type, slot, override: raw.override, properties }
   })

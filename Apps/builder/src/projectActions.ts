@@ -14,7 +14,12 @@ export function duplicateSection(
   sections.splice(index + 1, 0, {
     ...source,
     id: copyId,
-    properties: { ...source.properties },
+    properties: {
+      ...source.properties,
+      ...(source.properties.items
+        ? { items: source.properties.items.map((item) => ({ ...item })) }
+        : {}),
+    },
   })
   return { ...project, sections }
 }

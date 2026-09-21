@@ -33,7 +33,14 @@ export type SectionProperties = {
   body: string
   actionLabel?: string
   actionHref?: string
+  items?: FeatureItem[]
 }
+export type FeatureItem = { title: string; body: string }
+export const defaultFeatureItems: FeatureItem[] = [
+  { title: 'Fast setup', body: 'Describe the first benefit.' },
+  { title: 'Flexible design', body: 'Describe the second benefit.' },
+  { title: 'Ready to grow', body: 'Describe the third benefit.' },
+]
 export const defaultCTAActionLabel = 'Get started'
 export type SectionInstance = {
   id: string
@@ -57,7 +64,11 @@ const defaults: Record<SectionType, SectionProperties> = {
     title: 'A clear starting point for your product.',
     body: 'A structural preview of the selected Blueprint.',
   },
-  Features: { title: 'Features', body: 'Describe your key benefits.' },
+  Features: {
+    title: 'Features',
+    body: 'Describe your key benefits.',
+    items: defaultFeatureItems,
+  },
   Gallery: { title: 'Gallery', body: 'Showcase your images.' },
   FAQ: { title: 'FAQ', body: 'Answer common questions.' },
   CTA: {
@@ -75,7 +86,12 @@ export function createSection(type: SectionType): SectionInstance {
     type,
     slot: defaultSlot[type],
     override: false,
-    properties: { ...defaults[type] },
+    properties: {
+      ...defaults[type],
+      ...(type === 'Features'
+        ? { items: defaultFeatureItems.map((item) => ({ ...item })) }
+        : {}),
+    },
   }
 }
 

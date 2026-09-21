@@ -24,6 +24,20 @@ test('duplication gives an independent section instance', () => {
   assert.equal(next.sections[1].id, 'copy-id')
   assert.notEqual(next.sections[0].properties, next.sections[1].properties)
   assert.equal(project.sections.length, 3)
+
+  const withFeatureCopy = duplicateSection(
+    project,
+    features.id,
+    'features-copy',
+  )
+  const originalItems = withFeatureCopy.sections.find(
+    (section) => section.id === features.id,
+  ).properties.items
+  const copiedItems = withFeatureCopy.sections.find(
+    (section) => section.id === 'features-copy',
+  ).properties.items
+  assert.notEqual(originalItems, copiedItems)
+  assert.notEqual(originalItems[0], copiedItems[0])
 })
 
 test('slot override is required for exceptional placement', () => {
