@@ -1,0 +1,6 @@
+{
+  "fields": [
+    { "name": "title", "type": "text", "required": true },
+    { "name": "body", "type": "textarea", "required": true }
+  ]
+}

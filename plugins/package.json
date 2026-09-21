@@ -1,0 +1,17 @@
+{
+  "name": "@buildotron/plugins",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./styles.css": "./src/styles.css"
+  },
+  "dependencies": {
+    "@buildotron/design-system": "0.0.0",
+    "@buildotron/plugin-sdk": "0.0.0"
+  },
+  "peerDependencies": {
+    "react": "19.2.8"
+  }
+}

@@ -2,5 +2,16 @@
 	"name": "@buildotron/design-system",
 	"private": true,
 	"version": "0.0.0",
-	"type": "module"
+	"type": "module",
+	"exports": {
+		".": "./src/index.ts",
+		"./tokens.css": "./src/tokens.css",
+		"./primitives.css": "./src/primitives.css"
+	},
+	"peerDependencies": {
+		"react": "19.2.8"
+	},
+	"devDependencies": {
+		"@types/react": "^19.2.18"
+	}
 }

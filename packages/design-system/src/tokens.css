@@ -1,0 +1,43 @@
+:root {
+  --color-ink: #1d2935;
+  --color-muted: #667482;
+  --color-on-accent: #fff;
+  --color-accent: #0d7667;
+  --color-accent-strong: #075b50;
+  --color-focus: #e28a34;
+  --color-surface: #fff;
+  --color-surface-muted: #f3f6f5;
+  --color-page: #fff;
+  --color-canvas: #e8efed;
+  --color-canvas-dot: #c5d2cf;
+  --color-preview-accent: #eef5ee;
+  --color-border: #d6dfdc;
+  --color-border-subtle: #e8eeec;
+
+  --font-display: Georgia, 'Times New Roman', serif;
+  --font-sans: 'Segoe UI', Tahoma, sans-serif;
+  --font-mono: Consolas, 'Courier New', monospace;
+  --text-xs: .6875rem;
+  --text-sm: .75rem;
+  --text-md: .8125rem;
+  --text-base: .875rem;
+  --text-lg: .9375rem;
+  --text-xl: 1.1rem;
+  --text-section-title: 1.5rem;
+  --text-display: 2.25rem;
+  --text-mobile-brand: .9rem;
+  --text-mobile-action: .7rem;
+  --text-mobile-display: 1.75rem;
+
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+
+  --shadow-page: 0 12px 32px rgb(29 41 53 / 12%);
+}

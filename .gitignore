@@ -1,0 +1,11 @@
+# Dependencies and workspace links
+node_modules/
+
+# Generated output
+dist/
+dist-ssr/
+coverage/
+
+# Local files
+*.log
+*.local

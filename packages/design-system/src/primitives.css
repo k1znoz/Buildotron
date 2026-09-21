@@ -1,0 +1,9 @@
+.ds-button { display: inline-flex; align-items: center; justify-content: center; min-height: 34px; border: 1px solid transparent; border-radius: var(--radius-sm); padding: 0 var(--space-md); color: var(--color-ink); background: transparent; font: inherit; font-size: var(--text-md); font-weight: 600; text-decoration: none; cursor: pointer; }
+.ds-button:hover, .ds-button:focus-visible { background: var(--color-surface-muted); }
+.ds-button:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+.ds-button--primary { color: var(--color-on-accent); background: var(--color-accent); }
+.ds-button--primary:hover, .ds-button--primary:focus-visible { background: var(--color-accent-strong); }
+.ds-button:disabled { opacity: .45; cursor: not-allowed; }
+.ds-text { margin: 0; }
+.ds-image { display: block; max-width: 100%; height: auto; }
+.ds-card { border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); background: var(--color-surface); }

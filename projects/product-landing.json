@@ -1,0 +1,39 @@
+{
+  "formatVersion": 1,
+  "id": "d2c8e511-78a6-461a-a819-869a013bd112",
+  "name": "Product Landing",
+  "blueprint": "product-landing",
+  "theme": "minimal",
+  "sections": [
+    {
+      "id": "4107cc06-3095-4552-bc45-e1c41f1775aa",
+      "type": "Hero",
+      "slot": "hero",
+      "override": false,
+      "properties": {
+        "title": "A clear starting point for your product.",
+        "body": "A structural preview of the selected Blueprint."
+      }
+    },
+    {
+      "id": "4bf7f920-0308-4388-a198-4a4fba968003",
+      "type": "Features",
+      "slot": "content",
+      "override": false,
+      "properties": {
+        "title": "Features",
+        "body": "Describe your key benefits."
+      }
+    },
+    {
+      "id": "264513d4-7322-4dbf-bb52-dcdad1f30b0c",
+      "type": "CTA",
+      "slot": "conversion",
+      "override": false,
+      "properties": {
+        "title": "Get started",
+        "body": "Invite visitors to take action."
+      }
+    }
+  ]
+}

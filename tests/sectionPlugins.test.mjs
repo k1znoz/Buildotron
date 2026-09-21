@@ -1,0 +1,24 @@
+import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
+import { test } from 'node:test'
+import { createSection, defaultSlot } from '../Apps/builder/src/project.ts'
+import { parseProjectJson } from '../Apps/builder/src/projectJson.ts'
+
+const project = parseProjectJson(readFileSync(new URL('../projects/product-landing.json', import.meta.url), 'utf8'))
+
+test('Section plugin metadata matches the canonical project model', () => {
+  const hero = project.sections.find((section) => section.type === 'Hero')
+  assert.ok(hero)
+  for (const type of ['Hero', 'Features', 'Gallery', 'FAQ', 'CTA', 'Footer']) {
+    const manifest = JSON.parse(readFileSync(new URL(`../plugins/${type}.plugin/manifest.json`, import.meta.url), 'utf8'))
+    const schema = JSON.parse(readFileSync(new URL(`../plugins/${type}.plugin/schema.json`, import.meta.url), 'utf8'))
+    assert.equal(manifest.id, type.toLowerCase())
+    assert.equal(manifest.defaultSlot, defaultSlot[type])
+    assert.ok(manifest.supports.includes('react'))
+    assert.deepEqual(schema.fields.map((field) => field.name), Object.keys(createSection(type).properties))
+    assert.ok(schema.fields.every((field) => typeof field.required === 'boolean'))
+    assert.ok(schema.fields.filter((field) => field.name !== 'actionHref').every((field) => field.required))
+    if (type === 'CTA') assert.equal(schema.fields.find((field) => field.name === 'actionHref').required, false)
+  }
+  assert.equal(hero.slot, defaultSlot.Hero)
+})

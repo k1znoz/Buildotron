@@ -1,1 +1,65 @@
-export function Canvas() { return <section className="canvas" aria-label="Page canvas"><article className="page-preview" aria-label="Product Landing preview"><div className="page-preview__bar"><span>Product Landing</span><span>Desktop</span></div><section className="preview-section preview-section--hero"><span className="preview-section__label">Hero</span><h1 className="preview-section__title">A clear starting point for your product.</h1><p className="preview-section__copy">A structural preview of the selected Blueprint.</p></section><section className="preview-section"><span className="preview-section__label">Features</span><div className="preview-section__placeholder">Section preview</div></section><section className="preview-section"><span className="preview-section__label">CTA</span><div className="preview-section__placeholder">Section preview</div></section></article></section> }
+import type { DragEvent } from 'react'
+import { Text } from '@buildotron/design-system'
+import { SectionPreview, sectionPreviews } from '@buildotron/plugins'
+import { defaultSlot, slotLabels, slots } from '../project'
+import { insertionBeforeId } from '../projectActions'
+import type { Project, Slot } from '../project'
+
+type Props = {
+  project: Project
+  selectedId: string | null
+  onSelect: (id: string) => void
+  onMove: (id: string, slot: Slot, beforeId?: string) => void
+  onMoveBy: (id: string, offset: -1 | 1) => void
+}
+
+export function Canvas({ project, selectedId, onSelect, onMove, onMoveBy }: Props) {
+  function drop(event: DragEvent, slot: Slot, beforeId?: string) {
+    event.preventDefault()
+    const id = event.dataTransfer.getData('text/plain')
+    if (id) onMove(id, slot, beforeId)
+  }
+
+  return <section className="canvas" aria-label="Page canvas">
+    <article className="page-preview" aria-label="Product Landing preview">
+      <div className="page-preview__bar"><span>Product Landing</span><span>Desktop</span></div>
+      {slots.map((slot) => <div className="preview-slot" key={slot}
+        onDragOver={(event) => event.preventDefault()} onDrop={(event) => drop(event, slot)}>
+        <div className="preview-slot__heading">{slotLabels[slot]}</div>
+        {project.sections.filter((section) => section.slot === slot).map((section) =>
+          <section className={`preview-section ${section.type === 'Hero' ? 'preview-section--hero' : ''} ${selectedId === section.id ? 'preview-section--selected' : ''}`}
+            key={section.id} draggable
+            onClick={() => onSelect(section.id)}
+            onDragStart={(event) => event.dataTransfer.setData('text/plain', section.id)}
+            onDragOver={(event) => event.preventDefault()}
+            onDrop={(event) => {
+              event.stopPropagation()
+              const draggedId = event.dataTransfer.getData('text/plain')
+              const bounds = event.currentTarget.getBoundingClientRect()
+              const lowerHalf = event.clientY > bounds.top + bounds.height / 2
+              drop(event, slot, insertionBeforeId(project, draggedId, section.id, lowerHalf))
+            }}>
+            <button className="preview-section__select" type="button" onClick={() => onSelect(section.id)}
+              onFocus={() => onSelect(section.id)}
+              onKeyDown={(event) => {
+                if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+                  event.preventDefault()
+                  onMoveBy(section.id, event.key === 'ArrowUp' ? -1 : 1)
+                }
+              }}
+              aria-keyshortcuts="ArrowUp ArrowDown"
+              aria-pressed={selectedId === section.id} aria-label={`Sélectionner ${section.type}`}>
+              <span className="preview-section__label">{section.type}{section.slot !== defaultSlot[section.type] ? ' · override' : ''}</span>
+              {!sectionPreviews[section.type] && <>
+                <Text as="span" className="preview-section__placeholder">{section.properties.title}</Text>
+                <Text as="span" className="preview-section__copy">{section.properties.body}</Text>
+              </>}
+            </button>
+            {sectionPreviews[section.type] && <SectionPreview type={section.type} title={section.properties.title} body={section.properties.body}
+              actionLabel={section.properties.actionLabel} actionHref={section.properties.actionHref} />}
+          </section>)}
+        {project.sections.every((section) => section.slot !== slot) && <p className="preview-slot__empty">Déposez une section ici</p>}
+      </div>)}
+    </article>
+  </section>
+}
