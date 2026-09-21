@@ -1,1 +1,8 @@
-{ "id": "gallery", "name": "Gallery", "category": "Media", "version": "1.0.0", "supports": ["react"], "defaultSlot": "content" }
+{
+  "id": "gallery",
+  "name": "Gallery",
+  "category": "Media",
+  "version": "1.0.0",
+  "supports": ["react"],
+  "defaultSlot": "content"
+}

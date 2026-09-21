@@ -12,8 +12,6 @@ preview.png
 tests/
 README.md
 
-
-
 Checklist:
 
 -Manifest.

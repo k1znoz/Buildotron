@@ -1,1 +1,8 @@
-{ "id": "footer", "name": "Footer", "category": "Footer", "version": "1.0.0", "supports": ["react"], "defaultSlot": "footer" }
+{
+  "id": "footer",
+  "name": "Footer",
+  "category": "Footer",
+  "version": "1.0.0",
+  "supports": ["react"],
+  "defaultSlot": "footer"
+}

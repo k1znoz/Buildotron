@@ -27,7 +27,6 @@ Les projets exportés sont ensuite modifiables dans VS Code et disposent d'un CM
 
 ## Inspirations techniques
 
-
 Buildotron s'inspire de plusieurs projets open source pour certaines décisions d'architecture, tout en conservant une philosophie différente.
 
 Parmi les références étudiées :
@@ -44,16 +43,16 @@ L'objectif est de réutiliser des idées éprouvées sans reproduire ces produit
 
 Le détail des objectifs et critères de validation se trouve dans [la roadmap](docs/03-Roadmap.md).
 
-| Jalon | État | Étapes accomplies |
-| --- | --- | --- |
-| 1 — Socle | En cours | Monorepo, React, Vite, TypeScript et ESLint opérationnels. Prettier et CI restent à vérifier ou configurer. |
-| 1.5 — Audit | En cours | Trame d'audit OpenPage créée ; analyse technique à compléter. |
-| 2 — Canvas | Validé dans le navigateur | Ajout, sélection, déplacement, duplication, suppression, slots et override explicite ; déplacement par glisser-déposer, boutons et flèches. |
-| 3 — JSON canonique | Validé dans le navigateur | Format versionné, propriétés éditables, téléchargement d'un fichier JSON, réouverture et validation des données. |
-| 3.5 — Design System | Implémenté | Couleurs, typographies, espacements, rayons et ombres centralisés dans le package partagé et utilisés par le Builder. |
-| 4 — Primitives | Implémenté | Button, Text, Image et Card disponibles dans le package partagé ; Button et Text utilisés dans le Builder. |
-| 5 — Sections | En cours | Aperçus et rendus React de Hero, Features, Gallery, FAQ, CTA et Footer reliés au registre des plugins. Libellé et lien CTA configurables et validés dans le navigateur ; listes, images et formulaires CMS restent à créer. |
-| 6 et suivants | À faire | Blueprints, générateur React, CMS puis BIOGRIND. |
+| Jalon               | État                      | Étapes accomplies                                                                                                                                                                                                           |
+| ------------------- | ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1 — Socle           | Vérifié localement        | Monorepo, React, Vite, TypeScript, ESLint et Prettier opérationnels. Workflow GitHub CI ajouté ; son exécution sur GitHub reste à confirmer après push.                                                                     |
+| 1.5 — Audit         | OK                        | Audit documentaire d'OpenPage réalisé et décisions consignées dans `docs/research/openpage-audit.md`.                                                                                                                       |
+| 2 — Canvas          | Validé dans le navigateur | Ajout, sélection, déplacement, duplication, suppression, slots et override explicite ; déplacement par glisser-déposer, boutons et flèches.                                                                                 |
+| 3 — JSON canonique  | Validé dans le navigateur | Format versionné, propriétés éditables, téléchargement d'un fichier JSON, réouverture et validation des données.                                                                                                            |
+| 3.5 — Design System | Vérifié localement        | Couleurs, typographies, espacements, rayons et ombres centralisés dans le package partagé et utilisés par le Builder ; build validé.                                                                                        |
+| 4 — Primitives      | Vérifié localement        | Button, Text, Image et Card disponibles dans le package partagé ; build validé, validation visuelle complète à faire.                                                                                                       |
+| 5 — Sections        | En cours                  | Aperçus et rendus React de Hero, Features, Gallery, FAQ, CTA et Footer reliés au registre des plugins. Libellé et lien CTA configurables et validés dans le navigateur ; listes, images et formulaires CMS restent à créer. |
+| 6 et suivants       | À faire                   | Blueprints, générateur React, CMS puis BIOGRIND.                                                                                                                                                                            |
 
 ## Essayer le Builder
 
@@ -74,10 +73,10 @@ Le [parcours de validation du CTA](docs/testing/cta-validation.md) a été confi
 
 ### Suivi des étapes
 
-- Jalon 1 — en cours : socle fonctionnel ; Prettier et CI restent à traiter.
-- Jalon 1.5 — en cours : trame d'audit créée ; analyse technique restante.
+- Jalon 1 — vérifié localement : socle, Prettier et contrôles automatiques OK ; exécution de la CI sur GitHub à confirmer.
+- Jalon 1.5 — OK : audit OpenPage et décisions documentés.
 - Jalon 2 — OK : Canvas et interactions validés dans le navigateur.
 - Jalon 3 — OK : projet JSON enregistré et rouvert avec succès.
-- Jalon 3.5 — implémenté : tokens du Design System centralisés.
-- Jalon 4 — implémenté : quatre Primitives disponibles.
+- Jalon 3.5 — vérifié localement : tokens du Design System centralisés et build OK.
+- Jalon 4 — vérifié localement : quatre Primitives disponibles et build OK ; validation visuelle complète restante.
 - Jalon 5 — en cours : six plugins de Section intégrés ; sous-étape CTA validée dans le navigateur.

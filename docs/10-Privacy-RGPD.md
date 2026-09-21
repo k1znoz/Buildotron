@@ -34,11 +34,11 @@ Responsable de l'affichage du bandeau cookies.
 
 Fonctions prévues :
 
-* première visite ;
-* personnalisation ;
-* refus ;
-* acceptation ;
-* réouverture des préférences.
+- première visite ;
+- personnalisation ;
+- refus ;
+- acceptation ;
+- réouverture des préférences.
 
 ### consent
 
@@ -46,10 +46,10 @@ Responsable de la gestion des consentements.
 
 Catégories prévues :
 
-* nécessaires ;
-* statistiques ;
-* marketing ;
-* préférences.
+- nécessaires ;
+- statistiques ;
+- marketing ;
+- préférences.
 
 Les consentements sont enregistrés localement.
 
@@ -59,10 +59,10 @@ Responsable des documents juridiques générés.
 
 Contenu prévu :
 
-* Politique de confidentialité.
-* Politique cookies.
-* Mentions légales (template).
-* Contact RGPD (placeholder).
+- Politique de confidentialité.
+- Politique cookies.
+- Mentions légales (template).
+- Contact RGPD (placeholder).
 
 ---
 
@@ -85,10 +85,10 @@ Le développeur doit activer explicitement les services supplémentaires.
 
 Le client peut modifier :
 
-* les informations légales ;
-* le responsable du traitement ;
-* le contact RGPD ;
-* certains textes des politiques.
+- les informations légales ;
+- le responsable du traitement ;
+- le contact RGPD ;
+- certains textes des politiques.
 
 Le client ne peut pas désactiver les mécanismes de consentement.
 
@@ -98,8 +98,8 @@ Le client ne peut pas désactiver les mécanismes de consentement.
 
 À terme, le module Privacy devra permettre :
 
-* plusieurs services Analytics ;
-* plusieurs plateformes marketing ;
-* gestion des consentements par catégorie ;
-* export des préférences utilisateur ;
-* suppression des données conformément aux demandes RGPD.
+- plusieurs services Analytics ;
+- plusieurs plateformes marketing ;
+- gestion des consentements par catégorie ;
+- export des préférences utilisateur ;
+- suppression des données conformément aux demandes RGPD.

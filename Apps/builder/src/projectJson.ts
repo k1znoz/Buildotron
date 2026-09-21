@@ -1,5 +1,16 @@
-import { defaultCTAActionLabel, defaultSlot, sectionTypes, slots } from './project.ts'
-import type { Project, SectionInstance, SectionProperties, SectionType, Slot } from './project.ts'
+import {
+  defaultCTAActionLabel,
+  defaultSlot,
+  sectionTypes,
+  slots,
+} from './project.ts'
+import type {
+  Project,
+  SectionInstance,
+  SectionProperties,
+  SectionType,
+  Slot,
+} from './project.ts'
 import { isSafeHref } from '@buildotron/plugin-sdk'
 
 function record(value: unknown): value is Record<string, unknown> {
@@ -18,12 +29,17 @@ export function parseProjectJson(json: string): Project {
     throw new Error('Le fichier ne contient pas un JSON valide.')
   }
   if (!record(value)) throw new Error('Le projet doit être un objet JSON.')
-  if (value.formatVersion !== 1) throw new Error('Version du format non prise en charge (attendue : 1).')
-  if (!nonempty(value.id) || !nonempty(value.name)) throw new Error('Identifiant ou nom du projet manquant.')
+  if (value.formatVersion !== 1)
+    throw new Error('Version du format non prise en charge (attendue : 1).')
+  if (!nonempty(value.id) || !nonempty(value.name))
+    throw new Error('Identifiant ou nom du projet manquant.')
   if (value.blueprint !== 'product-landing' || value.theme !== 'minimal') {
-    throw new Error('Blueprint ou thème non pris en charge par cette version du Builder.')
+    throw new Error(
+      'Blueprint ou thème non pris en charge par cette version du Builder.',
+    )
   }
-  if (!Array.isArray(value.sections)) throw new Error('La liste des sections est invalide.')
+  if (!Array.isArray(value.sections))
+    throw new Error('La liste des sections est invalide.')
 
   const ids = new Set<string>()
   const sections: SectionInstance[] = value.sections.map((raw, index) => {
@@ -32,22 +48,33 @@ export function parseProjectJson(json: string): Project {
       throw new Error(`${label} : identifiant absent ou dupliqué.`)
     }
     ids.add(raw.id)
-    if (typeof raw.type !== 'string' || !sectionTypes.includes(raw.type as SectionType)) {
+    if (
+      typeof raw.type !== 'string' ||
+      !sectionTypes.includes(raw.type as SectionType)
+    ) {
       throw new Error(`${label} : type inconnu.`)
     }
     if (typeof raw.slot !== 'string' || !slots.includes(raw.slot as Slot)) {
       throw new Error(`${label} : slot inconnu.`)
     }
-    if (typeof raw.override !== 'boolean') throw new Error(`${label} : override invalide.`)
+    if (typeof raw.override !== 'boolean')
+      throw new Error(`${label} : override invalide.`)
     const type = raw.type as SectionType
     const slot = raw.slot as Slot
     if (slot !== defaultSlot[type] && !raw.override) {
       throw new Error(`${label} : placement hors slot sans override.`)
     }
-    if (!record(raw.properties) || typeof raw.properties.title !== 'string' || typeof raw.properties.body !== 'string') {
+    if (
+      !record(raw.properties) ||
+      typeof raw.properties.title !== 'string' ||
+      typeof raw.properties.body !== 'string'
+    ) {
       throw new Error(`${label} : propriétés invalides.`)
     }
-    const properties: SectionProperties = { title: raw.properties.title, body: raw.properties.body }
+    const properties: SectionProperties = {
+      title: raw.properties.title,
+      body: raw.properties.body,
+    }
     if (type === 'CTA') {
       const actionLabel = raw.properties.actionLabel ?? defaultCTAActionLabel
       const actionHref = raw.properties.actionHref ?? ''
@@ -55,7 +82,9 @@ export function parseProjectJson(json: string): Project {
         throw new Error(`${label} : action du CTA invalide.`)
       }
       if (actionHref && (!isSafeHref(actionHref) || !actionLabel.trim())) {
-        throw new Error(`${label} : le lien du CTA doit être une URL http(s), un chemin /... ou une ancre #..., avec un libellé.`)
+        throw new Error(
+          `${label} : le lien du CTA doit être une URL http(s), un chemin /... ou une ancre #..., avec un libellé.`,
+        )
       }
       properties.actionLabel = actionLabel
       properties.actionHref = actionHref
@@ -63,8 +92,14 @@ export function parseProjectJson(json: string): Project {
     return { id: raw.id, type, slot, override: raw.override, properties }
   })
 
-  return { formatVersion: 1, id: value.id, name: value.name,
-    blueprint: 'product-landing', theme: 'minimal', sections }
+  return {
+    formatVersion: 1,
+    id: value.id,
+    name: value.name,
+    blueprint: 'product-landing',
+    theme: 'minimal',
+    sections,
+  }
 }
 
 export function serializeProject(project: Project): string {

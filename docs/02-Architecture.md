@@ -74,13 +74,7 @@ Exemple.
 {
   "blueprint": "product-landing",
   "theme": "minimal",
-  "sections": [
-    "hero",
-    "features",
-    "gallery",
-    "faq",
-    "cta"
-  ]
+  "sections": ["hero", "features", "gallery", "faq", "cta"]
 }
 ```
 
@@ -227,13 +221,13 @@ Footer
 
 Chaque Slot accepte uniquement certains types de Sections.
 
-| Slot | Sections autorisées |
-|------|----------------------|
-| Header | Navbar |
-| Hero | Hero |
-| Content | Gallery, Features, FAQ |
-| Conversion | CTA |
-| Footer | Footer |
+| Slot       | Sections autorisées    |
+| ---------- | ---------------------- |
+| Header     | Navbar                 |
+| Hero       | Hero                   |
+| Content    | Gallery, Features, FAQ |
+| Conversion | CTA                    |
+| Footer     | Footer                 |
 
 Cette règle garantit une structure cohérente.
 

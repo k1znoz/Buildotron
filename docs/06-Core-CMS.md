@@ -6,8 +6,7 @@ Pages
 Products
 Settings
 
-
------------
+---
 
 Puis, les permissions:
 
@@ -23,6 +22,6 @@ Le client ne peut pas:
 
 -supprimer les sections.
 
------------
+---
 
 Cette règle est figée.

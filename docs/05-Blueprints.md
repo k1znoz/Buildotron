@@ -3,25 +3,26 @@ Exemple en fichier YAML
 name: Product Landing
 
 slots:
-  - header
-  - hero
-  - content
-  - conversion
-  - footer
+
+- header
+- hero
+- content
+- conversion
+- footer
 
 theme: minimal
 
---------
+---
 
 Les Slots.
 
-Slot            Sections
+Slot Sections
 
-Hero              Hero
+Hero Hero
 
-Content           Gallery
+Content Gallery
 
-Footer            Footer
+Footer Footer
 
 ---
 

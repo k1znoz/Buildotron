@@ -1,1 +1,8 @@
-{ "id": "faq", "name": "FAQ", "category": "FAQ", "version": "1.0.0", "supports": ["react"], "defaultSlot": "content" }
+{
+  "id": "faq",
+  "name": "FAQ",
+  "category": "FAQ",
+  "version": "1.0.0",
+  "supports": ["react"],
+  "defaultSlot": "content"
+}

@@ -8,11 +8,11 @@ Buildotron est né d'un constat simple : créer un site web professionnel impliq
 
 Même lorsqu'une bibliothèque de composants existe, il faut encore :
 
-* recréer la structure du projet,
-* configurer l'architecture,
-* mettre en place un CMS,
-* organiser les dossiers,
-* préparer le déploiement.
+- recréer la structure du projet,
+- configurer l'architecture,
+- mettre en place un CMS,
+- organiser les dossiers,
+- préparer le déploiement.
 
 L'objectif de Buildotron est d'éliminer ce travail répétitif sans sacrifier la qualité du code généré.
 
@@ -36,10 +36,10 @@ Le Builder sert à concevoir la structure.
 
 Il permet :
 
-* de choisir un Blueprint,
-* d'ajouter des sections,
-* de réorganiser la page,
-* de configurer le thème.
+- de choisir un Blueprint,
+- d'ajouter des sections,
+- de réorganiser la page,
+- de configurer le thème.
 
 ### CMS (Client)
 
@@ -47,10 +47,10 @@ Le CMS sert uniquement à gérer le contenu.
 
 Le client peut :
 
-* modifier les textes,
-* changer les images,
-* gérer les produits,
-* modifier le SEO.
+- modifier les textes,
+- changer les images,
+- gérer les produits,
+- modifier le SEO.
 
 Le client ne peut jamais modifier l'organisation des pages.
 
@@ -70,15 +70,14 @@ Chaque nouveau composant enrichit la bibliothèque et accélère les futurs proj
 
 ## Les règles qui ne changent pas
 
-* Le Builder est réservé aux développeurs.
-* Les projets exportés sont définitifs.
-* Le JSON Canonique reste la seule source de vérité.
-* Les composants sont Headless.
-* Les Blueprints définissent la structure.
-* Les Primitives composent les Sections.
-* Aucun export sans validation complète.
-* Tout projet généré par Buildotron doit être "Quality by Default" : SEO, accessibilité et confidentialité sont intégrés dès la conception, pas ajoutés après coup.
-
+- Le Builder est réservé aux développeurs.
+- Les projets exportés sont définitifs.
+- Le JSON Canonique reste la seule source de vérité.
+- Les composants sont Headless.
+- Les Blueprints définissent la structure.
+- Les Primitives composent les Sections.
+- Aucun export sans validation complète.
+- Tout projet généré par Buildotron doit être "Quality by Default" : SEO, accessibilité et confidentialité sont intégrés dès la conception, pas ajoutés après coup.
 
 ## Le premier objectif
 

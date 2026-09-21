@@ -66,13 +66,13 @@ Le JSON est la seule source de vérité.
 
 ## Stack V1
 
-| Élément     | Choix |
-|-------------|---------|
-| UI          | React |
-| Build       | Vite |
-| Langage     | TypeScript |
-| Drag & Drop | dnd-kit |
-| État        | Zustand |
+| Élément     | Choix        |
+| ----------- | ------------ |
+| UI          | React        |
+| Build       | Vite         |
+| Langage     | TypeScript   |
+| Drag & Drop | dnd-kit      |
+| État        | Zustand      |
 | Routing     | React Router |
 
 Le support Svelte et Astro est prévu pour plus tard.
@@ -96,13 +96,7 @@ Exemple :
 {
   "blueprint": "product-landing",
   "theme": "minimal",
-  "sections": [
-    "hero",
-    "features",
-    "gallery",
-    "faq",
-    "cta"
-  ]
+  "sections": ["hero", "features", "gallery", "faq", "cta"]
 }
 ```
 
@@ -112,12 +106,12 @@ Exemple :
 
 Les Blueprints utilisent des emplacements contrôlés.
 
-| Slot | Sections autorisées |
-|------|----------------------|
-| Hero | Hero |
-| Content | Gallery, Features, FAQ |
-| Conversion | CTA |
-| Footer | Footer |
+| Slot       | Sections autorisées    |
+| ---------- | ---------------------- |
+| Hero       | Hero                   |
+| Content    | Gallery, Features, FAQ |
+| Conversion | CTA                    |
+| Footer     | Footer                 |
 
 ---
 
@@ -229,8 +223,8 @@ Elle génère automatiquement :
 
 # Bibliothèque V1
 
-| Catégorie | Composants        |
-|------------|------------------|
+| Catégorie  | Composants       |
+| ---------- | ---------------- |
 | Hero       | Hero             |
 | Navigation | Navbar           |
 | Content    | Features         |

@@ -2,7 +2,6 @@
 
 Durée estimée : 3 jours.
 
-
 Initialiser le monorepo.
 Installer React.
 Configurer Vite.

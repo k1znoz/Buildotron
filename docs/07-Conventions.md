@@ -1,17 +1,16 @@
 Nommage
 
-Élément         Convention
+Élément Convention
 
-Plugin          Hero.plugin
+Plugin Hero.plugin
 
-Primitive       Button.tsx
+Primitive Button.tsx
 
-Blueprint       product-landing
+Blueprint product-landing
 
-Hook            useCanvas.ts
+Hook useCanvas.ts
 
-----------
-
+---
 
 Styles :
 
@@ -33,9 +32,9 @@ Organisation des composants
 Chaque nouvelle fonctionnalité doit respecter la hiérarchie suivante :
 
 Blueprint
-    ↓
+↓
 Section
-    ↓
+↓
 Primitive
 
 Un composant complexe ne doit jamais réimplémenter une Primitive existante.

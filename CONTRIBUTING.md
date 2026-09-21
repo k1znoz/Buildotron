@@ -9,8 +9,8 @@
 
 ## Règles
 
-* Aucun composant sans tests.
-* Aucun plugin sans manifest.
-* Aucun export sans build réussi.
-* Respecter le Design System.
-* Les projets exportés ne reviennent jamais dans le Builder.
+- Aucun composant sans tests.
+- Aucun plugin sans manifest.
+- Aucun export sans build réussi.
+- Respecter le Design System.
+- Les projets exportés ne reviennent jamais dans le Builder.

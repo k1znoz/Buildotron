@@ -1,1 +1,8 @@
-{ "id": "cta", "name": "CTA", "category": "Conversion", "version": "1.0.0", "supports": ["react"], "defaultSlot": "conversion" }
+{
+  "id": "cta",
+  "name": "CTA",
+  "category": "Conversion",
+  "version": "1.0.0",
+  "supports": ["react"],
+  "defaultSlot": "conversion"
+}

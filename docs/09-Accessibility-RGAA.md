@@ -18,11 +18,11 @@ L'export vérifie les points critiques.
 
 Le Builder applique automatiquement certaines règles.
 
-* Un seul H1 par page.
-* Hiérarchie des titres cohérente.
-* Contraste minimal vérifié.
-* Focus visible.
-* Navigation clavier prise en compte.
+- Un seul H1 par page.
+- Hiérarchie des titres cohérente.
+- Contraste minimal vérifié.
+- Focus visible.
+- Navigation clavier prise en compte.
 
 Certaines erreurs critiques empêchent l'export.
 
@@ -48,12 +48,12 @@ Le développeur n'a pas besoin de réimplémenter ces comportements.
 
 Avant l'export, Buildotron vérifie notamment :
 
-* H1 unique.
-* Hiérarchie des titres.
-* Images avec texte alternatif.
-* Champs avec label.
-* Navigation clavier.
-* Contraste suffisant.
+- H1 unique.
+- Hiérarchie des titres.
+- Images avec texte alternatif.
+- Champs avec label.
+- Navigation clavier.
+- Contraste suffisant.
 
 Les erreurs critiques bloquent l'export.
 
@@ -77,10 +77,10 @@ Exemple :
 
 Ces informations sont utilisées par :
 
-* le Builder ;
-* le générateur ;
-* les tests ;
-* le rapport de validation.
+- le Builder ;
+- le générateur ;
+- les tests ;
+- le rapport de validation.
 
 ---
 
@@ -88,12 +88,12 @@ Ces informations sont utilisées par :
 
 Un plugin n'est considéré comme terminé que si :
 
-* [ ] Navigation clavier validée.
-* [ ] Focus visible.
-* [ ] Labels présents si nécessaire.
-* [ ] Alt renseigné si nécessaire.
-* [ ] Attributs ARIA cohérents.
-* [ ] Tests Playwright passés.
+- [ ] Navigation clavier validée.
+- [ ] Focus visible.
+- [ ] Labels présents si nécessaire.
+- [ ] Alt renseigné si nécessaire.
+- [ ] Attributs ARIA cohérents.
+- [ ] Tests Playwright passés.
 
 ---
 

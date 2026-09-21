@@ -1,1 +1,8 @@
-{ "id": "features", "name": "Features", "category": "Content", "version": "1.0.0", "supports": ["react"], "defaultSlot": "content" }
+{
+  "id": "features",
+  "name": "Features",
+  "category": "Content",
+  "version": "1.0.0",
+  "supports": ["react"],
+  "defaultSlot": "content"
+}
