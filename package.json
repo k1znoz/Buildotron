@@ -2,7 +2,7 @@
   "name": "buildotron",
   "private": true,
   "workspaces": [
-    "apps/*",
+    "Apps/*",
     "packages/*",
     "plugins"
   ],
