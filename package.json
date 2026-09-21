@@ -19,5 +19,9 @@
     "prettier": "3.8.4",
     "react": "19.2.8",
     "react-dom": "19.2.8"
+  },
+  "optionalDependencies": {
+    "@rolldown/binding-linux-x64-gnu": "1.2.6",
+    "lightningcss-linux-x64-gnu": "1.33.0"
   }
 }
