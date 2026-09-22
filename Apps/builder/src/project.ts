@@ -36,10 +36,12 @@ export type SectionProperties = {
   items?: FeatureItem[]
   images?: GalleryImage[]
   questions?: FAQItem[]
+  links?: FooterLink[]
 }
 export type FeatureItem = { title: string; body: string }
 export type GalleryImage = { src: string; alt: string }
 export type FAQItem = { question: string; answer: string }
+export type FooterLink = { label: string; href: string }
 export const defaultFeatureItems: FeatureItem[] = [
   { title: 'Fast setup', body: 'Describe the first benefit.' },
   { title: 'Flexible design', body: 'Describe the second benefit.' },
@@ -52,6 +54,7 @@ export const defaultFAQItems: FAQItem[] = [
   },
 ]
 export const defaultCTAActionLabel = 'Get started'
+export const defaultHeroActionLabel = 'Learn more'
 export type SectionInstance = {
   id: string
   type: SectionType
@@ -73,6 +76,8 @@ const defaults: Record<SectionType, SectionProperties> = {
   Hero: {
     title: 'A clear starting point for your product.',
     body: 'A structural preview of the selected Blueprint.',
+    actionLabel: defaultHeroActionLabel,
+    actionHref: '',
   },
   Features: {
     title: 'Features',
@@ -91,7 +96,7 @@ const defaults: Record<SectionType, SectionProperties> = {
     actionLabel: defaultCTAActionLabel,
     actionHref: '',
   },
-  Footer: { title: 'Footer', body: 'Contact and legal links.' },
+  Footer: { title: 'Footer', body: 'Contact and legal links.', links: [] },
 }
 
 export function createSection(type: SectionType): SectionInstance {
@@ -109,6 +114,7 @@ export function createSection(type: SectionType): SectionInstance {
       ...(type === 'FAQ'
         ? { questions: defaultFAQItems.map((item) => ({ ...item })) }
         : {}),
+      ...(type === 'Footer' ? { links: [] } : {}),
     },
   }
 }

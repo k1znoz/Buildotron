@@ -8,7 +8,7 @@ react/
 
 manifest.json
 schema.json
-preview.png
+preview.svg
 tests/
 README.md
 
@@ -16,7 +16,7 @@ Checklist:
 
 -Manifest.
 -Schema.
--Preview.
+-Preview SVG dans la Library.
 -Editor.
 -Admin.
 -React.

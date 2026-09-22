@@ -27,6 +27,11 @@ test('Section plugin metadata matches the canonical project model', () => {
         'utf8',
       ),
     )
+    const previewImage = readFileSync(
+      new URL(`../plugins/${type}.plugin/preview.svg`, import.meta.url),
+      'utf8',
+    )
+    assert.match(previewImage, /<svg\b/)
     assert.equal(manifest.id, type.toLowerCase())
     assert.equal(manifest.defaultSlot, defaultSlot[type])
     assert.ok(manifest.supports.includes('react'))
@@ -42,7 +47,7 @@ test('Section plugin metadata matches the canonical project model', () => {
         .filter((field) => field.name !== 'actionHref')
         .every((field) => field.required),
     )
-    if (type === 'CTA')
+    if (type === 'CTA' || type === 'Hero')
       assert.equal(
         schema.fields.find((field) => field.name === 'actionHref').required,
         false,

@@ -1,5 +1,6 @@
 import {
   defaultCTAActionLabel,
+  defaultHeroActionLabel,
   defaultFeatureItems,
   defaultFAQItems,
   defaultSlot,
@@ -79,15 +80,17 @@ export function parseProjectJson(json: string): Project {
       title: raw.properties.title,
       body: raw.properties.body,
     }
-    if (type === 'CTA') {
-      const actionLabel = raw.properties.actionLabel ?? defaultCTAActionLabel
+    if (type === 'CTA' || type === 'Hero') {
+      const actionLabel =
+        raw.properties.actionLabel ??
+        (type === 'CTA' ? defaultCTAActionLabel : defaultHeroActionLabel)
       const actionHref = raw.properties.actionHref ?? ''
       if (typeof actionLabel !== 'string' || typeof actionHref !== 'string') {
-        throw new Error(`${label} : action du CTA invalide.`)
+        throw new Error(`${label} : action de ${type} invalide.`)
       }
       if (actionHref && (!isSafeHref(actionHref) || !actionLabel.trim())) {
         throw new Error(
-          `${label} : le lien du CTA doit être une URL http(s), un chemin /... ou une ancre #..., avec un libellé.`,
+          `${label} : le lien du ${type} doit être une URL http(s), un chemin /... ou une ancre #..., avec un libellé.`,
         )
       }
       properties.actionLabel = actionLabel
@@ -152,6 +155,28 @@ export function parseProjectJson(json: string): Project {
       properties.questions = questions.map((item) => ({
         question: item.question as string,
         answer: item.answer as string,
+      }))
+    }
+    if (type === 'Footer') {
+      const links = raw.properties.links ?? []
+      if (
+        !Array.isArray(links) ||
+        links.length > 12 ||
+        !links.every(
+          (link) =>
+            record(link) &&
+            nonempty(link.label) &&
+            typeof link.href === 'string' &&
+            isSafeHref(link.href),
+        )
+      ) {
+        throw new Error(
+          `${label} : chaque lien Footer doit avoir un libellé et une URL http(s), un chemin /... ou une ancre #... (12 liens maximum).`,
+        )
+      }
+      properties.links = links.map((link) => ({
+        label: link.label as string,
+        href: link.href as string,
       }))
     }
     return { id: raw.id, type, slot, override: raw.override, properties }

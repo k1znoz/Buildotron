@@ -87,17 +87,26 @@
 .library-item {
   display: flex;
   align-items: center;
+  gap: var(--space-sm);
   width: 100%;
   min-height: 38px;
   border: 0;
   border-radius: var(--radius-sm);
-  padding: 0 var(--space-sm);
+  padding: var(--space-sm);
   color: var(--color-ink);
   background: transparent;
   font: inherit;
   font-size: var(--text-base);
   text-align: left;
   cursor: pointer;
+}
+.library-item__preview {
+  display: block;
+  width: 72px;
+  height: 40px;
+  flex: none;
+  border-radius: var(--radius-sm);
+  object-fit: cover;
 }
 .library-item:hover,
 .library-item:focus-visible {

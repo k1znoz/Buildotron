@@ -1,6 +1,8 @@
 {
   "fields": [
     { "name": "title", "type": "text", "required": true },
-    { "name": "body", "type": "textarea", "required": true }
+    { "name": "body", "type": "textarea", "required": true },
+    { "name": "actionLabel", "type": "text", "required": true },
+    { "name": "actionHref", "type": "url", "required": false }
   ]
 }

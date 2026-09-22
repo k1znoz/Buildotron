@@ -62,6 +62,16 @@ test('duplication gives an independent section instance', () => {
   ).properties.questions
   assert.notEqual(faq.properties.questions, copiedQuestions)
   assert.notEqual(faq.properties.questions[0], copiedQuestions[0])
+
+  const footer = createSection('Footer')
+  footer.properties.links = [{ label: 'Legal', href: '/legal' }]
+  const withFooter = { ...project, sections: [...project.sections, footer] }
+  const withFooterCopy = duplicateSection(withFooter, footer.id, 'footer-copy')
+  const copiedLinks = withFooterCopy.sections.find(
+    (section) => section.id === 'footer-copy',
+  ).properties.links
+  assert.notEqual(footer.properties.links, copiedLinks)
+  assert.notEqual(footer.properties.links[0], copiedLinks[0])
 })
 
 test('slot override is required for exceptional placement', () => {

@@ -192,6 +192,28 @@ function App() {
     }))
   }
 
+  function updateFooterLinks(
+    update: (
+      links: NonNullable<Project['sections'][number]['properties']['links']>,
+    ) => NonNullable<Project['sections'][number]['properties']['links']>,
+  ) {
+    if (!selected || selected.type !== 'Footer') return
+    setProject((current) => ({
+      ...current,
+      sections: current.sections.map((section) =>
+        section.id === selected.id
+          ? {
+              ...section,
+              properties: {
+                ...section.properties,
+                links: update(section.properties.links ?? []),
+              },
+            }
+          : section,
+      ),
+    }))
+  }
+
   function save() {
     if (!project.name.trim()) {
       setMessage('Donnez un nom au projet avant de le sauvegarder.')
@@ -309,6 +331,25 @@ function App() {
               questions.length <= 1
                 ? questions
                 : questions.filter((_, position) => position !== index),
+            )
+          }
+          onFooterLink={(index, key, value) =>
+            updateFooterLinks((links) =>
+              links.map((link, position) =>
+                position === index ? { ...link, [key]: value } : link,
+              ),
+            )
+          }
+          onAddFooterLink={() =>
+            updateFooterLinks((links) =>
+              links.length >= 12
+                ? links
+                : [...links, { label: 'New link', href: '' }],
+            )
+          }
+          onRemoveFooterLink={(index) =>
+            updateFooterLinks((links) =>
+              links.filter((_, position) => position !== index),
             )
           }
           onDuplicate={duplicate}

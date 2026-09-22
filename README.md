@@ -43,16 +43,16 @@ L'objectif est de réutiliser des idées éprouvées sans reproduire ces produit
 
 Le détail des objectifs et critères de validation se trouve dans [la roadmap](docs/03-Roadmap.md).
 
-| Jalon               | État                      | Étapes accomplies                                                                                                                                                |
-| ------------------- | ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1 — Socle           | OK                        | Monorepo, formatage, lint, tests et build validés localement et par GitHub Actions après correction du workspace et des dépendances natives Linux.               |
-| 1.5 — Audit         | OK                        | Audit documentaire d'OpenPage réalisé et décisions consignées dans `docs/research/openpage-audit.md`.                                                            |
-| 2 — Canvas          | Validé dans le navigateur | Ajout, sélection, déplacement, duplication, suppression, slots et override explicite ; déplacement par glisser-déposer, boutons et flèches.                      |
-| 3 — JSON canonique  | Validé dans le navigateur | Format versionné, propriétés éditables, téléchargement d'un fichier JSON, réouverture et validation des données.                                                 |
-| 3.5 — Design System | Vérifié localement        | Couleurs, typographies, espacements, rayons et ombres centralisés dans le package partagé et utilisés par le Builder ; build validé.                             |
-| 4 — Primitives      | Vérifié localement        | Button, Text, Image et Card disponibles dans le package partagé ; build validé, validation visuelle complète à faire.                                            |
-| 5 — Sections        | En cours                  | CTA, Features et Gallery validés dans le navigateur. Questions de FAQ configurables et prêtes à valider ; formulaires CMS et contrôles d'export restent à créer. |
-| 6 et suivants       | À faire                   | Blueprints, générateur React, CMS puis BIOGRIND.                                                                                                                 |
+| Jalon               | État                      | Étapes accomplies                                                                                                                                                                |
+| ------------------- | ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1 — Socle           | OK                        | Monorepo, formatage, lint, tests et build validés localement et par GitHub Actions après correction du workspace et des dépendances natives Linux.                               |
+| 1.5 — Audit         | OK                        | Audit documentaire d'OpenPage réalisé et décisions consignées dans `docs/research/openpage-audit.md`.                                                                            |
+| 2 — Canvas          | Validé dans le navigateur | Ajout, sélection, déplacement, duplication, suppression, slots et override explicite ; déplacement par glisser-déposer, boutons et flèches.                                      |
+| 3 — JSON canonique  | Validé dans le navigateur | Format versionné, propriétés éditables, téléchargement d'un fichier JSON, réouverture et validation des données.                                                                 |
+| 3.5 — Design System | Vérifié localement        | Couleurs, typographies, espacements, rayons et ombres centralisés dans le package partagé et utilisés par le Builder ; build validé.                                             |
+| 4 — Primitives      | Vérifié localement        | Button, Text, Image et Card disponibles dans le package partagé ; build validé, validation visuelle complète à faire.                                                            |
+| 5 — Sections        | En cours                  | CTA, Features, Gallery, FAQ, Footer et action Hero validés dans le navigateur. Vignettes de la Library prêtes à valider ; formulaires CMS et contrôles d'export restent à créer. |
+| 6 et suivants       | À faire                   | Blueprints, générateur React, CMS puis BIOGRIND.                                                                                                                                 |
 
 ## Essayer le Builder
 
@@ -79,4 +79,4 @@ Le [parcours de validation du CTA](docs/testing/cta-validation.md) a été confi
 - Jalon 3 — OK : projet JSON enregistré et rouvert avec succès.
 - Jalon 3.5 — vérifié localement : tokens du Design System centralisés et build OK.
 - Jalon 4 — vérifié localement : quatre Primitives disponibles et build OK ; validation visuelle complète restante.
-- Jalon 5 — en cours : CTA, Features, Gallery et contrôle des champs vides validés dans le navigateur ; FAQ prête pour [validation](docs/testing/faq-validation.md).
+- Jalon 5 — en cours : CTA, Features, Gallery, FAQ, Footer, action Hero et contrôle des champs vides validés dans le navigateur ; vignettes de la Library prêtes pour [validation](docs/testing/library-previews-validation.md).

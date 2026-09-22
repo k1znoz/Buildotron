@@ -79,6 +79,28 @@ test('legacy CTA data gains editable action defaults and preserves a configured 
   )
 })
 
+test('legacy Hero data gains optional action defaults and validates its link', () => {
+  const project = parseProjectJson(sample)
+  const hero = project.sections.find((section) => section.type === 'Hero')
+  assert.equal(hero.properties.actionLabel, 'Learn more')
+  assert.equal(hero.properties.actionHref, '')
+
+  hero.properties.actionLabel = 'See the details'
+  hero.properties.actionHref = '/details'
+  const reopened = parseProjectJson(serializeProject(project))
+  assert.equal(
+    reopened.sections.find((section) => section.type === 'Hero').properties
+      .actionHref,
+    '/details',
+  )
+
+  hero.properties.actionHref = 'javascript:alert(1)'
+  assert.throws(
+    () => parseProjectJson(serializeProject(project)),
+    /lien du Hero/,
+  )
+})
+
 test('CTA links accept web and local destinations and reject unsafe schemes', () => {
   for (const href of [
     'https://example.com',
@@ -179,5 +201,33 @@ test('FAQ questions survive JSON reopening and require complete answers', () => 
       (section) => section.id === faq.id,
     ).properties.questions.length,
     1,
+  )
+})
+
+test('Footer links survive JSON reopening and reject unsafe destinations', () => {
+  const project = parseProjectJson(sample)
+  const footer = createSection('Footer')
+  footer.properties.links = [
+    { label: 'Legal notice', href: '/legal' },
+    { label: 'Contact', href: '#contact' },
+  ]
+  project.sections.push(footer)
+  const reopened = parseProjectJson(serializeProject(project))
+  assert.deepEqual(
+    reopened.sections.find((section) => section.id === footer.id).properties
+      .links,
+    footer.properties.links,
+  )
+
+  footer.properties.links[0].href = 'javascript:alert(1)'
+  assert.throws(
+    () => parseProjectJson(serializeProject(project)),
+    /lien Footer/,
+  )
+  footer.properties.links[0].href = '/legal'
+  footer.properties.links[0].label = '  '
+  assert.throws(
+    () => parseProjectJson(serializeProject(project)),
+    /lien Footer/,
   )
 })

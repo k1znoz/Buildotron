@@ -27,6 +27,9 @@ export function duplicateSection(
             questions: source.properties.questions.map((item) => ({ ...item })),
           }
         : {}),
+      ...(source.properties.links
+        ? { links: source.properties.links.map((link) => ({ ...link })) }
+        : {}),
     },
   })
   return { ...project, sections }

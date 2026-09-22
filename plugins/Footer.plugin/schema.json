@@ -1,6 +1,7 @@
 {
   "fields": [
     { "name": "title", "type": "text", "required": true },
-    { "name": "body", "type": "textarea", "required": true }
+    { "name": "body", "type": "textarea", "required": true },
+    { "name": "links", "type": "list", "required": true }
   ]
 }

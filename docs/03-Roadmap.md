@@ -123,9 +123,15 @@ Les éléments de Features sont maintenant éditables, validés dans le JSON et 
 
 Les images de Gallery sont maintenant configurables, validées dans le JSON et rendues avec un texte alternatif. Leur parcours a été confirmé dans le navigateur avec `docs/testing/gallery-validation.md`.
 
-Les questions et réponses de FAQ sont maintenant configurables, validées dans le JSON et rendues sous forme de panneaux ouvrables. Leur validation manuelle est décrite dans `docs/testing/faq-validation.md`.
+Les questions et réponses de FAQ sont maintenant configurables, validées dans le JSON et rendues sous forme de panneaux ouvrables. Leur parcours a été confirmé dans le navigateur avec `docs/testing/faq-validation.md`.
 
-Reste à produire avant de considérer ce jalon terminé : les formulaires CMS, les images de prévisualisation et les validations d'export propres aux plugins. Les sections incomplètes ne constituent pas un site BIOGRIND livrable.
+Les liens de Footer sont maintenant configurables, validés dans le JSON et rendus sans quitter le Builder en mode aperçu. Leur parcours a été confirmé dans le navigateur avec `docs/testing/footer-validation.md`.
+
+Le Hero possède désormais une action facultative avec un libellé et un lien validés. Son parcours a été confirmé dans le navigateur avec `docs/testing/hero-action-validation.md`.
+
+Chaque plugin possède une vignette SVG dans la Library. Leur parcours de validation manuelle est décrit dans `docs/testing/library-previews-validation.md`.
+
+Reste à produire avant de considérer ce jalon terminé : les formulaires CMS et les validations d'export propres aux plugins. Les sections incomplètes ne constituent pas un site BIOGRIND livrable.
 
 ## Milestone 6 — Blueprints
 

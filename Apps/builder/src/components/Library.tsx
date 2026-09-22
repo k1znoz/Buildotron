@@ -1,5 +1,6 @@
 import type { SectionType } from '../project'
 import { Button } from '@buildotron/design-system'
+import { sectionPreviewImages } from '@buildotron/plugins'
 
 const libraryGroups: { title: string; items: SectionType[] }[] = [
   { title: 'Navigation', items: ['Navbar'] },
@@ -26,7 +27,13 @@ export function Library({ onAdd }: { onAdd: (type: SectionType) => void }) {
               key={item}
               onClick={() => onAdd(item)}
             >
-              + {item}
+              <img
+                className="library-item__preview"
+                src={sectionPreviewImages[item] ?? '/navbar-preview.svg'}
+                alt=""
+                aria-hidden="true"
+              />
+              <span>+ {item}</span>
             </Button>
           ))}
         </section>

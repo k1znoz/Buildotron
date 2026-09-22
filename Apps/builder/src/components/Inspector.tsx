@@ -19,6 +19,9 @@ type Props = {
   onFAQItem: (index: number, key: 'question' | 'answer', value: string) => void
   onAddFAQItem: () => void
   onRemoveFAQItem: (index: number) => void
+  onFooterLink: (index: number, key: 'label' | 'href', value: string) => void
+  onAddFooterLink: () => void
+  onRemoveFooterLink: (index: number) => void
   onDuplicate: () => void
   onRemove: () => void
   onMove: (id: string, slot: Slot) => void
@@ -40,6 +43,9 @@ export function Inspector({
   onFAQItem,
   onAddFAQItem,
   onRemoveFAQItem,
+  onFooterLink,
+  onAddFooterLink,
+  onRemoveFooterLink,
   onDuplicate,
   onRemove,
   onMove,
@@ -95,7 +101,7 @@ export function Inspector({
                 onChange={(event) => onProperty('body', event.target.value)}
               />
             </label>
-            {section.type === 'CTA' && (
+            {(section.type === 'CTA' || section.type === 'Hero') && (
               <>
                 <label className="field">
                   <span className="field__label">Libellé du bouton</span>
@@ -119,8 +125,9 @@ export function Inspector({
                   />
                 </label>
                 <p className="inspector-note">
-                  Le CTA reste désactivé tant qu'aucun lien valide n'est
-                  renseigné.
+                  {section.type === 'CTA'
+                    ? "Le CTA reste désactivé tant qu'aucun lien valide n'est renseigné."
+                    : "L'action du Hero apparaît dès qu'un lien valide est renseigné."}
                 </p>
               </>
             )}
@@ -247,6 +254,46 @@ export function Inspector({
                   disabled={(section.properties.questions?.length ?? 0) >= 12}
                 >
                   Ajouter une question
+                </Button>
+              </div>
+            )}
+            {section.type === 'Footer' && (
+              <div className="feature-editor">
+                <h4>Liens</h4>
+                {(section.properties.links ?? []).map((link, index) => (
+                  <fieldset key={index} className="feature-editor__item">
+                    <legend>Lien {index + 1}</legend>
+                    <label className="field">
+                      <span className="field__label">Libellé</span>
+                      <input
+                        className="field__value"
+                        value={link.label}
+                        onChange={(event) =>
+                          onFooterLink(index, 'label', event.target.value)
+                        }
+                      />
+                    </label>
+                    <label className="field">
+                      <span className="field__label">URL ou chemin</span>
+                      <input
+                        className="field__value"
+                        value={link.href}
+                        onChange={(event) =>
+                          onFooterLink(index, 'href', event.target.value)
+                        }
+                        placeholder="https://exemple.fr, /legal ou #contact"
+                      />
+                    </label>
+                    <Button onClick={() => onRemoveFooterLink(index)}>
+                      Retirer ce lien
+                    </Button>
+                  </fieldset>
+                ))}
+                <Button
+                  onClick={onAddFooterLink}
+                  disabled={(section.properties.links?.length ?? 0) >= 12}
+                >
+                  Ajouter un lien
                 </Button>
               </div>
             )}

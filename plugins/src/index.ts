@@ -7,6 +7,21 @@ import { FAQPreview } from '../FAQ.plugin/editor/FAQPreview'
 import { CTAPreview } from '../CTA.plugin/editor/CTAPreview'
 import { FooterPreview } from '../Footer.plugin/editor/FooterPreview'
 import type { SectionContentProps } from './types'
+import heroPreviewImage from '../Hero.plugin/preview.svg?url'
+import featuresPreviewImage from '../Features.plugin/preview.svg?url'
+import galleryPreviewImage from '../Gallery.plugin/preview.svg?url'
+import faqPreviewImage from '../FAQ.plugin/preview.svg?url'
+import ctaPreviewImage from '../CTA.plugin/preview.svg?url'
+import footerPreviewImage from '../Footer.plugin/preview.svg?url'
+
+export const sectionPreviewImages: Record<string, string> = {
+  Hero: heroPreviewImage,
+  Features: featuresPreviewImage,
+  Gallery: galleryPreviewImage,
+  FAQ: faqPreviewImage,
+  CTA: ctaPreviewImage,
+  Footer: footerPreviewImage,
+}
 
 export const sectionPreviews: Record<
   string,
@@ -29,6 +44,7 @@ export function SectionPreview({
   items,
   images,
   questions,
+  links,
 }: SectionContentProps & { type: string }) {
   const Preview = sectionPreviews[type]
   return Preview
@@ -40,6 +56,7 @@ export function SectionPreview({
         items,
         images,
         questions,
+        links,
       })
     : null
 }
