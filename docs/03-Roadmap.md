@@ -121,7 +121,9 @@ Première tranche réalisée : chaque plugin déclare un manifeste, un schéma d
 
 Les éléments de Features sont maintenant éditables, validés dans le JSON et rendus en cartes. Leur parcours manuel a été confirmé dans le navigateur. La validation du JSON refuse les titres et textes vides des sections ; ce correctif a aussi été confirmé dans le navigateur avec `docs/testing/features-validation.md`.
 
-Reste à produire avant de considérer ce jalon terminé : les images de Gallery, les questions de FAQ, les formulaires CMS, les images de prévisualisation et les validations d'export propres aux plugins. Les placeholders actuels ne constituent pas un site BIOGRIND livrable.
+Les images de Gallery sont maintenant configurables, validées dans le JSON et rendues avec un texte alternatif. Leur validation manuelle est décrite dans `docs/testing/gallery-validation.md`.
+
+Reste à produire avant de considérer ce jalon terminé : les questions de FAQ, les formulaires CMS, les images de prévisualisation et les validations d'export propres aux plugins. Les sections incomplètes ne constituent pas un site BIOGRIND livrable.
 
 ## Milestone 6 — Blueprints
 

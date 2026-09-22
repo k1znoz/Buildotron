@@ -27,10 +27,20 @@ export function SectionPreview({
   actionLabel,
   actionHref,
   items,
+  images,
+  questions,
 }: SectionContentProps & { type: string }) {
   const Preview = sectionPreviews[type]
   return Preview
-    ? createElement(Preview, { title, body, actionLabel, actionHref, items })
+    ? createElement(Preview, {
+        title,
+        body,
+        actionLabel,
+        actionHref,
+        items,
+        images,
+        questions,
+      })
     : null
 }
 

@@ -19,6 +19,12 @@ export function duplicateSection(
       ...(source.properties.items
         ? { items: source.properties.items.map((item) => ({ ...item })) }
         : {}),
+      ...(source.properties.images
+        ? { images: source.properties.images.map((image) => ({ ...image })) }
+        : {}),
+      ...(source.properties.questions
+        ? { questions: source.properties.questions.map((item) => ({ ...item })) }
+        : {}),
     },
   })
   return { ...project, sections }

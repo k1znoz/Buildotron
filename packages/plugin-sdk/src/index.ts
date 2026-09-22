@@ -11,3 +11,7 @@ export function isSafeHref(value: string): boolean {
     return false
   }
 }
+
+export function isSafeImageSrc(value: string): boolean {
+  return isSafeHref(value) && !value.startsWith('#')
+}

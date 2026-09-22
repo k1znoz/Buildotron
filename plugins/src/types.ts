@@ -4,4 +4,6 @@ export type SectionContentProps = {
   actionLabel?: string
   actionHref?: string
   items?: { title: string; body: string }[]
+  images?: { src: string; alt: string }[]
+  questions?: { question: string; answer: string }[]
 }

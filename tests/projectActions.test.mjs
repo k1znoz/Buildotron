@@ -9,6 +9,7 @@ import {
   setSectionOverride,
 } from '../Apps/builder/src/projectActions.ts'
 import { parseProjectJson } from '../Apps/builder/src/projectJson.ts'
+import { createSection } from '../Apps/builder/src/project.ts'
 
 const project = parseProjectJson(
   readFileSync(
@@ -38,6 +39,29 @@ test('duplication gives an independent section instance', () => {
   ).properties.items
   assert.notEqual(originalItems, copiedItems)
   assert.notEqual(originalItems[0], copiedItems[0])
+
+  const gallery = createSection('Gallery')
+  gallery.properties.images = [{ src: '/gallery-validation.svg', alt: 'Motif' }]
+  const withGallery = { ...project, sections: [...project.sections, gallery] }
+  const withGalleryCopy = duplicateSection(
+    withGallery,
+    gallery.id,
+    'gallery-copy',
+  )
+  const copiedImages = withGalleryCopy.sections.find(
+    (section) => section.id === 'gallery-copy',
+  ).properties.images
+  assert.notEqual(gallery.properties.images, copiedImages)
+  assert.notEqual(gallery.properties.images[0], copiedImages[0])
+
+  const faq = createSection('FAQ')
+  const withFAQ = { ...project, sections: [...project.sections, faq] }
+  const withFAQCopy = duplicateSection(withFAQ, faq.id, 'faq-copy')
+  const copiedQuestions = withFAQCopy.sections.find(
+    (section) => section.id === 'faq-copy',
+  ).properties.questions
+  assert.notEqual(faq.properties.questions, copiedQuestions)
+  assert.notEqual(faq.properties.questions[0], copiedQuestions[0])
 })
 
 test('slot override is required for exceptional placement', () => {
