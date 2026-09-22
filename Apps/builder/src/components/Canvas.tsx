@@ -117,6 +117,8 @@ export function Canvas({
                       actionLabel={section.properties.actionLabel}
                       actionHref={section.properties.actionHref}
                       items={section.properties.items}
+                      images={section.properties.images}
+                      questions={section.properties.questions}
                     />
                   )}
                 </section>

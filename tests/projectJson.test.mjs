@@ -6,6 +6,7 @@ import {
   serializeProject,
 } from '../Apps/builder/src/projectJson.ts'
 import { isSafeHref } from '@buildotron/plugin-sdk'
+import { createSection } from '../Apps/builder/src/project.ts'
 
 const sample = readFileSync(
   new URL('../projects/product-landing.json', import.meta.url),
@@ -119,5 +120,64 @@ test('Features items survive JSON reopening and invalid lists are refused', () =
   assert.throws(
     () => parseProjectJson(serializeProject(project)),
     /éléments de Features/,
+  )
+})
+
+test('Gallery images round trip and reject unsafe sources or missing alt text', () => {
+  const project = parseProjectJson(sample)
+  const gallery = createSection('Gallery')
+  gallery.properties.images = [
+    { src: '/gallery-validation.svg', alt: 'Motif de validation' },
+  ]
+  project.sections.push(gallery)
+  const reopened = parseProjectJson(serializeProject(project))
+  assert.deepEqual(
+    reopened.sections.find((section) => section.id === gallery.id).properties
+      .images,
+    gallery.properties.images,
+  )
+
+  gallery.properties.images[0].src = 'javascript:alert(1)'
+  assert.throws(
+    () => parseProjectJson(serializeProject(project)),
+    /image Gallery/,
+  )
+  gallery.properties.images[0].src = '/gallery-validation.svg'
+  gallery.properties.images[0].alt = '  '
+  assert.throws(
+    () => parseProjectJson(serializeProject(project)),
+    /image Gallery/,
+  )
+})
+
+test('FAQ questions survive JSON reopening and require complete answers', () => {
+  const project = parseProjectJson(sample)
+  const faq = createSection('FAQ')
+  faq.properties.questions = [
+    { question: 'How do I start?', answer: 'Open the Builder.' },
+    { question: 'Can I save?', answer: 'Yes, as JSON.' },
+  ]
+  project.sections.push(faq)
+  const reopened = parseProjectJson(serializeProject(project))
+  assert.deepEqual(
+    reopened.sections.find((section) => section.id === faq.id).properties
+      .questions,
+    faq.properties.questions,
+  )
+
+  faq.properties.questions[0].answer = '  '
+  assert.throws(
+    () => parseProjectJson(serializeProject(project)),
+    /questions FAQ/,
+  )
+
+  const legacy = structuredClone(project)
+  delete legacy.sections.find((section) => section.id === faq.id).properties
+    .questions
+  assert.equal(
+    parseProjectJson(serializeProject(legacy)).sections.find(
+      (section) => section.id === faq.id,
+    ).properties.questions.length,
+    1,
   )
 })

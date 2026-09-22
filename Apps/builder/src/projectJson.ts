@@ -1,6 +1,7 @@
 import {
   defaultCTAActionLabel,
   defaultFeatureItems,
+  defaultFAQItems,
   defaultSlot,
   sectionTypes,
   slots,
@@ -12,7 +13,7 @@ import type {
   SectionType,
   Slot,
 } from './project.ts'
-import { isSafeHref } from '@buildotron/plugin-sdk'
+import { isSafeHref, isSafeImageSrc } from '@buildotron/plugin-sdk'
 
 function record(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
@@ -109,6 +110,48 @@ export function parseProjectJson(json: string): Project {
       properties.items = items.map((item) => ({
         title: item.title as string,
         body: item.body as string,
+      }))
+    }
+    if (type === 'Gallery') {
+      const images = raw.properties.images ?? []
+      if (
+        !Array.isArray(images) ||
+        images.length > 12 ||
+        !images.every(
+          (image) =>
+            record(image) &&
+            typeof image.src === 'string' &&
+            isSafeImageSrc(image.src) &&
+            nonempty(image.alt),
+        )
+      ) {
+        throw new Error(
+          `${label} : chaque image Gallery doit avoir une URL http(s) ou un chemin /... et un texte alternatif non vide (12 images maximum).`,
+        )
+      }
+      properties.images = images.map((image) => ({
+        src: image.src as string,
+        alt: image.alt as string,
+      }))
+    }
+    if (type === 'FAQ') {
+      const questions = raw.properties.questions ?? defaultFAQItems
+      if (
+        !Array.isArray(questions) ||
+        questions.length < 1 ||
+        questions.length > 12 ||
+        !questions.every(
+          (item) =>
+            record(item) && nonempty(item.question) && nonempty(item.answer),
+        )
+      ) {
+        throw new Error(
+          `${label} : renseignez entre 1 et 12 questions FAQ, chacune avec une question et une réponse.`,
+        )
+      }
+      properties.questions = questions.map((item) => ({
+        question: item.question as string,
+        answer: item.answer as string,
       }))
     }
     return { id: raw.id, type, slot, override: raw.override, properties }

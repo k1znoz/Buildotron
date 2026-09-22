@@ -146,6 +146,52 @@ function App() {
     }))
   }
 
+  function updateGalleryImages(
+    update: (
+      images: NonNullable<Project['sections'][number]['properties']['images']>,
+    ) => NonNullable<Project['sections'][number]['properties']['images']>,
+  ) {
+    if (!selected || selected.type !== 'Gallery') return
+    setProject((current) => ({
+      ...current,
+      sections: current.sections.map((section) =>
+        section.id === selected.id
+          ? {
+              ...section,
+              properties: {
+                ...section.properties,
+                images: update(section.properties.images ?? []),
+              },
+            }
+          : section,
+      ),
+    }))
+  }
+
+  function updateFAQItems(
+    update: (
+      questions: NonNullable<
+        Project['sections'][number]['properties']['questions']
+      >,
+    ) => NonNullable<Project['sections'][number]['properties']['questions']>,
+  ) {
+    if (!selected || selected.type !== 'FAQ') return
+    setProject((current) => ({
+      ...current,
+      sections: current.sections.map((section) =>
+        section.id === selected.id
+          ? {
+              ...section,
+              properties: {
+                ...section.properties,
+                questions: update(section.properties.questions ?? []),
+              },
+            }
+          : section,
+      ),
+    }))
+  }
+
   function save() {
     if (!project.name.trim()) {
       setMessage('Donnez un nom au projet avant de le sauvegarder.')
@@ -222,6 +268,47 @@ function App() {
               items.length <= 1
                 ? items
                 : items.filter((_, position) => position !== index),
+            )
+          }
+          onGalleryImage={(index, key, value) =>
+            updateGalleryImages((images) =>
+              images.map((image, position) =>
+                position === index ? { ...image, [key]: value } : image,
+              ),
+            )
+          }
+          onAddGalleryImage={() =>
+            updateGalleryImages((images) =>
+              images.length >= 12 ? images : [...images, { src: '', alt: '' }],
+            )
+          }
+          onRemoveGalleryImage={(index) =>
+            updateGalleryImages((images) =>
+              images.filter((_, position) => position !== index),
+            )
+          }
+          onFAQItem={(index, key, value) =>
+            updateFAQItems((questions) =>
+              questions.map((item, position) =>
+                position === index ? { ...item, [key]: value } : item,
+              ),
+            )
+          }
+          onAddFAQItem={() =>
+            updateFAQItems((questions) =>
+              questions.length >= 12
+                ? questions
+                : [
+                    ...questions,
+                    { question: 'New question', answer: 'Write the answer.' },
+                  ],
+            )
+          }
+          onRemoveFAQItem={(index) =>
+            updateFAQItems((questions) =>
+              questions.length <= 1
+                ? questions
+                : questions.filter((_, position) => position !== index),
             )
           }
           onDuplicate={duplicate}

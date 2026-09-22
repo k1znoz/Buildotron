@@ -13,6 +13,12 @@ type Props = {
   onFeatureItem: (index: number, key: 'title' | 'body', value: string) => void
   onAddFeatureItem: () => void
   onRemoveFeatureItem: (index: number) => void
+  onGalleryImage: (index: number, key: 'src' | 'alt', value: string) => void
+  onAddGalleryImage: () => void
+  onRemoveGalleryImage: (index: number) => void
+  onFAQItem: (index: number, key: 'question' | 'answer', value: string) => void
+  onAddFAQItem: () => void
+  onRemoveFAQItem: (index: number) => void
   onDuplicate: () => void
   onRemove: () => void
   onMove: (id: string, slot: Slot) => void
@@ -28,6 +34,12 @@ export function Inspector({
   onFeatureItem,
   onAddFeatureItem,
   onRemoveFeatureItem,
+  onGalleryImage,
+  onAddGalleryImage,
+  onRemoveGalleryImage,
+  onFAQItem,
+  onAddFAQItem,
+  onRemoveFAQItem,
   onDuplicate,
   onRemove,
   onMove,
@@ -152,6 +164,89 @@ export function Inspector({
                   disabled={(section.properties.items?.length ?? 0) >= 12}
                 >
                   Ajouter un élément
+                </Button>
+              </div>
+            )}
+            {section.type === 'Gallery' && (
+              <div className="feature-editor">
+                <h4>Images</h4>
+                {(section.properties.images ?? []).map((image, index) => (
+                  <fieldset key={index} className="feature-editor__item">
+                    <legend>Image {index + 1}</legend>
+                    <label className="field">
+                      <span className="field__label">URL ou chemin</span>
+                      <input
+                        className="field__value"
+                        value={image.src}
+                        onChange={(event) =>
+                          onGalleryImage(index, 'src', event.target.value)
+                        }
+                        placeholder="https://exemple.fr/photo.jpg ou /photo.jpg"
+                      />
+                    </label>
+                    <label className="field">
+                      <span className="field__label">Texte alternatif</span>
+                      <input
+                        className="field__value"
+                        value={image.alt}
+                        onChange={(event) =>
+                          onGalleryImage(index, 'alt', event.target.value)
+                        }
+                      />
+                    </label>
+                    <Button onClick={() => onRemoveGalleryImage(index)}>
+                      Retirer cette image
+                    </Button>
+                  </fieldset>
+                ))}
+                <Button
+                  onClick={onAddGalleryImage}
+                  disabled={(section.properties.images?.length ?? 0) >= 12}
+                >
+                  Ajouter une image
+                </Button>
+              </div>
+            )}
+            {section.type === 'FAQ' && (
+              <div className="feature-editor">
+                <h4>Questions</h4>
+                {(section.properties.questions ?? []).map((item, index) => (
+                  <fieldset key={index} className="feature-editor__item">
+                    <legend>Question {index + 1}</legend>
+                    <label className="field">
+                      <span className="field__label">Question</span>
+                      <input
+                        className="field__value"
+                        value={item.question}
+                        onChange={(event) =>
+                          onFAQItem(index, 'question', event.target.value)
+                        }
+                      />
+                    </label>
+                    <label className="field">
+                      <span className="field__label">Réponse</span>
+                      <textarea
+                        className="field__value"
+                        rows={3}
+                        value={item.answer}
+                        onChange={(event) =>
+                          onFAQItem(index, 'answer', event.target.value)
+                        }
+                      />
+                    </label>
+                    <Button
+                      onClick={() => onRemoveFAQItem(index)}
+                      disabled={section.properties.questions?.length === 1}
+                    >
+                      Retirer cette question
+                    </Button>
+                  </fieldset>
+                ))}
+                <Button
+                  onClick={onAddFAQItem}
+                  disabled={(section.properties.questions?.length ?? 0) >= 12}
+                >
+                  Ajouter une question
                 </Button>
               </div>
             )}
