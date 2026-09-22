@@ -23,13 +23,9 @@ export function duplicateSection(
         ? { images: source.properties.images.map((image) => ({ ...image })) }
         : {}),
       ...(source.properties.questions
-<<<<<<< HEAD
         ? {
             questions: source.properties.questions.map((item) => ({ ...item })),
           }
-=======
-        ? { questions: source.properties.questions.map((item) => ({ ...item })) }
->>>>>>> e5e71d49b4778308c88280216c56f41868720925
         : {}),
     },
   })
