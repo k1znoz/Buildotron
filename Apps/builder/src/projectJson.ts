@@ -142,7 +142,13 @@ export function parseProjectJson(json: string): Project {
         questions.length > 12 ||
         !questions.every(
           (item) =>
+<<<<<<< HEAD
             record(item) && nonempty(item.question) && nonempty(item.answer),
+=======
+            record(item) &&
+            nonempty(item.question) &&
+            nonempty(item.answer),
+>>>>>>> e5e71d49b4778308c88280216c56f41868720925
         )
       ) {
         throw new Error(
