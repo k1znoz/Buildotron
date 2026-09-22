@@ -129,9 +129,15 @@ Les liens de Footer sont maintenant configurables, validés dans le JSON et rend
 
 Le Hero possède désormais une action facultative avec un libellé et un lien validés. Son parcours a été confirmé dans le navigateur avec `docs/testing/hero-action-validation.md`.
 
-Chaque plugin possède une vignette SVG dans la Library. Leur parcours de validation manuelle est décrit dans `docs/testing/library-previews-validation.md`.
+Chaque plugin possède une vignette SVG dans la Library. Leur parcours de validation manuelle a été confirmé avec `docs/testing/library-previews-validation.md`.
 
-Reste à produire avant de considérer ce jalon terminé : les formulaires CMS et les validations d'export propres aux plugins. Les sections incomplètes ne constituent pas un site BIOGRIND livrable.
+Un premier contrôle des sections est disponible dans le Builder. Il reprend la validation du JSON canonique et signale les blocages connus avant export : absence de section, Navbar sans lien, CTA sans lien et Gallery sans image. Le panneau suit les modifications du projet. Son parcours manuel a été confirmé avec `docs/testing/section-checks-validation.md`.
+
+Navbar possède désormais un manifeste, un schéma, une vignette, un aperçu Builder et un rendu React. Ses liens sont éditables et validés dans le JSON canonique. Son parcours de validation manuelle a été confirmé avec `docs/testing/navbar-validation.md`.
+
+Le premier formulaire de contenu destiné au futur CMS couvre Hero. Il permet de modifier le titre, le texte et l'action facultative, puis de les appliquer à un aperçu React isolé. La page de test ne conserve les changements qu'en mémoire. Le parcours manuel est dans `docs/testing/hero-admin-validation.md` et reste à confirmer.
+
+Reste à produire avant de considérer ce jalon terminé : les formulaires de contenu des autres plugins et les validations d'export complètes propres aux plugins. Les sections incomplètes ne constituent pas un site BIOGRIND livrable.
 
 ## Milestone 6 — Blueprints
 

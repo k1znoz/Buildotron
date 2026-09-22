@@ -5,9 +5,15 @@ type Props = {
   projectName: string
   onSave: () => void
   onOpen: (file: File) => void
+  onCheckSections: () => void
 }
 
-export function Toolbar({ projectName, onSave, onOpen }: Props) {
+export function Toolbar({
+  projectName,
+  onSave,
+  onOpen,
+  onCheckSections,
+}: Props) {
   const input = useRef<HTMLInputElement>(null)
   return (
     <header className="toolbar">
@@ -28,6 +34,7 @@ export function Toolbar({ projectName, onSave, onOpen }: Props) {
         />
         <Button onClick={() => input.current?.click()}>Ouvrir JSON</Button>
         <Button onClick={onSave}>Enregistrer JSON</Button>
+        <Button onClick={onCheckSections}>Contrôler les sections</Button>
         <Button
           variant="primary"
           disabled

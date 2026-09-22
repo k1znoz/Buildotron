@@ -231,3 +231,41 @@ test('Footer links survive JSON reopening and reject unsafe destinations', () =>
     /lien Footer/,
   )
 })
+
+test('Navbar links survive JSON reopening and reject unsafe destinations', () => {
+  const project = parseProjectJson(sample)
+  const navbar = createSection('Navbar')
+  navbar.properties.links = [
+    { label: 'Accueil', href: '/' },
+    { label: 'Contact', href: '#contact' },
+  ]
+  project.sections.push(navbar)
+  const reopened = parseProjectJson(serializeProject(project))
+  assert.deepEqual(
+    reopened.sections.find((section) => section.id === navbar.id).properties
+      .links,
+    navbar.properties.links,
+  )
+
+  navbar.properties.links[0].href = 'javascript:alert(1)'
+  assert.throws(
+    () => parseProjectJson(serializeProject(project)),
+    /lien Navbar/,
+  )
+  navbar.properties.links[0].href = '/'
+  navbar.properties.links[0].label = '  '
+  assert.throws(
+    () => parseProjectJson(serializeProject(project)),
+    /lien Navbar/,
+  )
+
+  const legacy = structuredClone(project)
+  delete legacy.sections.find((section) => section.id === navbar.id).properties
+    .links
+  assert.deepEqual(
+    parseProjectJson(serializeProject(legacy)).sections.find(
+      (section) => section.id === navbar.id,
+    ).properties.links,
+    [],
+  )
+})

@@ -72,7 +72,7 @@ export type Project = {
 }
 
 const defaults: Record<SectionType, SectionProperties> = {
-  Navbar: { title: 'Navigation', body: 'Links to the main pages.' },
+  Navbar: { title: 'Navigation', body: 'Links to the main pages.', links: [] },
   Hero: {
     title: 'A clear starting point for your product.',
     body: 'A structural preview of the selected Blueprint.',
@@ -114,7 +114,7 @@ export function createSection(type: SectionType): SectionInstance {
       ...(type === 'FAQ'
         ? { questions: defaultFAQItems.map((item) => ({ ...item })) }
         : {}),
-      ...(type === 'Footer' ? { links: [] } : {}),
+      ...(type === 'Footer' || type === 'Navbar' ? { links: [] } : {}),
     },
   }
 }

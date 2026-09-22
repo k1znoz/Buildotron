@@ -257,7 +257,7 @@ export function Inspector({
                 </Button>
               </div>
             )}
-            {section.type === 'Footer' && (
+            {(section.type === 'Footer' || section.type === 'Navbar') && (
               <div className="feature-editor">
                 <h4>Liens</h4>
                 {(section.properties.links ?? []).map((link, index) => (

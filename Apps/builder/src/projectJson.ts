@@ -157,7 +157,7 @@ export function parseProjectJson(json: string): Project {
         answer: item.answer as string,
       }))
     }
-    if (type === 'Footer') {
+    if (type === 'Footer' || type === 'Navbar') {
       const links = raw.properties.links ?? []
       if (
         !Array.isArray(links) ||
@@ -171,7 +171,7 @@ export function parseProjectJson(json: string): Project {
         )
       ) {
         throw new Error(
-          `${label} : chaque lien Footer doit avoir un libellé et une URL http(s), un chemin /... ou une ancre #... (12 liens maximum).`,
+          `${label} : chaque lien ${type} doit avoir un libellé et une URL http(s), un chemin /... ou une ancre #... (12 liens maximum).`,
         )
       }
       properties.links = links.map((link) => ({

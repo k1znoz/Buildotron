@@ -11,6 +11,7 @@ import {
   setSectionOverride,
 } from './projectActions'
 import { parseProjectJson, serializeProject } from './projectJson'
+import { checkSectionsForExport } from './sectionChecks'
 import type { Project, SectionType, Slot } from './project'
 import './App.css'
 
@@ -36,6 +37,10 @@ function App() {
     initialProject.sections[0].id,
   )
   const [message, setMessage] = useState('')
+  const [showSectionChecks, setShowSectionChecks] = useState(false)
+  const sectionIssues = showSectionChecks
+    ? checkSectionsForExport(project)
+    : null
   const selected =
     project.sections.find((section) => section.id === selectedId) ?? null
 
@@ -197,7 +202,8 @@ function App() {
       links: NonNullable<Project['sections'][number]['properties']['links']>,
     ) => NonNullable<Project['sections'][number]['properties']['links']>,
   ) {
-    if (!selected || selected.type !== 'Footer') return
+    if (!selected || (selected.type !== 'Footer' && selected.type !== 'Navbar'))
+      return
     setProject((current) => ({
       ...current,
       sections: current.sections.map((section) =>
@@ -253,7 +259,12 @@ function App() {
 
   return (
     <main className="builder-shell" aria-label="Buildotron Builder">
-      <Toolbar projectName={project.name} onSave={save} onOpen={open} />
+      <Toolbar
+        projectName={project.name}
+        onSave={save}
+        onOpen={open}
+        onCheckSections={() => setShowSectionChecks(true)}
+      />
       <div className="builder-workspace">
         <Library onAdd={add} />
         <Canvas
@@ -361,8 +372,32 @@ function App() {
           onOverride={setOverride}
         />
       </div>
-      <div className="builder-status" role="status">
-        {message}
+      <div className="builder-feedback">
+        {sectionIssues && (
+          <section
+            className="section-checks"
+            aria-labelledby="section-checks-title"
+          >
+            <h2 id="section-checks-title">Contrôle des sections</h2>
+            {sectionIssues.length === 0 ? (
+              <p>
+                Aucun problème de section détecté. Le générateur et le CMS
+                restent à réaliser.
+              </p>
+            ) : (
+              <ul>
+                {sectionIssues.map((issue, index) => (
+                  <li key={`${issue.sectionId ?? 'project'}-${index}`}>
+                    {issue.message}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+        )}
+        <div className="builder-status" role="status">
+          {message}
+        </div>
       </div>
     </main>
   )

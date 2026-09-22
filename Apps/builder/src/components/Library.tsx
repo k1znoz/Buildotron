@@ -29,7 +29,7 @@ export function Library({ onAdd }: { onAdd: (type: SectionType) => void }) {
             >
               <img
                 className="library-item__preview"
-                src={sectionPreviewImages[item] ?? '/navbar-preview.svg'}
+                src={sectionPreviewImages[item]}
                 alt=""
                 aria-hidden="true"
               />

@@ -1,6 +1,6 @@
 .builder-shell {
   display: grid;
-  grid-template-rows: var(--toolbar-height) minmax(0, 1fr) 28px;
+  grid-template-rows: var(--toolbar-height) minmax(0, 1fr) auto;
   height: 100svh;
   overflow: hidden;
 }
@@ -310,6 +310,24 @@
   background: var(--color-surface);
   font-size: var(--text-sm);
   white-space: nowrap;
+}
+.section-checks {
+  max-height: 160px;
+  overflow: auto;
+  padding: var(--space-sm) var(--space-md);
+  border-top: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+.section-checks h2,
+.section-checks p,
+.section-checks ul {
+  margin: 0;
+}
+.section-checks h2 {
+  font-size: var(--text-base);
+}
+.section-checks ul {
+  padding-left: var(--space-lg);
 }
 @media (max-width: 960px) {
   .builder-workspace {

@@ -14,7 +14,15 @@ const project = parseProjectJson(
 test('Section plugin metadata matches the canonical project model', () => {
   const hero = project.sections.find((section) => section.type === 'Hero')
   assert.ok(hero)
-  for (const type of ['Hero', 'Features', 'Gallery', 'FAQ', 'CTA', 'Footer']) {
+  for (const type of [
+    'Navbar',
+    'Hero',
+    'Features',
+    'Gallery',
+    'FAQ',
+    'CTA',
+    'Footer',
+  ]) {
     const manifest = JSON.parse(
       readFileSync(
         new URL(`../plugins/${type}.plugin/manifest.json`, import.meta.url),
