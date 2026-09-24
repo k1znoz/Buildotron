@@ -34,6 +34,7 @@ test('the generator creates a self-contained React starter from canonical data',
     'server/contentStore.mjs',
     'server/index.mjs',
     'src/App.tsx',
+    'src/cms/Admin.tsx',
     'src/cms/content.json',
     'src/cms/content.ts',
     'src/main.tsx',
@@ -53,6 +54,12 @@ test('the generator creates a self-contained React starter from canonical data',
   assert.deepEqual(content.sections[0].content, project.sections[0].properties)
   assert.equal(content.projectId, project.id)
   assert.match(files['src/App.tsx'], /project\.sections\.map/)
+  assert.match(files['src/cms/Admin.tsx'], /Gestion du contenu/)
+  assert.match(files['src/cms/Admin.tsx'], /method: 'PUT'/)
+  assert.match(
+    files['src/main.tsx'],
+    /window\.location\.pathname === '\/admin'/,
+  )
   for (const type of [
     'Navbar',
     'Hero',

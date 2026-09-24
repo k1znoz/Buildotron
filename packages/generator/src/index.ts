@@ -131,19 +131,31 @@ export function validateProjectForGeneration(
 }
 
 const appTemplate =
-  Handlebars.compile(`import structureData from './structure.json'
+  Handlebars.compile(`import { useEffect, useState } from 'react'
+import structureData from './structure.json'
 import contentData from './cms/content.json'
 import { applyCmsContent } from './cms/content'
 import type { CmsContentDocument, ProjectStructure } from './cms/content'
 import { SectionView } from './sections'
 import './styles.css'
 
-const project = applyCmsContent(
-  structureData as ProjectStructure,
-  contentData as CmsContentDocument,
-)
+const structure = structureData as ProjectStructure
+const initialContent = contentData as CmsContentDocument
 
 export default function App() {
+  const [content, setContent] = useState(initialContent)
+
+  useEffect(() => {
+    fetch('/api/content')
+      .then((response) => {
+        if (!response.ok) throw new Error('Contenu CMS indisponible.')
+        return response.json() as Promise<CmsContentDocument>
+      })
+      .then(setContent)
+      .catch(() => undefined)
+  }, [])
+
+  const project = applyCmsContent(structure, content)
   return (
     <main>
       <h1 className="visually-hidden">{{projectName}}</h1>
@@ -152,6 +164,181 @@ export default function App() {
   )
 }
 `)
+
+const adminSource = `import { useEffect, useState } from 'react'
+import type { FormEvent } from 'react'
+import type { CmsContentDocument } from './content'
+
+async function readResponse(response: Response) {
+  const payload = await response.json()
+  if (!response.ok) throw new Error(payload.error ?? 'Une erreur est survenue.')
+  return payload
+}
+
+function isSafeHref(value: string) {
+  if (!value || value !== value.trim() || /[\\u0000-\\u001f\\u007f]/.test(value)) return false
+  if (value.startsWith('#')) return value.length > 1
+  if (value.startsWith('/') && !value.startsWith('//') && !value.includes('\\\\')) return true
+  try {
+    const url = new URL(value)
+    return url.protocol === 'https:' || url.protocol === 'http:'
+  } catch {
+    return false
+  }
+}
+
+function validateContent(document: CmsContentDocument) {
+  for (const section of document.sections) {
+    const content = section.content
+    if (!content.title.trim() || !content.body.trim()) return 'Le titre et le texte de chaque section sont obligatoires.'
+    if (section.sectionType === 'CTA' && (!content.actionLabel?.trim() || !content.actionHref || !isSafeHref(content.actionHref))) return 'Le CTA doit avoir un libellé et un lien valides.'
+    if (section.sectionType === 'Hero' && content.actionHref && (!content.actionLabel?.trim() || !isSafeHref(content.actionHref))) return 'L’action Hero doit avoir un libellé et un lien valides.'
+    if (content.items?.some((item) => !item.title.trim() || !item.body.trim())) return 'Chaque carte doit avoir un titre et un texte.'
+    if (content.images?.some((image) => !image.alt.trim() || !isSafeHref(image.src) || image.src.startsWith('#'))) return 'Chaque image doit avoir une source et un texte alternatif valides.'
+    if (content.questions?.some((item) => !item.question.trim() || !item.answer.trim())) return 'Chaque question doit avoir une réponse.'
+    if (content.links?.some((link) => !link.label.trim() || !isSafeHref(link.href))) return 'Chaque lien doit avoir un libellé et une destination valides.'
+  }
+  return null
+}
+
+export default function Admin() {
+  const [content, setContent] = useState<CmsContentDocument | null>(null)
+  const [password, setPassword] = useState('')
+  const [authenticated, setAuthenticated] = useState(false)
+  const [status, setStatus] = useState('Connectez-vous pour modifier le contenu.')
+
+  useEffect(() => {
+    fetch('/api/content')
+      .then(readResponse)
+      .then((document) => setContent(document as CmsContentDocument))
+      .catch((error: unknown) => setStatus(error instanceof Error ? error.message : 'Chargement impossible.'))
+  }, [])
+
+  async function login(event: FormEvent) {
+    event.preventDefault()
+    try {
+      await fetch('/api/auth/login', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ password }),
+      }).then(readResponse)
+      setAuthenticated(true)
+      setPassword('')
+      setStatus('Connexion réussie.')
+    } catch (error) {
+      setStatus(error instanceof Error ? error.message : 'Connexion impossible.')
+    }
+  }
+
+  function updateSection(index: number, field: 'title' | 'body' | 'actionLabel' | 'actionHref', value: string) {
+    setContent((current) => {
+      if (!current) return current
+      const next = structuredClone(current)
+      next.sections[index].content[field] = value
+      return next
+    })
+  }
+
+  function updateItem(sectionIndex: number, group: 'items' | 'images' | 'questions' | 'links', itemIndex: number, field: string, value: string) {
+    setContent((current) => {
+      if (!current) return current
+      const next = structuredClone(current)
+      const list = next.sections[sectionIndex].content[group] as Array<Record<string, string>>
+      list[itemIndex][field] = value
+      return next
+    })
+  }
+
+  async function save(event: FormEvent) {
+    event.preventDefault()
+    if (!content) return
+    const issue = validateContent(content)
+    if (issue) {
+      setStatus(issue)
+      return
+    }
+    try {
+      const saved = await fetch('/api/content', {
+        method: 'PUT',
+        credentials: 'same-origin',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(content),
+      }).then(readResponse)
+      setContent(saved as CmsContentDocument)
+      setStatus('Contenu enregistré.')
+    } catch (error) {
+      setStatus(error instanceof Error ? error.message : 'Enregistrement impossible.')
+    }
+  }
+
+  if (!content) return <main className="admin"><p role="status">{status}</p></main>
+
+  return (
+    <main className="admin">
+      <header className="admin__header"><div><p className="admin__eyebrow">Buildotron CMS</p><h1>Gestion du contenu</h1></div><a href="/">Voir le site</a></header>
+      {!authenticated ? (
+        <form className="admin__login" onSubmit={login}>
+          <label htmlFor="password">Mot de passe</label>
+          <input id="password" type="password" value={password} onChange={(event) => setPassword(event.target.value)} required />
+          <button type="submit">Se connecter</button>
+        </form>
+      ) : (
+        <form onSubmit={save}>
+          <div className="admin__sections">
+            {content.sections.map((section, index) => (
+              <fieldset className="admin__section" key={section.sectionId}>
+                <legend>{section.sectionType}</legend>
+                <label htmlFor={'title-' + section.sectionId}>Titre</label>
+                <input id={'title-' + section.sectionId} value={section.content.title} onChange={(event) => updateSection(index, 'title', event.target.value)} required />
+                <label htmlFor={'body-' + section.sectionId}>Texte</label>
+                <textarea id={'body-' + section.sectionId} value={section.content.body} onChange={(event) => updateSection(index, 'body', event.target.value)} rows={4} required />
+                {(section.sectionType === 'Hero' || section.sectionType === 'CTA') && <div className="admin__group">
+                  <h2>Action</h2>
+                  <label htmlFor={'action-label-' + section.sectionId}>Libellé</label>
+                  <input id={'action-label-' + section.sectionId} value={section.content.actionLabel ?? ''} onChange={(event) => updateSection(index, 'actionLabel', event.target.value)} required={section.sectionType === 'CTA' || Boolean(section.content.actionHref)} />
+                  <label htmlFor={'action-href-' + section.sectionId}>Lien</label>
+                  <input id={'action-href-' + section.sectionId} value={section.content.actionHref ?? ''} onChange={(event) => updateSection(index, 'actionHref', event.target.value)} required={section.sectionType === 'CTA'} />
+                </div>}
+                {section.content.items?.map((item, itemIndex) => <div className="admin__group" key={itemIndex}>
+                  <h2>{'Carte ' + (itemIndex + 1)}</h2>
+                  <label htmlFor={'item-title-' + section.sectionId + '-' + itemIndex}>Titre</label>
+                  <input id={'item-title-' + section.sectionId + '-' + itemIndex} value={item.title} onChange={(event) => updateItem(index, 'items', itemIndex, 'title', event.target.value)} required />
+                  <label htmlFor={'item-body-' + section.sectionId + '-' + itemIndex}>Texte</label>
+                  <textarea id={'item-body-' + section.sectionId + '-' + itemIndex} value={item.body} onChange={(event) => updateItem(index, 'items', itemIndex, 'body', event.target.value)} rows={3} required />
+                </div>)}
+                {section.content.images?.map((image, itemIndex) => <div className="admin__group" key={itemIndex}>
+                  <h2>{'Image ' + (itemIndex + 1)}</h2>
+                  <label htmlFor={'image-src-' + section.sectionId + '-' + itemIndex}>Source</label>
+                  <input id={'image-src-' + section.sectionId + '-' + itemIndex} value={image.src} onChange={(event) => updateItem(index, 'images', itemIndex, 'src', event.target.value)} required />
+                  <label htmlFor={'image-alt-' + section.sectionId + '-' + itemIndex}>Texte alternatif</label>
+                  <input id={'image-alt-' + section.sectionId + '-' + itemIndex} value={image.alt} onChange={(event) => updateItem(index, 'images', itemIndex, 'alt', event.target.value)} required />
+                </div>)}
+                {section.content.questions?.map((item, itemIndex) => <div className="admin__group" key={itemIndex}>
+                  <h2>{'Question ' + (itemIndex + 1)}</h2>
+                  <label htmlFor={'question-' + section.sectionId + '-' + itemIndex}>Question</label>
+                  <input id={'question-' + section.sectionId + '-' + itemIndex} value={item.question} onChange={(event) => updateItem(index, 'questions', itemIndex, 'question', event.target.value)} required />
+                  <label htmlFor={'answer-' + section.sectionId + '-' + itemIndex}>Réponse</label>
+                  <textarea id={'answer-' + section.sectionId + '-' + itemIndex} value={item.answer} onChange={(event) => updateItem(index, 'questions', itemIndex, 'answer', event.target.value)} rows={3} required />
+                </div>)}
+                {section.content.links?.map((link, itemIndex) => <div className="admin__group" key={itemIndex}>
+                  <h2>{'Lien ' + (itemIndex + 1)}</h2>
+                  <label htmlFor={'link-label-' + section.sectionId + '-' + itemIndex}>Libellé</label>
+                  <input id={'link-label-' + section.sectionId + '-' + itemIndex} value={link.label} onChange={(event) => updateItem(index, 'links', itemIndex, 'label', event.target.value)} required />
+                  <label htmlFor={'link-href-' + section.sectionId + '-' + itemIndex}>Destination</label>
+                  <input id={'link-href-' + section.sectionId + '-' + itemIndex} value={link.href} onChange={(event) => updateItem(index, 'links', itemIndex, 'href', event.target.value)} required />
+                </div>)}
+              </fieldset>
+            ))}
+          </div>
+          <button type="submit">Enregistrer</button>
+        </form>
+      )}
+      <p className="admin__status" role="status" aria-live="polite">{status}</p>
+    </main>
+  )
+}
+`
 
 const sectionsSource = `type Item = { title: string; body: string }
 type Image = { src: string; alt: string }
@@ -302,6 +489,13 @@ export function openContentStore(filename, initialDocument) {
       const expected = new Map(initialDocument.sections.map((section) => [section.sectionId, section.sectionType]))
       if (document.sections.some((section) => expected.get(section.sectionId) !== section.sectionType))
         throw new Error('Le CMS ne peut pas modifier l’identité des sections.')
+      if (document.sections.some((section) =>
+        !section.content ||
+        typeof section.content.title !== 'string' ||
+        !section.content.title.trim() ||
+        typeof section.content.body !== 'string' ||
+        !section.content.body.trim()
+      )) throw new Error('Le titre et le texte de chaque section sont obligatoires.')
       database
         .prepare('UPDATE cms_content SET document = ?, updated_at = ? WHERE id = 1')
         .run(JSON.stringify(document), new Date().toISOString())
@@ -475,6 +669,11 @@ test('CMS API reads and persists content while rejecting structure changes', asy
     current.sections.pop()
     const refused = await fetch(base + '/api/content', { method: 'PUT', headers: { 'content-type': 'application/json', cookie }, body: JSON.stringify(current) })
     assert.equal(refused.status, 400)
+
+    const incomplete = structuredClone(store.read())
+    incomplete.sections[0].content.title = '   '
+    const emptyTitle = await fetch(base + '/api/content', { method: 'PUT', headers: { 'content-type': 'application/json', cookie }, body: JSON.stringify(incomplete) })
+    assert.equal(emptyTitle.status, 400)
   } finally {
     await new Promise((resolve) => server.close(resolve))
     store.close()
@@ -548,18 +747,19 @@ export function generateReactProject(
       "import { defineConfig } from 'vite'\nimport react from '@vitejs/plugin-react'\n\nexport default defineConfig({ plugins: [react()] })\n",
     'eslint.config.js': eslintConfig,
     'src/main.tsx':
-      "import { StrictMode } from 'react'\nimport { createRoot } from 'react-dom/client'\nimport App from './App'\n\ncreateRoot(document.getElementById('root')!).render(<StrictMode><App /></StrictMode>)\n",
+      "import { StrictMode } from 'react'\nimport { createRoot } from 'react-dom/client'\nimport App from './App'\nimport Admin from './cms/Admin'\n\nconst Page = window.location.pathname === '/admin' ? Admin : App\ncreateRoot(document.getElementById('root')!).render(<StrictMode><Page /></StrictMode>)\n",
     'src/App.tsx': appTemplate({ projectName: project.name }),
     'src/sections.tsx': sectionsSource,
     'src/structure.json': JSON.stringify(structure, null, 2) + '\n',
     'src/cms/content.json': JSON.stringify(content, null, 2) + '\n',
     'src/cms/content.ts': cmsContentSource,
+    'src/cms/Admin.tsx': adminSource,
     'server/contentStore.mjs': contentStoreSource,
     'server/index.mjs': cmsServerSource,
-    'src/styles.css': `:root { font-family: system-ui, sans-serif; color: #1d2935; background: #fff; }\n* { box-sizing: border-box; }\nbody { margin: 0; }\nmain { max-width: 72rem; margin: auto; }\n.section { padding: 4rem 2rem; }\n.section--hero { padding-block: 7rem; background: #eef5ee; }\n.section--navbar, .section--footer { background: #f3f6f5; }\n.cards, .gallery, .faq { display: grid; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); gap: 1rem; }\n.card { border: 1px solid #d6dfdc; border-radius: .5rem; padding: 1rem; }\n.gallery img { width: 100%; height: 14rem; object-fit: cover; border-radius: .5rem; }\n.links { display: flex; flex-wrap: wrap; gap: 1rem; padding: 0; list-style: none; }\n.action { display: inline-block; margin-top: 1rem; padding: .75rem 1rem; color: white; background: #0d7667; border-radius: .25rem; }\n.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); }\n`,
+    'src/styles.css': `:root { font-family: system-ui, sans-serif; color: #1d2935; background: #fff; }\n* { box-sizing: border-box; }\nbody { margin: 0; }\nmain { max-width: 72rem; margin: auto; }\n.section { padding: 4rem 2rem; }\n.section--hero { padding-block: 7rem; background: #eef5ee; }\n.section--navbar, .section--footer { background: #f3f6f5; }\n.cards, .gallery, .faq { display: grid; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); gap: 1rem; }\n.card { border: 1px solid #d6dfdc; border-radius: .5rem; padding: 1rem; }\n.gallery img { width: 100%; height: 14rem; object-fit: cover; border-radius: .5rem; }\n.links { display: flex; flex-wrap: wrap; gap: 1rem; padding: 0; list-style: none; }\n.action, button { display: inline-block; margin-top: 1rem; padding: .75rem 1rem; color: white; background: #0d7667; border: 0; border-radius: .25rem; cursor: pointer; }\n.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); }\n.admin { max-width: 56rem; padding: 3rem 1.5rem; }\n.admin__header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }\n.admin__eyebrow { color: #0d7667; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; }\n.admin__login { max-width: 24rem; }\n.admin__sections { display: grid; gap: 1.5rem; margin-top: 2rem; }\n.admin__section { display: grid; gap: .5rem; padding: 1.25rem; border: 1px solid #d6dfdc; border-radius: .5rem; }\n.admin__section legend { padding-inline: .5rem; font-weight: 700; }\n.admin label { margin-top: .5rem; font-weight: 600; }\n.admin input, .admin textarea { width: 100%; padding: .75rem; color: inherit; font: inherit; border: 1px solid #9baaa5; border-radius: .25rem; }\n.admin__status { min-height: 1.5rem; margin-top: 1rem; }\n`,
     'tests/content.test.mjs': contentTest,
     'tests/content-store.test.mjs': contentStoreTest,
     'tests/cms-server.test.mjs': cmsServerTest,
-    'README.md': `# ${project.name}\n\nProjet React généré par Buildotron depuis le Blueprint \`${project.blueprint}\`. Node.js 24 ou une version ultérieure est requis.\n\nLe contenu du CMS est stocké dans \`database/site.db\`. Ce fichier local est ignoré par Git.\n\n## Développement du site\n\n\`\`\`bash\nnpm install\nnpm run dev\n\`\`\`\n\n## Site et API CMS locale\n\nDéfinir un mot de passe d'au moins 12 caractères avant de démarrer le serveur. Sous PowerShell :\n\n\`\`\`powershell\n$env:CMS_PASSWORD = "remplacer-par-un-secret-long"\nnpm run build\nnpm start\n\`\`\`\n\nLe serveur écoute par défaut sur \`http://127.0.0.1:3000\`. Les sessions sont conservées en mémoire et invalidées au redémarrage.\n\n## Vérifications\n\n\`\`\`bash\nnpm run build\nnpm run lint\nnpm test\n\`\`\`\n`,
+    'README.md': `# ${project.name}\n\nProjet React généré par Buildotron depuis le Blueprint \`${project.blueprint}\`. Node.js 24 ou une version ultérieure est requis.\n\nLe contenu du CMS est stocké dans \`database/site.db\`. Ce fichier local est ignoré par Git.\n\n## Développement du site\n\n\`\`\`bash\nnpm install\nnpm run dev\n\`\`\`\n\n## Site et CMS local\n\nDéfinir un mot de passe d'au moins 12 caractères avant de démarrer le serveur. Sous PowerShell :\n\n\`\`\`powershell\n$env:CMS_PASSWORD = "remplacer-par-un-secret-long"\nnpm run build\nnpm start\n\`\`\`\n\nLe site est disponible sur \`http://127.0.0.1:3000\` et son administration sur \`http://127.0.0.1:3000/admin\`. Les sessions sont conservées en mémoire et invalidées au redémarrage.\n\n## Vérifications\n\n\`\`\`bash\nnpm run build\nnpm run lint\nnpm test\n\`\`\`\n`,
   }
 }

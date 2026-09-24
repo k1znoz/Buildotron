@@ -221,6 +221,8 @@ Le stockage SQLite a été confirmé. Le projet exporté contient maintenant un 
 
 L'API locale a été confirmée. L'écriture exige maintenant une session obtenue par `POST /api/auth/login`. Le secret vient uniquement de `CMS_PASSWORD`, doit contenir au moins 12 caractères et n'est jamais écrit dans le projet ou dans SQLite. Le cookie de session est `HttpOnly`, `SameSite=Strict`, limité au chemin `/api` et invalidé au redémarrage. Le parcours manuel est dans `docs/testing/cms-auth-validation.md` et reste à confirmer.
 
+L'authentification des écritures a été confirmée. Le projet exporté fournit maintenant une première interface client sur `/admin`. Après connexion, elle permet de modifier les titres et textes des sections existantes et de les enregistrer dans SQLite. Le site public recharge ces contenus depuis l'API. L'interface ne permet ni ajout, ni suppression, ni réorganisation de section. Le parcours manuel est dans `docs/testing/cms-admin-validation.md` et reste à confirmer.
+
 ## Milestone 9 — BIOGRIND
 
 Construire entièrement BIOGRIND.
