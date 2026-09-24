@@ -2,7 +2,16 @@ import { Card, Image, Text } from '@buildotron/design-system'
 import { isSafeImageSrc } from '@buildotron/plugin-sdk'
 import type { SectionContentProps } from '../../src/types'
 
-export function Gallery({ title, body, images = [] }: SectionContentProps) {
+type GalleryProps = SectionContentProps & {
+  allowObjectUrls?: boolean
+}
+
+export function Gallery({
+  title,
+  body,
+  images = [],
+  allowObjectUrls = false,
+}: GalleryProps) {
   return (
     <div className="plugin-content plugin-content--gallery">
       <Text as="h2" className="plugin-content__title">
@@ -14,7 +23,9 @@ export function Gallery({ title, body, images = [] }: SectionContentProps) {
       {images.length ? (
         <div className="gallery-grid">
           {images.map((image, index) =>
-            isSafeImageSrc(image.src) && image.alt.trim() ? (
+            (isSafeImageSrc(image.src) ||
+              (allowObjectUrls && image.src.startsWith('blob:'))) &&
+            image.alt.trim() ? (
               <Card as="div" key={index} className="gallery-grid__item">
                 <Image src={image.src} alt={image.alt} />
               </Card>

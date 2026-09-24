@@ -18,6 +18,8 @@ import { isSafeHref, isSafeImageSrc } from '@buildotron/plugin-sdk'
 import { blueprintIds } from '../../../blueprints/index.ts'
 import type { BlueprintId } from '../../../blueprints/index.ts'
 
+export const maxProjectJsonBytes = 8_000_000
+
 function record(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
 }

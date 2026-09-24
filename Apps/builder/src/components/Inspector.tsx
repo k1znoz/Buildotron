@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { defaultSlot, slotLabels, slots } from '../project'
 import type { SectionInstance, Slot } from '../project'
 import { Button } from '@buildotron/design-system'
@@ -18,6 +19,8 @@ type Props = {
   onAddFeatureItem: () => void
   onRemoveFeatureItem: (index: number) => void
   onGalleryImage: (index: number, key: 'src' | 'alt', value: string) => void
+  onGalleryFile: (index: number, file: File) => void
+  onGalleryFileError: (message: string) => void
   onAddGalleryImage: () => void
   onRemoveGalleryImage: (index: number) => void
   onFAQItem: (index: number, key: 'question' | 'answer', value: string) => void
@@ -44,6 +47,8 @@ export function Inspector({
   onAddFeatureItem,
   onRemoveFeatureItem,
   onGalleryImage,
+  onGalleryFile,
+  onGalleryFileError,
   onAddGalleryImage,
   onRemoveGalleryImage,
   onFAQItem,
@@ -58,6 +63,26 @@ export function Inspector({
   onMoveBy,
   onOverride,
 }: Props) {
+  const [imageImportError, setImageImportError] = useState<string | null>(null)
+
+  function importGalleryImage(index: number, file: File) {
+    const accepted = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
+    if (!accepted.includes(file.type)) {
+      const message = 'Format accepté : JPEG, PNG, WebP ou GIF.'
+      setImageImportError(message)
+      onGalleryFileError(message)
+      return
+    }
+    if (file.size > 5_000_000) {
+      const message = 'L’image doit peser moins de 5 Mo.'
+      setImageImportError(message)
+      onGalleryFileError(message)
+      return
+    }
+    onGalleryFile(index, file)
+    setImageImportError(null)
+  }
+
   return (
     <aside className="panel panel--inspector" aria-labelledby="inspector-title">
       <h2 className="panel__heading" id="inspector-title">
@@ -210,6 +235,25 @@ export function Inspector({
                         placeholder="https://exemple.fr/photo.jpg ou /photo.jpg"
                       />
                     </label>
+                    <label className="field">
+                      <span className="field__label">
+                        Ou choisir un fichier
+                      </span>
+                      <input
+                        className="field__value field__file"
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp,image/gif"
+                        onChange={(event) => {
+                          const file = event.target.files?.[0]
+                          if (file) void importGalleryImage(index, file)
+                        }}
+                      />
+                    </label>
+                    {imageImportError && (
+                      <p className="field__error" role="alert">
+                        {imageImportError}
+                      </p>
+                    )}
                     <label className="field">
                       <span className="field__label">Texte alternatif</span>
                       <input

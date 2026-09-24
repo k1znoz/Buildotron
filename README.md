@@ -55,7 +55,7 @@ Le détail des objectifs et critères de validation se trouve dans [la roadmap](
 | 6 — Blueprints      | OK                        | Sélection, structure, contenus initiaux et indépendance des trois recettes validés dans le navigateur.                                             |
 | 7 — Code Generator  | OK                        | Export React, ZIP et pipeline génération → installation → build → lint → tests validés.                                                            |
 | 8 — Core CMS        | OK                        | Projet autonome avec authentification, contenu, médias, catalogue Produits et réglages SEO validés.                                                |
-| 9 — BIOGRIND        | À faire                   | Premier projet complet à construire avec Buildotron.                                                                                               |
+| 9 — BIOGRIND        | En cours                  | Brief initial, projet canonique et paquet ZIP avec médias locaux validés ; sections Product, Steps et Specifications encore à intégrer.            |
 
 ## Essayer le Builder
 
@@ -64,7 +64,7 @@ npm install
 npm run dev -w builder
 ```
 
-Le projet d'exemple est [projects/product-landing.json](projects/product-landing.json). Dans le Builder, **Ouvrir JSON** charge ce fichier. **Enregistrer JSON** déclenche un seul téléchargement : choisir le dossier `projects/` dans le navigateur, ou y déplacer ensuite le fichier téléchargé.
+Le projet d'exemple est [projects/product-landing.json](projects/product-landing.json). Dans le Builder, **Ouvrir projet** accepte les anciens JSON et les paquets `.buildotron.zip`. **Enregistrer projet** télécharge un paquet contenant `project.json` et le dossier `assets/`. Extraire ce paquet dans `projects/<nom-du-projet>/` pour le conserver dans le dépôt.
 
 React et React DOM sont fixés à la même version dans le monorepo. Si Vite tournait avant une mise à jour des dépendances, l'arrêter puis le relancer avec `npm run dev -w builder -- --force` pour reconstruire son cache. `npm ls react react-dom --all` permet de contrôler les versions installées.
 
@@ -86,3 +86,4 @@ Le [parcours de validation du CTA](docs/testing/cta-validation.md) a été confi
 - Jalon 6 — OK : registre, sélection et contenus indépendants des trois Blueprints validés dans le navigateur.
 - Jalon 7 — OK : génération, ZIP, portes qualité et pipeline d'export strict validés.
 - Jalon 8 — OK : projet autonome, SQLite, authentification, édition, médias, Produits et SEO validés dans le projet généré.
+- Jalon 9 — en cours : [brief BIOGRIND](docs/biogrind-brief.md), projet canonique et paquet ZIP avec médias locaux validés ; intégration de Product, Steps et Specifications à poursuivre.

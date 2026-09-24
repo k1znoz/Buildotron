@@ -62,6 +62,7 @@ test('the generator creates a self-contained React starter from canonical data',
   assert.match(files['src/cms/Admin.tsx'], /method: 'PUT'/)
   assert.match(files['src/cms/Admin.tsx'], /Texte alternatif/)
   assert.match(files['src/cms/Admin.tsx'], /Remplacer par un fichier/)
+  assert.match(files['src/styles.css'], /::file-selector-button/)
   assert.match(
     files['src/cms/Admin.tsx'],
     /disabled=\{blockingIssues\.length > 0\}/,

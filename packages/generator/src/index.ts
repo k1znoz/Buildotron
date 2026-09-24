@@ -214,6 +214,10 @@ function isSafeHref(value: string) {
   }
 }
 
+function isSafeImageSrc(value: string) {
+  return (value.length <= 7_000_000 && /^data:image\\/(?:jpeg|png|webp|gif);base64,[a-z0-9+/]+=*$/i.test(value)) || (isSafeHref(value) && !value.startsWith('#'))
+}
+
 function validateContent(document: CmsContentDocument) {
   const issues: string[] = []
   for (const section of document.sections) {
@@ -226,7 +230,7 @@ function validateContent(document: CmsContentDocument) {
       if (!item.title.trim() || !item.body.trim()) issues.push(section.sectionType + ' — carte ' + (index + 1) + ' : titre et texte obligatoires.')
     })
     content.images?.forEach((image, index) => {
-      if (!image.alt.trim() || !isSafeHref(image.src) || image.src.startsWith('#')) issues.push(section.sectionType + ' — image ' + (index + 1) + ' : source et texte alternatif valides obligatoires.')
+      if (!image.alt.trim() || !isSafeImageSrc(image.src)) issues.push(section.sectionType + ' — image ' + (index + 1) + ' : source et texte alternatif valides obligatoires.')
     })
     content.questions?.forEach((item, index) => {
       if (!item.question.trim() || !item.answer.trim()) issues.push(section.sectionType + ' — question ' + (index + 1) + ' : question et réponse obligatoires.')
@@ -444,7 +448,7 @@ export default function Admin() {
                   <label htmlFor={'image-src-' + section.sectionId + '-' + itemIndex}>Source</label>
                   <input id={'image-src-' + section.sectionId + '-' + itemIndex} value={image.src} onChange={(event) => updateItem(index, 'images', itemIndex, 'src', event.target.value)} required />
                   <label htmlFor={'image-file-' + section.sectionId + '-' + itemIndex}>Remplacer par un fichier</label>
-                  <input id={'image-file-' + section.sectionId + '-' + itemIndex} type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={(event) => { const file = event.target.files?.[0]; if (file) void uploadImage(index, itemIndex, file) }} />
+                  <input className="admin__file" id={'image-file-' + section.sectionId + '-' + itemIndex} type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={(event) => { const file = event.target.files?.[0]; if (file) void uploadImage(index, itemIndex, file) }} />
                   <label htmlFor={'image-alt-' + section.sectionId + '-' + itemIndex}>Texte alternatif</label>
                   <input id={'image-alt-' + section.sectionId + '-' + itemIndex} value={image.alt} onChange={(event) => updateItem(index, 'images', itemIndex, 'alt', event.target.value)} required />
                 </div>)}
@@ -647,6 +651,10 @@ function isSafeHref(value) {
   }
 }
 
+function isSafeImageSrc(value) {
+  return typeof value === 'string' && ((value.length <= 7_000_000 && /^data:image\\/(?:jpeg|png|webp|gif);base64,[a-z0-9+/]+=*$/i.test(value)) || (isSafeHref(value) && !value.startsWith('#')))
+}
+
 function validateSectionContent(section, initialSection) {
   const content = section.content
   if (!content || typeof content.title !== 'string' || !content.title.trim() || typeof content.body !== 'string' || !content.body.trim())
@@ -658,7 +666,7 @@ function validateSectionContent(section, initialSection) {
   }
   if (content.items?.some((item) => typeof item.title !== 'string' || !item.title.trim() || typeof item.body !== 'string' || !item.body.trim()))
     throw new Error('Chaque carte doit avoir un titre et un texte.')
-  if (content.images?.some((image) => typeof image.alt !== 'string' || !image.alt.trim() || !isSafeHref(image.src) || image.src.startsWith('#')))
+  if (content.images?.some((image) => typeof image.alt !== 'string' || !image.alt.trim() || !isSafeImageSrc(image.src)))
     throw new Error('Chaque image doit avoir une source et un texte alternatif valides.')
   if (content.questions?.some((item) => typeof item.question !== 'string' || !item.question.trim() || typeof item.answer !== 'string' || !item.answer.trim()))
     throw new Error('Chaque question doit avoir une réponse.')
@@ -810,7 +818,7 @@ function sendJson(response, status, value) {
 }
 
 async function readJson(request) {
-  return JSON.parse((await readBody(request, 1_000_000)).toString('utf8'))
+  return JSON.parse((await readBody(request, 8_000_000)).toString('utf8'))
 }
 
 async function readBody(request, limit) {
@@ -1199,7 +1207,7 @@ export function generateReactProject(
     'server/productStore.mjs': productStoreSource,
     'server/seoStore.mjs': seoStoreSource,
     'media/.gitkeep': '',
-    'src/styles.css': `:root { font-family: system-ui, sans-serif; color: #1d2935; background: #fff; }\n* { box-sizing: border-box; }\nbody { margin: 0; }\nmain { max-width: 72rem; margin: auto; }\n.section { padding: 4rem 2rem; }\n.section--hero { padding-block: 7rem; background: #eef5ee; }\n.section--navbar, .section--footer { background: #f3f6f5; }\n.cards, .gallery, .faq { display: grid; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); gap: 1rem; }\n.card { border: 1px solid #d6dfdc; border-radius: .5rem; padding: 1rem; }\n.gallery img { width: 100%; height: 14rem; object-fit: cover; border-radius: .5rem; }\n.links { display: flex; flex-wrap: wrap; gap: 1rem; padding: 0; list-style: none; }\n.action, button { display: inline-block; margin-top: 1rem; padding: .75rem 1rem; color: white; background: #0d7667; border: 0; border-radius: .25rem; cursor: pointer; }\nbutton:disabled { cursor: not-allowed; opacity: .5; }\n.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); }\n.admin { max-width: 56rem; padding: 3rem 1.5rem; }\n.admin__header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }\n.admin__eyebrow { color: #0d7667; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; }\n.admin__login { max-width: 24rem; }\n.admin__sections { display: grid; gap: 1.5rem; margin-top: 2rem; }\n.admin__section { display: grid; gap: .5rem; padding: 1.25rem; border: 1px solid #d6dfdc; border-radius: .5rem; }\n.admin__section legend { padding-inline: .5rem; font-weight: 700; }\n.admin__group { display: grid; gap: .5rem; margin-top: 1rem; padding: 1rem; background: #f3f6f5; border-radius: .35rem; }\n.admin__group h2 { margin: 0 0 .25rem; font-size: 1rem; }\n.admin label { margin-top: .5rem; font-weight: 600; }\n.admin input, .admin textarea { width: 100%; padding: .75rem; color: inherit; font: inherit; border: 1px solid #9baaa5; border-radius: .25rem; }\n.admin__errors { position: fixed; z-index: 10; top: 1rem; right: 1rem; width: min(28rem, calc(100vw - 2rem)); max-height: calc(100vh - 2rem); overflow: auto; padding: 1rem; color: #7f1d1d; background: #fef2f2; border: 1px solid #fca5a5; border-radius: .5rem; box-shadow: 0 .75rem 2rem rgb(0 0 0 / .2); }\n.admin__errors ul { margin: .75rem 0 0; padding-left: 1.25rem; }\n.admin__errors li + li { margin-top: .5rem; }\n.admin__catalog { margin-top: 4rem; padding-top: 2rem; border-top: 2px solid #d6dfdc; }\n.admin__product { display: grid; gap: .5rem; margin-top: 1.5rem; padding: 1.25rem; background: #f3f6f5; border-radius: .5rem; }\n.admin__check { display: flex; align-items: center; gap: .5rem; }\n.admin__check input { width: auto; }\n.admin__danger { background: #991b1b; }\n.admin__notice { position: fixed; z-index: 11; right: 1rem; bottom: 1rem; width: min(28rem, calc(100vw - 2rem)); margin: 0; padding: 1rem; color: #14532d; background: #f0fdf4; border: 1px solid #86efac; border-radius: .5rem; box-shadow: 0 .75rem 2rem rgb(0 0 0 / .2); font-weight: 600; }\n.admin__status { min-height: 1.5rem; margin-top: 1rem; }\n`,
+    'src/styles.css': `:root { font-family: system-ui, sans-serif; color: #1d2935; background: #fff; }\n* { box-sizing: border-box; }\nbody { margin: 0; }\nmain { max-width: 72rem; margin: auto; }\n.section { padding: 4rem 2rem; }\n.section--hero { padding-block: 7rem; background: #eef5ee; }\n.section--navbar, .section--footer { background: #f3f6f5; }\n.cards, .gallery, .faq { display: grid; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); gap: 1rem; }\n.card { border: 1px solid #d6dfdc; border-radius: .5rem; padding: 1rem; }\n.gallery img { width: 100%; height: 14rem; object-fit: cover; border-radius: .5rem; }\n.links { display: flex; flex-wrap: wrap; gap: 1rem; padding: 0; list-style: none; }\n.action, button { display: inline-block; margin-top: 1rem; padding: .75rem 1rem; color: white; background: #0d7667; border: 0; border-radius: .25rem; cursor: pointer; }\nbutton:disabled { cursor: not-allowed; opacity: .5; }\n.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); }\n.admin { max-width: 56rem; padding: 3rem 1.5rem; }\n.admin__header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }\n.admin__eyebrow { color: #0d7667; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; }\n.admin__login { max-width: 24rem; }\n.admin__sections { display: grid; gap: 1.5rem; margin-top: 2rem; }\n.admin__section { display: grid; gap: .5rem; padding: 1.25rem; border: 1px solid #d6dfdc; border-radius: .5rem; }\n.admin__section legend { padding-inline: .5rem; font-weight: 700; }\n.admin__group { display: grid; gap: .5rem; margin-top: 1rem; padding: 1rem; background: #f3f6f5; border-radius: .35rem; }\n.admin__group h2 { margin: 0 0 .25rem; font-size: 1rem; }\n.admin label { margin-top: .5rem; font-weight: 600; }\n.admin input, .admin textarea { width: 100%; padding: .75rem; color: inherit; font: inherit; border: 1px solid #9baaa5; border-radius: .25rem; }\n.admin__file { padding: .4rem; background: white; }\n.admin__file::file-selector-button { margin-right: .75rem; padding: .65rem .9rem; color: white; background: #0d7667; border: 0; border-radius: .25rem; font: inherit; font-weight: 600; cursor: pointer; }\n.admin__file::file-selector-button:hover { background: #095f54; }\n.admin__file:focus-visible { outline: 3px solid #5eead4; outline-offset: 2px; }\n.admin__errors { position: fixed; z-index: 10; top: 1rem; right: 1rem; width: min(28rem, calc(100vw - 2rem)); max-height: calc(100vh - 2rem); overflow: auto; padding: 1rem; color: #7f1d1d; background: #fef2f2; border: 1px solid #fca5a5; border-radius: .5rem; box-shadow: 0 .75rem 2rem rgb(0 0 0 / .2); }\n.admin__errors ul { margin: .75rem 0 0; padding-left: 1.25rem; }\n.admin__errors li + li { margin-top: .5rem; }\n.admin__catalog { margin-top: 4rem; padding-top: 2rem; border-top: 2px solid #d6dfdc; }\n.admin__product { display: grid; gap: .5rem; margin-top: 1.5rem; padding: 1.25rem; background: #f3f6f5; border-radius: .5rem; }\n.admin__check { display: flex; align-items: center; gap: .5rem; }\n.admin__check input { width: auto; }\n.admin__danger { background: #991b1b; }\n.admin__notice { position: fixed; z-index: 11; right: 1rem; bottom: 1rem; width: min(28rem, calc(100vw - 2rem)); margin: 0; padding: 1rem; color: #14532d; background: #f0fdf4; border: 1px solid #86efac; border-radius: .5rem; box-shadow: 0 .75rem 2rem rgb(0 0 0 / .2); font-weight: 600; }\n.admin__status { min-height: 1.5rem; margin-top: 1rem; }\n`,
     'tests/content.test.mjs': contentTest,
     'tests/content-store.test.mjs': contentStoreTest,
     'tests/cms-server.test.mjs': cmsServerTest,

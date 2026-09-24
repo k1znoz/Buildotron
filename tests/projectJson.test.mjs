@@ -2,9 +2,14 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { test } from 'node:test'
 import {
+  maxProjectJsonBytes,
   parseProjectJson,
   serializeProject,
 } from '../Apps/builder/src/projectJson.ts'
+
+test('project files allow the Base64 expansion of a 5 MB image', () => {
+  assert.equal(maxProjectJsonBytes, 8_000_000)
+})
 import { isSafeHref } from '@buildotron/plugin-sdk'
 import { createSection } from '../Apps/builder/src/project.ts'
 

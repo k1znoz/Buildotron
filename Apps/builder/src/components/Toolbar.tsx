@@ -4,7 +4,7 @@ import { Button } from '@buildotron/design-system'
 type Props = {
   projectName: string
   blueprintName: string
-  onSave: () => void
+  onSave: () => void | Promise<void>
   onOpen: (file: File) => void
   onCheckSections: () => void
   onExport: () => void
@@ -32,16 +32,16 @@ export function Toolbar({
           ref={input}
           className="visually-hidden"
           type="file"
-          accept=".json,application/json"
-          aria-label="Ouvrir un projet JSON"
+          accept=".json,.zip,application/json,application/zip"
+          aria-label="Ouvrir un projet Buildotron"
           onChange={(event) => {
             const file = event.target.files?.[0]
             if (file) onOpen(file)
             event.target.value = ''
           }}
         />
-        <Button onClick={() => input.current?.click()}>Ouvrir JSON</Button>
-        <Button onClick={onSave}>Enregistrer JSON</Button>
+        <Button onClick={() => input.current?.click()}>Ouvrir projet</Button>
+        <Button onClick={() => void onSave()}>Enregistrer projet</Button>
         <Button onClick={onCheckSections}>Contrôler les sections</Button>
         <Button variant="primary" onClick={onExport} disabled={exporting}>
           {exporting ? 'Export en cours…' : 'Exporter React'}

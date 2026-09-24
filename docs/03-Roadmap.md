@@ -238,3 +238,11 @@ Le projet généré fonctionne désormais comme un site autonome avec son propre
 Construire entièrement BIOGRIND.
 
 Chaque manque enrichit Buildotron.
+
+La première planche produit disponible a été transformée en brief dans `docs/biogrind-brief.md` et en projet canonique dans `projects/biogrind.json`. Ce premier projet utilise les sept sections existantes et passe le générateur. L'analyse révèle trois composants à ajouter à Buildotron avant la finalisation : Product, Steps et Specifications.
+
+L'Inspector Gallery permet maintenant de choisir un fichier JPEG, PNG, WebP ou GIF en plus de saisir une URL. L'image, limitée à 5 Mo, est embarquée dans le JSON canonique afin de rester disponible après sauvegarde, réouverture et export. La limite d'ouverture d'un projet est portée à 8 Mo pour absorber l'encodage Base64 de l'image.
+
+Le stockage Base64 a ensuite été remplacé par un paquet de projet `.buildotron.zip`. L'archive contient `project.json` comme source de vérité et les fichiers binaires dans `assets/`. Le Builder ouvre encore les JSON historiques. L'export React copie les médias locaux dans `public/assets/`, ce qui évite de gonfler le document canonique lorsque Gallery contient plusieurs images.
+
+Le parcours de sauvegarde, réouverture et export des médias locaux a été confirmé dans le navigateur avec `docs/testing/builder-project-package-validation.md`.

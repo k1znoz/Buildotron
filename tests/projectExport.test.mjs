@@ -9,7 +9,9 @@ import { createProjectFromBlueprint } from '../Apps/builder/src/project.ts'
 
 test('the Builder creates a named ZIP containing the generated React project', async () => {
   const project = createProjectFromBlueprint('product-landing', 'Projet Démo')
-  const archive = await createProjectArchive(project)
+  const archive = await createProjectArchive(project, {
+    '/assets/test.png': new Blob(['image']),
+  })
   const zip = await JSZip.loadAsync(await archive.arrayBuffer())
 
   assert.equal(projectArchiveName(project), 'projet-demo.zip')
@@ -22,6 +24,7 @@ test('the Builder creates a named ZIP containing the generated React project', a
   assert.ok(zip.file('server/index.mjs'))
   assert.ok(zip.file('tests/cms-server.test.mjs'))
   assert.ok(zip.file('tests/content-store.test.mjs'))
+  assert.ok(zip.file('public/assets/test.png'))
   const structure = JSON.parse(
     await zip.file('src/structure.json').async('string'),
   )

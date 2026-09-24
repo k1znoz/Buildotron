@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Canvas } from './components/Canvas'
 import { Inspector } from './components/Inspector'
 import { Library } from './components/Library'
@@ -14,21 +14,29 @@ import {
   moveSectionBy,
   setSectionOverride,
 } from './projectActions'
-import { parseProjectJson, serializeProject } from './projectJson'
+import {
+  maxProjectJsonBytes,
+  parseProjectJson,
+  serializeProject,
+} from './projectJson'
 import { checkSectionsForExport } from './sectionChecks'
 import { createProjectArchive, projectArchiveName } from './projectExport'
+import {
+  createBuilderProjectArchive,
+  openBuilderProject,
+  projectPackageName,
+} from './projectPackage'
+import type { ProjectAssets } from './projectPackage'
 import type { Project, SectionType, Slot } from './project'
 import { blueprints } from '../../../blueprints/index.ts'
 import type { BlueprintId } from '../../../blueprints/index.ts'
 import './App.css'
 
-function downloadProjectJson(json: string) {
-  const url = URL.createObjectURL(
-    new Blob([json], { type: 'application/json' }),
-  )
+function downloadBlob(blob: Blob, filename: string) {
+  const url = URL.createObjectURL(blob)
   const link = document.createElement('a')
   link.href = url
-  link.download = 'product-landing.json'
+  link.download = filename
   document.body.append(link)
   link.click()
   link.remove()
@@ -46,11 +54,39 @@ function App() {
   const [message, setMessage] = useState('')
   const [showSectionChecks, setShowSectionChecks] = useState(false)
   const [exporting, setExporting] = useState(false)
+  const [assets, setAssets] = useState<ProjectAssets>({})
+  const [assetPreviews, setAssetPreviews] = useState<Record<string, string>>({})
+  useEffect(() => {
+    if (!message) return
+    const timeout = window.setTimeout(() => setMessage(''), 3500)
+    return () => window.clearTimeout(timeout)
+  }, [message])
+
+  const messageIsError =
+    /refus|problème|format accepté|moins de|invalide|trop volumineu|activez/i.test(
+      message,
+    )
   const sectionIssues = showSectionChecks
     ? checkSectionsForExport(project)
     : null
   const selected =
     project.sections.find((section) => section.id === selectedId) ?? null
+  const previewProject = useMemo(
+    () => ({
+      ...project,
+      sections: project.sections.map((section) => ({
+        ...section,
+        properties: {
+          ...section.properties,
+          images: section.properties.images?.map((image) => ({
+            ...image,
+            src: assetPreviews[image.src] ?? image.src,
+          })),
+        },
+      })),
+    }),
+    [assetPreviews, project],
+  )
 
   function add(type: SectionType) {
     const section = createSection(type)
@@ -188,6 +224,21 @@ function App() {
     }))
   }
 
+  function discardAsset(path: string | undefined) {
+    if (!path?.startsWith('/assets/')) return
+    setAssets((current) => {
+      const next = { ...current }
+      delete next[path]
+      return next
+    })
+    setAssetPreviews((current) => {
+      if (current[path]) URL.revokeObjectURL(current[path])
+      const next = { ...current }
+      delete next[path]
+      return next
+    })
+  }
+
   function updateFAQItems(
     update: (
       questions: NonNullable<
@@ -235,36 +286,47 @@ function App() {
     }))
   }
 
-  function save() {
+  async function save() {
     if (!project.name.trim()) {
       setMessage('Donnez un nom au projet avant de le sauvegarder.')
       return
     }
-    const json = serializeProject(project)
     try {
-      parseProjectJson(json)
+      parseProjectJson(serializeProject(project))
+      const archive = await createBuilderProjectArchive(project, assets)
+      downloadBlob(archive, projectPackageName(project))
     } catch (error) {
       setMessage(
         `Sauvegarde refusée : ${error instanceof Error ? error.message : 'projet invalide'}`,
       )
       return
     }
-    downloadProjectJson(json)
-    setMessage(
-      'Téléchargement JSON lancé. Choisissez projects/ dans le navigateur ou déplacez-y le fichier téléchargé.',
-    )
+    setMessage('Paquet projet téléchargé avec project.json et ses assets.')
   }
 
   async function open(file: File) {
     try {
       if (file.size === 0)
         throw new Error('Le fichier est vide. Enregistrez le projet à nouveau.')
-      if (file.size > 1_000_000)
-        throw new Error('Fichier trop volumineux (maximum 1 Mo).')
-      const loaded = parseProjectJson(await file.text())
-      setProject(loaded)
-      setSelectedId(loaded.sections[0]?.id ?? null)
-      setMessage(`Projet « ${loaded.name} » ouvert.`)
+      if (
+        file.name.toLowerCase().endsWith('.json') &&
+        file.size > maxProjectJsonBytes
+      )
+        throw new Error('Fichier JSON trop volumineux (maximum 8 Mo).')
+      if (file.size > 100_000_000)
+        throw new Error('Archive trop volumineuse (maximum 100 Mo).')
+      const loaded = await openBuilderProject(file)
+      const previews = Object.fromEntries(
+        Object.entries(loaded.assets).map(([path, blob]) => [
+          path,
+          URL.createObjectURL(blob),
+        ]),
+      )
+      setProject(loaded.project)
+      setAssets(loaded.assets)
+      setAssetPreviews(previews)
+      setSelectedId(loaded.project.sections[0]?.id ?? null)
+      setMessage(`Projet « ${loaded.project.name} » ouvert.`)
     } catch (error) {
       setMessage(
         `Ouverture refusée : ${error instanceof Error ? error.message : 'erreur inconnue'}`,
@@ -282,7 +344,7 @@ function App() {
 
     setExporting(true)
     try {
-      const archive = await createProjectArchive(project)
+      const archive = await createProjectArchive(project, assets)
       const url = URL.createObjectURL(archive)
       const link = document.createElement('a')
       link.href = url
@@ -317,7 +379,7 @@ function App() {
       <div className="builder-workspace">
         <Library onAdd={add} />
         <Canvas
-          project={project}
+          project={previewProject}
           selectedId={selectedId}
           onSelect={setSelectedId}
           onMove={move}
@@ -354,23 +416,46 @@ function App() {
                 : items.filter((_, position) => position !== index),
             )
           }
-          onGalleryImage={(index, key, value) =>
+          onGalleryImage={(index, key, value) => {
+            if (
+              key === 'src' &&
+              value !== selected?.properties.images?.[index]?.src
+            )
+              discardAsset(selected?.properties.images?.[index]?.src)
             updateGalleryImages((images) =>
               images.map((image, position) =>
                 position === index ? { ...image, [key]: value } : image,
               ),
             )
-          }
+          }}
+          onGalleryFile={(index, file) => {
+            discardAsset(selected?.properties.images?.[index]?.src)
+            const extension = file.name.split('.').pop()?.toLowerCase() || 'bin'
+            const path = '/assets/' + crypto.randomUUID() + '.' + extension
+            setAssets((current) => ({ ...current, [path]: file }))
+            setAssetPreviews((current) => ({
+              ...current,
+              [path]: URL.createObjectURL(file),
+            }))
+            updateGalleryImages((images) =>
+              images.map((image, position) =>
+                position === index ? { ...image, src: path } : image,
+              ),
+            )
+            setMessage('Image ajoutée aux assets du projet.')
+          }}
+          onGalleryFileError={(error) => setMessage(`Image refusée : ${error}`)}
           onAddGalleryImage={() =>
             updateGalleryImages((images) =>
               images.length >= 12 ? images : [...images, { src: '', alt: '' }],
             )
           }
-          onRemoveGalleryImage={(index) =>
+          onRemoveGalleryImage={(index) => {
+            discardAsset(selected?.properties.images?.[index]?.src)
             updateGalleryImages((images) =>
               images.filter((_, position) => position !== index),
             )
-          }
+          }}
           onFAQItem={(index, key, value) =>
             updateFAQItems((questions) =>
               questions.map((item, position) =>
@@ -443,9 +528,14 @@ function App() {
             )}
           </section>
         )}
-        <div className="builder-status" role="status">
-          {message}
-        </div>
+        {message && (
+          <div
+            className={`builder-status ${messageIsError ? 'builder-status--error' : 'builder-status--success'}`}
+            role={messageIsError ? 'alert' : 'status'}
+          >
+            {message}
+          </div>
+        )}
       </div>
     </main>
   )

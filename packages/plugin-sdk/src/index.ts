@@ -13,5 +13,10 @@ export function isSafeHref(value: string): boolean {
 }
 
 export function isSafeImageSrc(value: string): boolean {
+  if (
+    value.length <= 7_000_000 &&
+    /^data:image\/(?:jpeg|png|webp|gif);base64,[a-z0-9+/]+=*$/i.test(value)
+  )
+    return true
   return isSafeHref(value) && !value.startsWith('#')
 }
