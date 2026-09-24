@@ -27,6 +27,7 @@ test('the generator creates a self-contained React starter from canonical data',
 
   assert.deepEqual(Object.keys(files).sort(), [
     'README.md',
+    'eslint.config.js',
     'index.html',
     'package.json',
     'src/App.tsx',
@@ -34,6 +35,7 @@ test('the generator creates a self-contained React starter from canonical data',
     'src/main.tsx',
     'src/sections.tsx',
     'src/styles.css',
+    'tests/content.test.mjs',
     'tsconfig.json',
     'vite.config.ts',
   ])
@@ -52,6 +54,8 @@ test('the generator creates a self-contained React starter from canonical data',
     assert.match(files['src/sections.tsx'], new RegExp(type))
   }
   assert.match(files['README.md'], /npm run build/)
+  assert.match(files['README.md'], /npm run lint/)
+  assert.match(files['README.md'], /npm test/)
 })
 
 test('Handlebars escapes the project name inserted into generated source', () => {

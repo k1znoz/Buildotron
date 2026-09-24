@@ -53,7 +53,7 @@ Le détail des objectifs et critères de validation se trouve dans [la roadmap](
 | 4 — Primitives      | Vérifié localement        | Button, Text, Image et Card disponibles dans le package partagé ; build validé, validation visuelle complète à faire.                              |
 | 5 — Sections        | OK                        | Sept plugins, vignettes, rendus, formulaires CMS et contrôle commun avant export validés dans le navigateur.                                       |
 | 6 — Blueprints      | OK                        | Sélection, structure, contenus initiaux et indépendance des trois recettes validés dans le navigateur.                                             |
-| 7 — Code Generator  | En cours                  | CLI et contrôles validés ; téléchargement ZIP depuis le Builder prêt à vérifier.                                                                   |
+| 7 — Code Generator  | En cours                  | Export ZIP validé ; build, lint et tests autonomes du projet livré prêts à vérifier.                                                               |
 | 8 et suivants       | À faire                   | Core CMS puis BIOGRIND.                                                                                                                            |
 
 ## Essayer le Builder
@@ -83,4 +83,4 @@ Le [parcours de validation du CTA](docs/testing/cta-validation.md) a été confi
 - Jalon 4 — vérifié localement : quatre Primitives disponibles et build OK ; validation visuelle complète restante.
 - Jalon 5 — OK : les sept plugins, leurs formulaires de contenu et le contrôle commun avant export sont validés dans le navigateur.
 - Jalon 6 — OK : registre, sélection et contenus indépendants des trois Blueprints validés dans le navigateur.
-- Jalon 7 — en cours : CLI, export autonome, sept sections et contrôle bloquant validés ; [téléchargement ZIP depuis le Builder à valider](docs/testing/builder-react-export-validation.md).
+- Jalon 7 — en cours : génération, contrôles et téléchargement ZIP validés ; [portes qualité du projet livré à valider](docs/testing/generated-quality-gates-validation.md).

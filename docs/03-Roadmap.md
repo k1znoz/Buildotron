@@ -181,13 +181,15 @@ Premier export.
 
 Pour le premier essai, générer le projet React dans un dossier dédié du dépôt afin de pouvoir examiner les fichiers et exécuter son build avant la livraison en ZIP.
 
-Première tranche réalisée : le package `@buildotron/generator` transforme un projet JSON en dix fichiers de Starter React à l'aide de Handlebars. La commande `npm run generate -- <source.json> <dossier>` produit le projet dans le dossier choisi. Le premier résultat a été généré dans `projects/generated/product-landing`, ses dépendances ont été installées et son build de production a réussi. Le branchement au bouton du Builder, la validation automatique du pipeline et le ZIP restent à réaliser.
+Première tranche réalisée : le package `@buildotron/generator` transforme un projet JSON en Starter React à l'aide de Handlebars. La commande `npm run generate -- <source.json> <dossier>` produit le projet dans le dossier choisi. Le premier résultat a été généré dans `projects/generated/product-landing`, ses dépendances ont été installées et son build de production a réussi.
 
 Le premier export autonome a été confirmé hors des sources du Builder. Le Starter généré possède maintenant un registre local qui rend les données des sept types de sections. Un projet dédié, `projects/generator-validation.json`, a permis de confirmer leurs rendus dans une seule page. Les noms techniques des sections, repérés pendant cette validation, ont été retirés du site généré.
 
 La commande exécute maintenant un contrôle avant génération et refuse les versions, sections ou contenus non exportables avant d'écrire les fichiers. Le parcours manuel est dans `docs/testing/generator-preflight-validation.md` et reste à confirmer.
 
-Le contrôle bloquant en ligne de commande a été confirmé. Le Builder propose maintenant **Exporter React** : après les mêmes contrôles de sections, il génère les dix fichiers, crée une archive ZIP nommée d'après le projet et la télécharge. Le parcours manuel est dans `docs/testing/builder-react-export-validation.md` et reste à confirmer.
+Le contrôle bloquant en ligne de commande a été confirmé. Le Builder propose maintenant **Exporter React** : après les mêmes contrôles de sections, il génère les fichiers, crée une archive ZIP nommée d'après le projet et la télécharge. Ce parcours a été confirmé dans le navigateur.
+
+Le Starter généré contient maintenant ses propres configurations de build et de lint ainsi qu'un test de cohérence du contenu. Les commandes `npm run build`, `npm run lint` et `npm test` ont réussi sur le projet de validation. Le parcours manuel est dans `docs/testing/generated-quality-gates-validation.md` et reste à confirmer.
 
 ## Milestone 8 — Core CMS
 

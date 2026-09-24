@@ -182,20 +182,52 @@ const packageTemplate = Handlebars.compile(`{
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build"
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "test": "node --test"
   },
   "dependencies": {
-    "@vitejs/plugin-react": "^6.1.0",
-    "vite": "^8.2.2",
-    "typescript": "~6.0.2",
     "react": "19.2.8",
-    "react-dom": "19.2.8",
-    "@types/react": "^19.2.18",
-    "@types/react-dom": "^19.2.4"
+    "react-dom": "19.2.8"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
+    "@vitejs/plugin-react": "^6.1.0",
+    "eslint": "^10.9.0",
+    "globals": "^17.11.0",
+    "typescript": "~6.0.2",
+    "typescript-eslint": "^8.67.0",
+    "vite": "^8.2.2"
+  }
 }
 `)
+
+const eslintConfig = `import js from '@eslint/js'
+import globals from 'globals'
+import tseslint from 'typescript-eslint'
+
+export default tseslint.config(
+  { ignores: ['dist'] },
+  js.configs.recommended,
+  ...tseslint.configs.recommended,
+  { languageOptions: { globals: { ...globals.browser, ...globals.node } } },
+)
+`
+
+const contentTest = `import assert from 'node:assert/strict'
+import { readFile } from 'node:fs/promises'
+import { test } from 'node:test'
+
+const supported = new Set(['Navbar', 'Hero', 'Features', 'Gallery', 'FAQ', 'CTA', 'Footer'])
+const project = JSON.parse(await readFile(new URL('../src/content.json', import.meta.url), 'utf8'))
+
+test('generated content contains only supported sections', () => {
+  assert.ok(project.sections.length > 0)
+  assert.ok(project.sections.every((section) => supported.has(section.type)))
+})
+`
 
 export function packageName(name: string): string {
   return (
@@ -245,12 +277,14 @@ export function generateReactProject(
       ) + '\n',
     'vite.config.ts':
       "import { defineConfig } from 'vite'\nimport react from '@vitejs/plugin-react'\n\nexport default defineConfig({ plugins: [react()] })\n",
+    'eslint.config.js': eslintConfig,
     'src/main.tsx':
       "import { StrictMode } from 'react'\nimport { createRoot } from 'react-dom/client'\nimport App from './App'\n\ncreateRoot(document.getElementById('root')!).render(<StrictMode><App /></StrictMode>)\n",
     'src/App.tsx': appTemplate({ projectName: project.name }),
     'src/sections.tsx': sectionsSource,
     'src/content.json': JSON.stringify(project, null, 2) + '\n',
     'src/styles.css': `:root { font-family: system-ui, sans-serif; color: #1d2935; background: #fff; }\n* { box-sizing: border-box; }\nbody { margin: 0; }\nmain { max-width: 72rem; margin: auto; }\n.section { padding: 4rem 2rem; }\n.section--hero { padding-block: 7rem; background: #eef5ee; }\n.section--navbar, .section--footer { background: #f3f6f5; }\n.cards, .gallery, .faq { display: grid; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); gap: 1rem; }\n.card { border: 1px solid #d6dfdc; border-radius: .5rem; padding: 1rem; }\n.gallery img { width: 100%; height: 14rem; object-fit: cover; border-radius: .5rem; }\n.links { display: flex; flex-wrap: wrap; gap: 1rem; padding: 0; list-style: none; }\n.action { display: inline-block; margin-top: 1rem; padding: .75rem 1rem; color: white; background: #0d7667; border-radius: .25rem; }\n.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); }\n`,
-    'README.md': `# ${project.name}\n\nProjet React généré par Buildotron depuis le Blueprint \`${project.blueprint}\`.\n\n## Démarrage\n\n\`\`\`bash\nnpm install\nnpm run dev\n\`\`\`\n\n## Build\n\n\`\`\`bash\nnpm run build\n\`\`\`\n`,
+    'tests/content.test.mjs': contentTest,
+    'README.md': `# ${project.name}\n\nProjet React généré par Buildotron depuis le Blueprint \`${project.blueprint}\`.\n\n## Démarrage\n\n\`\`\`bash\nnpm install\nnpm run dev\n\`\`\`\n\n## Vérifications\n\n\`\`\`bash\nnpm run build\nnpm run lint\nnpm test\n\`\`\`\n`,
   }
 }
