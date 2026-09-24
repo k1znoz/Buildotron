@@ -12,9 +12,10 @@
   },
   "scripts": {
     "generate": "node --experimental-strip-types packages/generator/src/cli.ts",
+    "export:verified": "node --experimental-strip-types packages/generator/src/verifiedExport.ts",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "test": "node --test --experimental-strip-types --test-isolation=none"
+    "test": "node --test --experimental-strip-types --test-isolation=none tests/*.test.mjs"
   },
   "devDependencies": {
     "prettier": "3.8.4",

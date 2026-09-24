@@ -191,6 +191,8 @@ Le contrôle bloquant en ligne de commande a été confirmé. Le Builder propose
 
 Le Starter généré contient maintenant ses propres configurations de build et de lint ainsi qu'un test de cohérence du contenu. Les commandes `npm run build`, `npm run lint` et `npm test` ont réussi sur le projet de validation. Le parcours manuel est dans `docs/testing/generated-quality-gates-validation.md` et reste à confirmer.
 
+Ces portes qualité ont été confirmées. La commande `npm run export:verified -- <source.json> <sortie.zip>` exécute désormais la génération, `npm install`, le build, le lint et les tests dans un dossier temporaire. Elle écrit le ZIP seulement après leur réussite et nettoie toujours le dossier temporaire. Le parcours manuel est dans `docs/testing/verified-export-pipeline-validation.md` et reste à confirmer.
+
 ## Milestone 8 — Core CMS
 
 Créer:
