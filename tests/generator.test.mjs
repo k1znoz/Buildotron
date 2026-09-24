@@ -26,21 +26,32 @@ test('the generator creates a self-contained React starter from canonical data',
   const files = generateReactProject(project)
 
   assert.deepEqual(Object.keys(files).sort(), [
+    '.gitignore',
     'README.md',
     'eslint.config.js',
     'index.html',
     'package.json',
+    'server/contentStore.mjs',
+    'server/index.mjs',
     'src/App.tsx',
-    'src/content.json',
+    'src/cms/content.json',
+    'src/cms/content.ts',
     'src/main.tsx',
     'src/sections.tsx',
+    'src/structure.json',
     'src/styles.css',
+    'tests/cms-server.test.mjs',
+    'tests/content-store.test.mjs',
     'tests/content.test.mjs',
     'tsconfig.json',
     'vite.config.ts',
   ])
   assert.equal(JSON.parse(files['package.json']).name, 'mon-projet-demo')
-  assert.deepEqual(JSON.parse(files['src/content.json']), project)
+  const structure = JSON.parse(files['src/structure.json'])
+  const content = JSON.parse(files['src/cms/content.json'])
+  assert.equal(structure.sections[0].properties, undefined)
+  assert.deepEqual(content.sections[0].content, project.sections[0].properties)
+  assert.equal(content.projectId, project.id)
   assert.match(files['src/App.tsx'], /project\.sections\.map/)
   for (const type of [
     'Navbar',

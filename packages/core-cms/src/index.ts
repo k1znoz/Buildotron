@@ -3,7 +3,7 @@ export type CmsProjectSection = {
   type: string
   slot: string
   override: boolean
-  properties: Record<string, unknown>
+  properties: object
 }
 
 export type CmsProject = {
@@ -14,7 +14,7 @@ export type CmsProject = {
 export type CmsSectionContent = {
   sectionId: string
   sectionType: string
-  content: Record<string, unknown>
+  content: object
 }
 
 export type CmsContentDocument = {
@@ -42,7 +42,7 @@ export function createContentDocument(project: CmsProject): CmsContentDocument {
 export function updateSectionContent(
   document: CmsContentDocument,
   sectionId: string,
-  content: Record<string, unknown>,
+  content: object,
 ): CmsContentDocument {
   if (!document.sections.some((section) => section.sectionId === sectionId))
     throw new Error('Section CMS inconnue.')
@@ -79,5 +79,5 @@ export function applyContentDocument<T extends CmsProject>(
   if (contentById.size !== project.sections.length)
     throw new Error('Le CMS ne peut pas ajouter ou dupliquer de section.')
 
-  return { ...project, sections }
+  return { ...project, sections } as T
 }

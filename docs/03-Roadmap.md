@@ -213,6 +213,14 @@ Premier projet autonome.
 
 Première tranche réalisée : le package `@buildotron/core-cms` sépare le contenu éditable de la structure du projet. Il peut extraire un document de contenu, modifier le contenu d'une section connue et le réappliquer sans changer l'ordre, les identifiants, les types, les slots ou les overrides. Il refuse les ajouts, suppressions, duplications, changements de type et contenus destinés à un autre projet. Cette règle est couverte par des tests automatisés ; l'intégration dans le projet exporté reste à réaliser.
 
+Le contrat est maintenant intégré à chaque export. `src/structure.json` contient l'organisation immuable, tandis que `src/cms/content.json` contient uniquement le contenu éditable. Le site les réunit après avoir contrôlé l'identité du projet et de chaque section. Le build, le lint et le test autonome de cette structure séparée ont réussi. Le parcours manuel est dans `docs/testing/generated-cms-content-validation.md` et reste à confirmer.
+
+La séparation structure/contenu a été confirmée. Chaque projet exporté embarque maintenant un stockage fondé sur `node:sqlite`. Il initialise le document CMS une seule fois, le sauvegarde dans `database/site.db` et conserve les modifications après fermeture et réouverture de la base. La base et ses fichiers temporaires sont ignorés par Git. Le parcours est dans `docs/testing/sqlite-content-store-validation.md` et reste à confirmer.
+
+Le stockage SQLite a été confirmé. Le projet exporté contient maintenant un serveur HTTP local qui sert le build React et expose `GET /api/content` et `PUT /api/content`. Les écritures sont limitées à 1 Mo et passent par le verrouillage de l'identité et du nombre de sections avant SQLite. Le serveur écoute uniquement sur `127.0.0.1` tant que l'authentification n'est pas en place. Le parcours manuel est dans `docs/testing/cms-api-validation.md` et reste à confirmer.
+
+L'API locale a été confirmée. L'écriture exige maintenant une session obtenue par `POST /api/auth/login`. Le secret vient uniquement de `CMS_PASSWORD`, doit contenir au moins 12 caractères et n'est jamais écrit dans le projet ou dans SQLite. Le cookie de session est `HttpOnly`, `SameSite=Strict`, limité au chemin `/api` et invalidé au redémarrage. Le parcours manuel est dans `docs/testing/cms-auth-validation.md` et reste à confirmer.
+
 ## Milestone 9 — BIOGRIND
 
 Construire entièrement BIOGRIND.

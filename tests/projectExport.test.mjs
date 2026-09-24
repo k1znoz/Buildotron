@@ -14,10 +14,36 @@ test('the Builder creates a named ZIP containing the generated React project', a
 
   assert.equal(projectArchiveName(project), 'projet-demo.zip')
   assert.ok(zip.file('package.json'))
+  assert.ok(zip.file('.gitignore'))
   assert.ok(zip.file('src/App.tsx'))
   assert.ok(zip.file('src/sections.tsx'))
+  assert.ok(zip.file('src/cms/content.ts'))
+  assert.ok(zip.file('server/contentStore.mjs'))
+  assert.ok(zip.file('server/index.mjs'))
+  assert.ok(zip.file('tests/cms-server.test.mjs'))
+  assert.ok(zip.file('tests/content-store.test.mjs'))
+  const structure = JSON.parse(
+    await zip.file('src/structure.json').async('string'),
+  )
+  const content = JSON.parse(
+    await zip.file('src/cms/content.json').async('string'),
+  )
   assert.deepEqual(
-    JSON.parse(await zip.file('src/content.json').async('string')),
-    project,
+    structure.sections.map(({ id, type, slot, override }) => ({
+      id,
+      type,
+      slot,
+      override,
+    })),
+    project.sections.map(({ id, type, slot, override }) => ({
+      id,
+      type,
+      slot,
+      override,
+    })),
+  )
+  assert.deepEqual(
+    content.sections.map((section) => section.content),
+    project.sections.map((section) => section.properties),
   )
 })
