@@ -63,6 +63,15 @@ test('unsupported versions and malformed JSON are rejected', () => {
   )
 })
 
+test('unknown Blueprints are rejected', () => {
+  const project = JSON.parse(sample)
+  project.blueprint = 'unknown'
+  assert.throws(
+    () => parseProjectJson(JSON.stringify(project)),
+    /Blueprint ou thème/,
+  )
+})
+
 test('legacy CTA data gains editable action defaults and preserves a configured link', () => {
   const legacy = parseProjectJson(sample)
   const cta = legacy.sections.find((section) => section.type === 'CTA')

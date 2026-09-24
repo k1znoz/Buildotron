@@ -4,6 +4,7 @@ import { SectionPreview, sectionPreviews } from '@buildotron/plugins'
 import { defaultSlot, slotLabels, slots } from '../project'
 import { insertionBeforeId } from '../projectActions'
 import type { Project, Slot } from '../project'
+import { blueprints } from '../../../../blueprints/index.ts'
 
 type Props = {
   project: Project
@@ -28,9 +29,12 @@ export function Canvas({
 
   return (
     <section className="canvas" aria-label="Page canvas">
-      <article className="page-preview" aria-label="Product Landing preview">
+      <article
+        className="page-preview"
+        aria-label={`${blueprints[project.blueprint].name} preview`}
+      >
         <div className="page-preview__bar">
-          <span>Product Landing</span>
+          <span>{blueprints[project.blueprint].name}</span>
           <span>Desktop</span>
         </div>
         {slots.map((slot) => (

@@ -1,16 +1,14 @@
-Exemple en fichier YAML
+Les définitions exécutables sont centralisées dans `blueprints/index.ts`. Chaque Blueprint déclare un identifiant, un nom, un thème, ses slots, sa liste initiale de sections et les contenus propres à sa recette.
 
-name: Product Landing
+Blueprints disponibles :
 
-slots:
+- Product Landing : Hero, Features, CTA ;
+- Coming Soon : Hero, CTA, Footer ;
+- Portfolio : Navbar, Hero, Gallery, Footer.
 
-- header
-- hero
-- content
-- conversion
-- footer
+Le changement de Blueprint dans le Builder remplace les sections du projet tout en conservant son nom et son identifiant. Le JSON canonique conserve l'identifiant du Blueprint choisi.
 
-theme: minimal
+Chaque instanciation clone les contenus imbriqués du Blueprint. La recette reste donc immuable lorsque le développeur modifie des textes, des liens ou des listes dans le Builder.
 
 ---
 

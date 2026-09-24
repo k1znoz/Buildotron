@@ -1,0 +1,7 @@
+export { validateHeroContent } from '../Hero.plugin/admin/heroContent.ts'
+export { validateCTAContent } from '../CTA.plugin/admin/ctaContent.ts'
+export { validateFeaturesContent } from '../Features.plugin/admin/featuresContent.ts'
+export { validateGalleryContent } from '../Gallery.plugin/admin/galleryContent.ts'
+export { validateFAQContent } from '../FAQ.plugin/admin/faqContent.ts'
+export { validateFooterContent } from '../Footer.plugin/admin/footerContent.ts'
+export { validateNavbarContent } from '../Navbar.plugin/admin/navbarContent.ts'

@@ -3,6 +3,7 @@ import { Button } from '@buildotron/design-system'
 
 type Props = {
   projectName: string
+  blueprintName: string
   onSave: () => void
   onOpen: (file: File) => void
   onCheckSections: () => void
@@ -10,6 +11,7 @@ type Props = {
 
 export function Toolbar({
   projectName,
+  blueprintName,
   onSave,
   onOpen,
   onCheckSections,
@@ -18,7 +20,9 @@ export function Toolbar({
   return (
     <header className="toolbar">
       <strong className="toolbar__brand">Buildotron</strong>
-      <span className="toolbar__project">Product Landing / {projectName}</span>
+      <span className="toolbar__project">
+        {blueprintName} / {projectName}
+      </span>
       <nav className="toolbar__actions" aria-label="Project actions">
         <input
           ref={input}

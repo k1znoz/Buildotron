@@ -66,7 +66,7 @@ export type Project = {
   formatVersion: 1
   id: string
   name: string
-  blueprint: 'product-landing'
+  blueprint: BlueprintId
   theme: 'minimal'
   sections: SectionInstance[]
 }
@@ -99,38 +99,42 @@ const defaults: Record<SectionType, SectionProperties> = {
   Footer: { title: 'Footer', body: 'Contact and legal links.', links: [] },
 }
 
-export function createSection(type: SectionType): SectionInstance {
+function cloneProperties(properties: SectionProperties): SectionProperties {
+  return structuredClone(properties)
+}
+
+export function createSection(
+  type: SectionType,
+  properties: Partial<SectionProperties> = {},
+): SectionInstance {
   return {
     id: crypto.randomUUID(),
     type,
     slot: defaultSlot[type],
     override: false,
-    properties: {
-      ...defaults[type],
-      ...(type === 'Features'
-        ? { items: defaultFeatureItems.map((item) => ({ ...item })) }
-        : {}),
-      ...(type === 'Gallery' ? { images: [] } : {}),
-      ...(type === 'FAQ'
-        ? { questions: defaultFAQItems.map((item) => ({ ...item })) }
-        : {}),
-      ...(type === 'Footer' || type === 'Navbar' ? { links: [] } : {}),
-    },
+    properties: cloneProperties({ ...defaults[type], ...properties }),
   }
 }
 
-export const initialProject: Project = {
-  formatVersion: 1,
-  id: crypto.randomUUID(),
-  name: 'Untitled',
-  blueprint: 'product-landing',
-  theme: 'minimal',
-  sections: [
-    createSection('Hero'),
-    createSection('Features'),
-    createSection('CTA'),
-  ],
+export function createProjectFromBlueprint(
+  blueprint: BlueprintId,
+  name = 'Untitled',
+  id: string = crypto.randomUUID(),
+): Project {
+  const definition = blueprints[blueprint]
+  return {
+    formatVersion: 1,
+    id,
+    name,
+    blueprint,
+    theme: definition.theme,
+    sections: definition.sections.map((section) =>
+      createSection(section.type, section.properties),
+    ),
+  }
 }
+
+export const initialProject = createProjectFromBlueprint('product-landing')
 
 export const slotLabels: Record<Slot, string> = {
   header: 'Header',
@@ -139,3 +143,5 @@ export const slotLabels: Record<Slot, string> = {
   conversion: 'Conversion',
   footer: 'Footer',
 }
+import { blueprints } from '../../../blueprints/index.ts'
+import type { BlueprintId } from '../../../blueprints/index.ts'

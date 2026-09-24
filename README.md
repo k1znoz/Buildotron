@@ -43,16 +43,17 @@ L'objectif est de réutiliser des idées éprouvées sans reproduire ces produit
 
 Le détail des objectifs et critères de validation se trouve dans [la roadmap](docs/03-Roadmap.md).
 
-| Jalon               | État                      | Étapes accomplies                                                                                                                                                                                                                               |
-| ------------------- | ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1 — Socle           | OK                        | Monorepo, formatage, lint, tests et build validés localement et par GitHub Actions après correction du workspace et des dépendances natives Linux.                                                                                              |
-| 1.5 — Audit         | OK                        | Audit documentaire d'OpenPage réalisé et décisions consignées dans `docs/research/openpage-audit.md`.                                                                                                                                           |
-| 2 — Canvas          | Validé dans le navigateur | Ajout, sélection, déplacement, duplication, suppression, slots et override explicite ; déplacement par glisser-déposer, boutons et flèches.                                                                                                     |
-| 3 — JSON canonique  | Validé dans le navigateur | Format versionné, propriétés éditables, téléchargement d'un fichier JSON, réouverture et validation des données.                                                                                                                                |
-| 3.5 — Design System | Vérifié localement        | Couleurs, typographies, espacements, rayons et ombres centralisés dans le package partagé et utilisés par le Builder ; build validé.                                                                                                            |
-| 4 — Primitives      | Vérifié localement        | Button, Text, Image et Card disponibles dans le package partagé ; build validé, validation visuelle complète à faire.                                                                                                                           |
-| 5 — Sections        | En cours                  | CTA, Features, Gallery, FAQ, Footer, action Hero, Navbar, vignettes et contrôle des sections validés dans le navigateur. Premier formulaire de contenu Hero prêt à valider ; autres formulaires et contrôles d'export complets restent à créer. |
-| 6 et suivants       | À faire                   | Blueprints, générateur React, CMS puis BIOGRIND.                                                                                                                                                                                                |
+| Jalon               | État                      | Étapes accomplies                                                                                                                                  |
+| ------------------- | ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1 — Socle           | OK                        | Monorepo, formatage, lint, tests et build validés localement et par GitHub Actions après correction du workspace et des dépendances natives Linux. |
+| 1.5 — Audit         | OK                        | Audit documentaire d'OpenPage réalisé et décisions consignées dans `docs/research/openpage-audit.md`.                                              |
+| 2 — Canvas          | Validé dans le navigateur | Ajout, sélection, déplacement, duplication, suppression, slots et override explicite ; déplacement par glisser-déposer, boutons et flèches.        |
+| 3 — JSON canonique  | Validé dans le navigateur | Format versionné, propriétés éditables, téléchargement d'un fichier JSON, réouverture et validation des données.                                   |
+| 3.5 — Design System | Vérifié localement        | Couleurs, typographies, espacements, rayons et ombres centralisés dans le package partagé et utilisés par le Builder ; build validé.               |
+| 4 — Primitives      | Vérifié localement        | Button, Text, Image et Card disponibles dans le package partagé ; build validé, validation visuelle complète à faire.                              |
+| 5 — Sections        | OK                        | Sept plugins, vignettes, rendus, formulaires CMS et contrôle commun avant export validés dans le navigateur.                                       |
+| 6 — Blueprints      | En cours                  | Sélection des trois recettes validée ; contenus initiaux propres à chaque Blueprint prêts à valider.                                               |
+| 7 et suivants       | À faire                   | Générateur React, CMS puis BIOGRIND.                                                                                                               |
 
 ## Essayer le Builder
 
@@ -79,4 +80,5 @@ Le [parcours de validation du CTA](docs/testing/cta-validation.md) a été confi
 - Jalon 3 — OK : projet JSON enregistré et rouvert avec succès.
 - Jalon 3.5 — vérifié localement : tokens du Design System centralisés et build OK.
 - Jalon 4 — vérifié localement : quatre Primitives disponibles et build OK ; validation visuelle complète restante.
-- Jalon 5 — en cours : CTA, Features, Gallery, FAQ, Footer, action Hero, Navbar, contrôle des champs vides, vignettes de la Library et contrôle des sections validés dans le navigateur ; premier [formulaire de contenu Hero à valider](docs/testing/hero-admin-validation.md).
+- Jalon 5 — OK : les sept plugins, leurs formulaires de contenu et le contrôle commun avant export sont validés dans le navigateur.
+- Jalon 6 — en cours : registre et sélection des trois Blueprints validés ; [contenus initiaux propres à chaque recette à valider](docs/testing/blueprint-content-validation.md).

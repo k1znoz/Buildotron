@@ -1,0 +1,64 @@
+{
+  "formatVersion": 1,
+  "id": "c0ff0d6f-9a7f-4f75-98e1-777c978f9eeb",
+  "name": "Untitled",
+  "blueprint": "portfolio",
+  "theme": "minimal",
+  "sections": [
+    {
+      "id": "e28b1bff-9cd7-4f2e-8531-8ef50dcb3eeb",
+      "type": "Navbar",
+      "slot": "header",
+      "override": false,
+      "properties": {
+        "title": "Portfolio",
+        "body": "Navigate through the selected work.",
+        "links": [
+          {
+            "label": "Projects",
+            "href": "#projects"
+          }
+        ]
+      }
+    },
+    {
+      "id": "62a0df22-0f9e-4ec0-b612-1b5f6566038a",
+      "type": "Hero",
+      "slot": "hero",
+      "override": false,
+      "properties": {
+        "title": "Selected work and experienceereeeee",
+        "body": "Introduce the person, studio or practice behind the projects.",
+        "actionLabel": "Learn more",
+        "actionHref": ""
+      }
+    },
+    {
+      "id": "f10d2775-2d85-4ff0-beec-c7ad26167fa1",
+      "type": "Gallery",
+      "slot": "content",
+      "override": false,
+      "properties": {
+        "title": "Selected projects",
+        "body": "Add project images and describe each one.",
+        "images": []
+      }
+    },
+    {
+      "id": "9b8f3dfa-da53-4c77-9c4d-9ddc7d90959b",
+      "type": "Footer",
+      "slot": "footer",
+      "override": false,
+      "properties": {
+        "title": "Get in touch",
+        "body": "Contact and professional links.",
+        "links": [
+          {
+            "label": "Contact",
+            "href": "#contact"
+          }
+        ]
+      }
+    }
+  ]
+}

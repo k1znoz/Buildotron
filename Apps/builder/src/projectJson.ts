@@ -15,6 +15,8 @@ import type {
   Slot,
 } from './project.ts'
 import { isSafeHref, isSafeImageSrc } from '@buildotron/plugin-sdk'
+import { blueprintIds } from '../../../blueprints/index.ts'
+import type { BlueprintId } from '../../../blueprints/index.ts'
 
 function record(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
@@ -36,7 +38,11 @@ export function parseProjectJson(json: string): Project {
     throw new Error('Version du format non prise en charge (attendue : 1).')
   if (!nonempty(value.id) || !nonempty(value.name))
     throw new Error('Identifiant ou nom du projet manquant.')
-  if (value.blueprint !== 'product-landing' || value.theme !== 'minimal') {
+  if (
+    typeof value.blueprint !== 'string' ||
+    !blueprintIds.includes(value.blueprint as BlueprintId) ||
+    value.theme !== 'minimal'
+  ) {
     throw new Error(
       'Blueprint ou thème non pris en charge par cette version du Builder.',
     )
@@ -186,7 +192,7 @@ export function parseProjectJson(json: string): Project {
     formatVersion: 1,
     id: value.id,
     name: value.name,
-    blueprint: 'product-landing',
+    blueprint: value.blueprint as BlueprintId,
     theme: 'minimal',
     sections,
   }

@@ -3,7 +3,11 @@ import { Canvas } from './components/Canvas'
 import { Inspector } from './components/Inspector'
 import { Library } from './components/Library'
 import { Toolbar } from './components/Toolbar'
-import { createSection, initialProject } from './project'
+import {
+  createProjectFromBlueprint,
+  createSection,
+  initialProject,
+} from './project'
 import {
   duplicateSection,
   moveSection,
@@ -13,6 +17,8 @@ import {
 import { parseProjectJson, serializeProject } from './projectJson'
 import { checkSectionsForExport } from './sectionChecks'
 import type { Project, SectionType, Slot } from './project'
+import { blueprints } from '../../../blueprints/index.ts'
+import type { BlueprintId } from '../../../blueprints/index.ts'
 import './App.css'
 
 function downloadProjectJson(json: string) {
@@ -112,6 +118,13 @@ function App() {
 
   function setName(name: string) {
     setProject((current) => ({ ...current, name }))
+  }
+
+  function setBlueprint(blueprint: BlueprintId) {
+    const next = createProjectFromBlueprint(blueprint, project.name, project.id)
+    setProject(next)
+    setSelectedId(next.sections[0]?.id ?? null)
+    setMessage(`Blueprint « ${blueprints[blueprint].name} » appliqué.`)
   }
 
   function setProperty(
@@ -261,6 +274,7 @@ function App() {
     <main className="builder-shell" aria-label="Buildotron Builder">
       <Toolbar
         projectName={project.name}
+        blueprintName={blueprints[project.blueprint].name}
         onSave={save}
         onOpen={open}
         onCheckSections={() => setShowSectionChecks(true)}
@@ -276,8 +290,10 @@ function App() {
         />
         <Inspector
           projectName={project.name}
+          blueprint={project.blueprint}
           section={selected}
           onName={setName}
+          onBlueprint={setBlueprint}
           onProperty={setProperty}
           onFeatureItem={(index, key, value) =>
             updateFeatureItems((items) =>

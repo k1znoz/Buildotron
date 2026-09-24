@@ -135,9 +135,21 @@ Un premier contrôle des sections est disponible dans le Builder. Il reprend la 
 
 Navbar possède désormais un manifeste, un schéma, une vignette, un aperçu Builder et un rendu React. Ses liens sont éditables et validés dans le JSON canonique. Son parcours de validation manuelle a été confirmé avec `docs/testing/navbar-validation.md`.
 
-Le premier formulaire de contenu destiné au futur CMS couvre Hero. Il permet de modifier le titre, le texte et l'action facultative, puis de les appliquer à un aperçu React isolé. La page de test ne conserve les changements qu'en mémoire. Le parcours manuel est dans `docs/testing/hero-admin-validation.md` et reste à confirmer.
+Le formulaire de contenu Hero destiné au futur CMS permet de modifier le titre, le texte et l'action facultative, puis de les appliquer à un aperçu React isolé. Son parcours manuel a été confirmé avec `docs/testing/hero-admin-validation.md`.
 
-Reste à produire avant de considérer ce jalon terminé : les formulaires de contenu des autres plugins et les validations d'export complètes propres aux plugins. Les sections incomplètes ne constituent pas un site BIOGRIND livrable.
+Le formulaire CTA réutilise les champs communs à Hero avec sa propre règle : son lien de bouton est obligatoire. Les deux formulaires disposent d'aperçus distincts sur la page de test, qui conserve les brouillons et les contenus appliqués pendant la navigation entre Hero et CTA, uniquement en mémoire. Son parcours a été confirmé avec `docs/testing/cta-admin-validation.md`.
+
+Le formulaire de contenu Features couvre le titre et le texte de la section ainsi que les textes des cartes existantes. Il garde le nombre de cartes fixe pour que le futur CMS ne change pas la structure de la section. L'aperçu conserve ses données pendant la navigation avec Hero et CTA. Son parcours a été confirmé avec `docs/testing/features-admin-validation.md`.
+
+Le formulaire Gallery permet de changer la source et le texte alternatif des images existantes, avec validation des URL et des champs obligatoires. Il garde le nombre d'emplacements fixe et conserve ses données pendant la navigation entre les aperçus. Son parcours a été confirmé avec `docs/testing/gallery-admin-validation.md`.
+
+Le formulaire FAQ permet de modifier les questions et réponses existantes. Il refuse les entrées incomplètes et conserve son brouillon pendant la navigation entre les aperçus. Son parcours a été confirmé avec `docs/testing/faq-admin-validation.md`.
+
+Le formulaire Footer permet de modifier les textes et les liens existants. Il valide les libellés et les destinations, et garde la structure de la liste fixe. Son parcours a été confirmé avec `docs/testing/footer-admin-validation.md`.
+
+Le formulaire Navbar réutilise la gestion sûre des liens de Footer. Une destination invalide est signalée pendant la saisie et empêche l'application du brouillon. Il complète les formulaires de contenu des sept plugins et respecte la règle selon laquelle le CMS ne modifie pas la structure. Son parcours a été confirmé avec `docs/testing/navbar-admin-validation.md`.
+
+Le contrôle avant export délègue désormais chaque section à son validateur de plugin. Il couvre les sept types, signale aussi les listes vides de Footer, Navbar et Gallery, et conserve la validation canonique comme premier niveau. Son parcours étendu a été confirmé avec `docs/testing/section-checks-validation.md`. Le jalon 5 est validé.
 
 ## Milestone 6 — Blueprints
 
@@ -148,6 +160,10 @@ Créer:
 -Coming Soon
 
 -Portfolio
+
+Première tranche réalisée : un registre versionné décrit Product Landing, Coming Soon et Portfolio, leur thème, leurs slots et leurs sections initiales. Le Builder permet de changer de Blueprint, réinitialise explicitement les sections et conserve le nom et l'identifiant du projet. Le JSON canonique accepte ces trois identifiants et refuse les valeurs inconnues. Le parcours manuel dans `docs/testing/blueprint-selection-validation.md` a été confirmé dans le navigateur.
+
+Chaque Blueprint fournit désormais des contenus de départ adaptés à son usage. Ces données sont clonées lors de l'instanciation : modifier un projet ne peut pas altérer la recette ni les prochains projets créés. Le parcours manuel est dans `docs/testing/blueprint-content-validation.md` et reste à confirmer.
 
 ## Milestone 7 — Code Generator
 

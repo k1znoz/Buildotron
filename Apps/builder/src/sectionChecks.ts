@@ -1,5 +1,14 @@
 import { parseProjectJson, serializeProject } from './projectJson.ts'
 import type { Project } from './project.ts'
+import {
+  validateCTAContent,
+  validateFAQContent,
+  validateFeaturesContent,
+  validateFooterContent,
+  validateGalleryContent,
+  validateHeroContent,
+  validateNavbarContent,
+} from '@buildotron/plugins/validation'
 
 export type SectionCheckIssue = { sectionId?: string; message: string }
 
@@ -23,22 +32,55 @@ export function checkSectionsForExport(project: Project): SectionCheckIssue[] {
   const issues: SectionCheckIssue[] = []
   for (const [index, section] of normalized.sections.entries()) {
     const prefix = `Section ${index + 1} (${section.type})`
-    if (section.type === 'CTA' && !section.properties.actionHref) {
+    const properties = section.properties
+    const issue =
+      section.type === 'Hero'
+        ? validateHeroContent({
+            title: properties.title,
+            body: properties.body,
+            actionLabel: properties.actionLabel ?? '',
+            actionHref: properties.actionHref ?? '',
+          })
+        : section.type === 'CTA'
+          ? validateCTAContent({
+              title: properties.title,
+              body: properties.body,
+              actionLabel: properties.actionLabel ?? '',
+              actionHref: properties.actionHref ?? '',
+            })
+          : section.type === 'Features'
+            ? validateFeaturesContent({
+                title: properties.title,
+                body: properties.body,
+                items: properties.items ?? [],
+              })
+            : section.type === 'Gallery'
+              ? validateGalleryContent({
+                  title: properties.title,
+                  body: properties.body,
+                  images: properties.images ?? [],
+                })
+              : section.type === 'FAQ'
+                ? validateFAQContent({
+                    title: properties.title,
+                    body: properties.body,
+                    questions: properties.questions ?? [],
+                  })
+                : section.type === 'Footer'
+                  ? validateFooterContent({
+                      title: properties.title,
+                      body: properties.body,
+                      links: properties.links ?? [],
+                    })
+                  : validateNavbarContent({
+                      title: properties.title,
+                      body: properties.body,
+                      links: properties.links ?? [],
+                    })
+    if (issue) {
       issues.push({
         sectionId: section.id,
-        message: `${prefix} : renseignez le lien du bouton.`,
-      })
-    }
-    if (section.type === 'Navbar' && !section.properties.links?.length) {
-      issues.push({
-        sectionId: section.id,
-        message: `${prefix} : ajoutez au moins un lien de navigation.`,
-      })
-    }
-    if (section.type === 'Gallery' && !section.properties.images?.length) {
-      issues.push({
-        sectionId: section.id,
-        message: `${prefix} : ajoutez au moins une image.`,
+        message: `${prefix} : ${issue}`,
       })
     }
   }

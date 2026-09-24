@@ -1,11 +1,15 @@
 import { defaultSlot, slotLabels, slots } from '../project'
 import type { SectionInstance, Slot } from '../project'
 import { Button } from '@buildotron/design-system'
+import { blueprintIds, blueprints } from '../../../../blueprints/index.ts'
+import type { BlueprintId } from '../../../../blueprints/index.ts'
 
 type Props = {
   projectName: string
+  blueprint: BlueprintId
   section: SectionInstance | null
   onName: (name: string) => void
+  onBlueprint: (blueprint: BlueprintId) => void
   onProperty: (
     key: 'title' | 'body' | 'actionLabel' | 'actionHref',
     value: string,
@@ -31,8 +35,10 @@ type Props = {
 
 export function Inspector({
   projectName,
+  blueprint,
   section,
   onName,
+  onBlueprint,
   onProperty,
   onFeatureItem,
   onAddFeatureItem,
@@ -67,10 +73,23 @@ export function Inspector({
             onChange={(event) => onName(event.target.value)}
           />
         </label>
-        <div className="field">
+        <label className="field">
           <span className="field__label">Blueprint</span>
-          <span className="field__value">Product Landing</span>
-        </div>
+          <select
+            className="field__value"
+            value={blueprint}
+            onChange={(event) => onBlueprint(event.target.value as BlueprintId)}
+          >
+            {blueprintIds.map((id) => (
+              <option key={id} value={id}>
+                {blueprints[id].name}
+              </option>
+            ))}
+          </select>
+        </label>
+        <p className="inspector-note">
+          Changer de Blueprint remplace les sections du projet.
+        </p>
         <div className="field">
           <span className="field__label">Theme</span>
           <span className="field__value">Minimal</span>
