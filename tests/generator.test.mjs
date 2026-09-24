@@ -30,13 +30,17 @@ test('the generator creates a self-contained React starter from canonical data',
     'README.md',
     'eslint.config.js',
     'index.html',
+    'media/.gitkeep',
     'package.json',
     'server/contentStore.mjs',
     'server/index.mjs',
+    'server/productStore.mjs',
+    'server/seoStore.mjs',
     'src/App.tsx',
     'src/cms/Admin.tsx',
     'src/cms/content.json',
     'src/cms/content.ts',
+    'src/cms/seo.json',
     'src/main.tsx',
     'src/sections.tsx',
     'src/structure.json',
@@ -56,6 +60,16 @@ test('the generator creates a self-contained React starter from canonical data',
   assert.match(files['src/App.tsx'], /project\.sections\.map/)
   assert.match(files['src/cms/Admin.tsx'], /Gestion du contenu/)
   assert.match(files['src/cms/Admin.tsx'], /method: 'PUT'/)
+  assert.match(files['src/cms/Admin.tsx'], /Texte alternatif/)
+  assert.match(files['src/cms/Admin.tsx'], /Remplacer par un fichier/)
+  assert.match(
+    files['src/cms/Admin.tsx'],
+    /disabled=\{blockingIssues\.length > 0\}/,
+  )
+  assert.match(files['src/cms/Admin.tsx'], /role="alert"/)
+  assert.match(files['src/styles.css'], /position: fixed/)
+  assert.match(files['src/cms/Admin.tsx'], /destination valides obligatoires/)
+  assert.match(files['server/index.mjs'], /\/api\/media/)
   assert.match(
     files['src/main.tsx'],
     /window\.location\.pathname === '\/admin'/,
