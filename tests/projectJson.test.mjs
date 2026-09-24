@@ -73,7 +73,13 @@ test('unknown Blueprints are rejected', () => {
 })
 
 test('legacy CTA data gains editable action defaults and preserves a configured link', () => {
-  const legacy = parseProjectJson(sample)
+  const legacyData = JSON.parse(sample)
+  const legacyCTA = legacyData.sections.find(
+    (section) => section.type === 'CTA',
+  )
+  delete legacyCTA.properties.actionLabel
+  delete legacyCTA.properties.actionHref
+  const legacy = parseProjectJson(JSON.stringify(legacyData))
   const cta = legacy.sections.find((section) => section.type === 'CTA')
   assert.equal(cta.properties.actionLabel, 'Get started')
   assert.equal(cta.properties.actionHref, '')
@@ -89,7 +95,13 @@ test('legacy CTA data gains editable action defaults and preserves a configured 
 })
 
 test('legacy Hero data gains optional action defaults and validates its link', () => {
-  const project = parseProjectJson(sample)
+  const legacyData = JSON.parse(sample)
+  const legacyHero = legacyData.sections.find(
+    (section) => section.type === 'Hero',
+  )
+  delete legacyHero.properties.actionLabel
+  delete legacyHero.properties.actionHref
+  const project = parseProjectJson(JSON.stringify(legacyData))
   const hero = project.sections.find((section) => section.type === 'Hero')
   assert.equal(hero.properties.actionLabel, 'Learn more')
   assert.equal(hero.properties.actionHref, '')

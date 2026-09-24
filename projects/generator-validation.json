@@ -1,0 +1,16 @@
+{
+  "formatVersion": 1,
+  "id": "generator-validation",
+  "name": "Generator Validation",
+  "blueprint": "portfolio",
+  "theme": "minimal",
+  "sections": [
+    { "id": "nav", "type": "Navbar", "slot": "header", "override": false, "properties": { "title": "Studio Demo", "body": "Generated navigation", "links": [{ "label": "Work", "href": "#work" }] } },
+    { "id": "hero", "type": "Hero", "slot": "hero", "override": false, "properties": { "title": "A generated React website", "body": "This Hero comes from canonical JSON.", "actionLabel": "See the work", "actionHref": "#work" } },
+    { "id": "features", "type": "Features", "slot": "content", "override": false, "properties": { "title": "Services", "body": "Cards generated from the Features section.", "items": [{ "title": "Design", "body": "Clear interfaces." }, { "title": "Development", "body": "Reliable React projects." }] } },
+    { "id": "gallery", "type": "Gallery", "slot": "content", "override": false, "properties": { "title": "Work", "body": "Images generated from Gallery.", "images": [{ "src": "https://picsum.photos/seed/buildotron/800/500", "alt": "Abstract project placeholder" }] } },
+    { "id": "faq", "type": "FAQ", "slot": "content", "override": false, "properties": { "title": "Questions", "body": "An interactive FAQ.", "questions": [{ "question": "Is this project autonomous?", "answer": "Yes, it has its own package and source files." }] } },
+    { "id": "cta", "type": "CTA", "slot": "conversion", "override": false, "properties": { "title": "Start a project", "body": "The generated CTA keeps its configured link.", "actionLabel": "Contact", "actionHref": "#contact" } },
+    { "id": "footer", "type": "Footer", "slot": "footer", "override": false, "properties": { "title": "Studio Demo", "body": "Generated footer", "links": [{ "label": "Legal", "href": "/legal" }] } }
+  ]
+}

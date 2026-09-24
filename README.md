@@ -52,8 +52,9 @@ Le détail des objectifs et critères de validation se trouve dans [la roadmap](
 | 3.5 — Design System | Vérifié localement        | Couleurs, typographies, espacements, rayons et ombres centralisés dans le package partagé et utilisés par le Builder ; build validé.               |
 | 4 — Primitives      | Vérifié localement        | Button, Text, Image et Card disponibles dans le package partagé ; build validé, validation visuelle complète à faire.                              |
 | 5 — Sections        | OK                        | Sept plugins, vignettes, rendus, formulaires CMS et contrôle commun avant export validés dans le navigateur.                                       |
-| 6 — Blueprints      | En cours                  | Sélection des trois recettes validée ; contenus initiaux propres à chaque Blueprint prêts à valider.                                               |
-| 7 et suivants       | À faire                   | Générateur React, CMS puis BIOGRIND.                                                                                                               |
+| 6 — Blueprints      | OK                        | Sélection, structure, contenus initiaux et indépendance des trois recettes validés dans le navigateur.                                             |
+| 7 — Code Generator  | En cours                  | Export autonome et sept rendus validés ; contrôle bloquant avant génération prêt à vérifier.                                                       |
+| 8 et suivants       | À faire                   | Core CMS puis BIOGRIND.                                                                                                                            |
 
 ## Essayer le Builder
 
@@ -81,4 +82,5 @@ Le [parcours de validation du CTA](docs/testing/cta-validation.md) a été confi
 - Jalon 3.5 — vérifié localement : tokens du Design System centralisés et build OK.
 - Jalon 4 — vérifié localement : quatre Primitives disponibles et build OK ; validation visuelle complète restante.
 - Jalon 5 — OK : les sept plugins, leurs formulaires de contenu et le contrôle commun avant export sont validés dans le navigateur.
-- Jalon 6 — en cours : registre et sélection des trois Blueprints validés ; [contenus initiaux propres à chaque recette à valider](docs/testing/blueprint-content-validation.md).
+- Jalon 6 — OK : registre, sélection et contenus indépendants des trois Blueprints validés dans le navigateur.
+- Jalon 7 — en cours : export autonome et rendu des sept sections validés ; [contrôle avant génération à valider](docs/testing/generator-preflight-validation.md).

@@ -165,6 +165,8 @@ Première tranche réalisée : un registre versionné décrit Product Landing, C
 
 Chaque Blueprint fournit désormais des contenus de départ adaptés à son usage. Ces données sont clonées lors de l'instanciation : modifier un projet ne peut pas altérer la recette ni les prochains projets créés. Le parcours manuel est dans `docs/testing/blueprint-content-validation.md` et reste à confirmer.
 
+Le parcours des contenus propres aux recettes a été confirmé dans le navigateur. Le jalon 6 est validé.
+
 ## Milestone 7 — Code Generator
 
 Créer:
@@ -178,6 +180,12 @@ Créer:
 Premier export.
 
 Pour le premier essai, générer le projet React dans un dossier dédié du dépôt afin de pouvoir examiner les fichiers et exécuter son build avant la livraison en ZIP.
+
+Première tranche réalisée : le package `@buildotron/generator` transforme un projet JSON en dix fichiers de Starter React à l'aide de Handlebars. La commande `npm run generate -- <source.json> <dossier>` produit le projet dans le dossier choisi. Le premier résultat a été généré dans `projects/generated/product-landing`, ses dépendances ont été installées et son build de production a réussi. Le branchement au bouton du Builder, la validation automatique du pipeline et le ZIP restent à réaliser.
+
+Le premier export autonome a été confirmé hors des sources du Builder. Le Starter généré possède maintenant un registre local qui rend les données des sept types de sections. Un projet dédié, `projects/generator-validation.json`, a permis de confirmer leurs rendus dans une seule page. Les noms techniques des sections, repérés pendant cette validation, ont été retirés du site généré.
+
+La commande exécute maintenant un contrôle avant génération et refuse les versions, sections ou contenus non exportables avant d'écrire les fichiers. Le parcours manuel est dans `docs/testing/generator-preflight-validation.md` et reste à confirmer.
 
 ## Milestone 8 — Core CMS
 

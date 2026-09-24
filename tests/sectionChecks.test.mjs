@@ -12,6 +12,9 @@ const sample = readFileSync(
 
 test('section check reports plugin blockers and clears them as content is fixed', () => {
   const project = parseProjectJson(sample)
+  project.sections.find(
+    (section) => section.type === 'CTA',
+  ).properties.actionHref = ''
   assert.match(checkSectionsForExport(project)[0].message, /lien du bouton/)
 
   project.sections.find(

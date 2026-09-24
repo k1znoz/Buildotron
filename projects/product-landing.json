@@ -11,8 +11,10 @@
       "slot": "hero",
       "override": false,
       "properties": {
-        "title": "A clear starting point for your product.",
-        "body": "A structural preview of the selected Blueprint."
+        "title": "Present your product with a clear promise.",
+        "body": "Explain the main benefit and guide visitors to the next step.",
+        "actionLabel": "Discover the product",
+        "actionHref": "#features"
       }
     },
     {
@@ -21,8 +23,13 @@
       "slot": "content",
       "override": false,
       "properties": {
-        "title": "Features",
-        "body": "Describe your key benefits."
+        "title": "Why choose this product?",
+        "body": "Highlight the benefits that matter most to your customers.",
+        "items": [
+          { "title": "Fast setup", "body": "Describe the first benefit." },
+          { "title": "Flexible design", "body": "Describe the second benefit." },
+          { "title": "Ready to grow", "body": "Describe the third benefit." }
+        ]
       }
     },
     {
@@ -31,8 +38,10 @@
       "slot": "conversion",
       "override": false,
       "properties": {
-        "title": "Get started",
-        "body": "Invite visitors to take action."
+        "title": "Ready to get started?",
+        "body": "Give visitors one clear action to continue.",
+        "actionLabel": "Contact us",
+        "actionHref": "#contact"
       }
     }
   ]
