@@ -11,8 +11,10 @@
   },
   "dependencies": {
     "@buildotron/design-system": "0.0.0",
+    "@buildotron/generator": "0.0.0",
     "@buildotron/plugin-sdk": "0.0.0",
     "@buildotron/plugins": "0.0.0",
+    "jszip": "^3.10.1",
     "react": "19.2.8",
     "react-dom": "19.2.8"
   },

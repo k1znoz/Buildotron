@@ -16,6 +16,7 @@ import {
 } from './projectActions'
 import { parseProjectJson, serializeProject } from './projectJson'
 import { checkSectionsForExport } from './sectionChecks'
+import { createProjectArchive, projectArchiveName } from './projectExport'
 import type { Project, SectionType, Slot } from './project'
 import { blueprints } from '../../../blueprints/index.ts'
 import type { BlueprintId } from '../../../blueprints/index.ts'
@@ -44,6 +45,7 @@ function App() {
   )
   const [message, setMessage] = useState('')
   const [showSectionChecks, setShowSectionChecks] = useState(false)
+  const [exporting, setExporting] = useState(false)
   const sectionIssues = showSectionChecks
     ? checkSectionsForExport(project)
     : null
@@ -270,6 +272,37 @@ function App() {
     }
   }
 
+  async function exportReact() {
+    const issues = checkSectionsForExport(project)
+    setShowSectionChecks(true)
+    if (issues.length > 0) {
+      setMessage(`Export refusé : ${issues.length} problème(s) à corriger.`)
+      return
+    }
+
+    setExporting(true)
+    try {
+      const archive = await createProjectArchive(project)
+      const url = URL.createObjectURL(archive)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = projectArchiveName(project)
+      document.body.append(link)
+      link.click()
+      link.remove()
+      window.addEventListener('pagehide', () => URL.revokeObjectURL(url), {
+        once: true,
+      })
+      setMessage(`Export React « ${link.download} » téléchargé.`)
+    } catch (error) {
+      setMessage(
+        `Export refusé : ${error instanceof Error ? error.message : 'erreur inconnue'}`,
+      )
+    } finally {
+      setExporting(false)
+    }
+  }
+
   return (
     <main className="builder-shell" aria-label="Buildotron Builder">
       <Toolbar
@@ -278,6 +311,8 @@ function App() {
         onSave={save}
         onOpen={open}
         onCheckSections={() => setShowSectionChecks(true)}
+        onExport={exportReact}
+        exporting={exporting}
       />
       <div className="builder-workspace">
         <Library onAdd={add} />
@@ -396,10 +431,7 @@ function App() {
           >
             <h2 id="section-checks-title">Contrôle des sections</h2>
             {sectionIssues.length === 0 ? (
-              <p>
-                Aucun problème de section détecté. Le générateur et le CMS
-                restent à réaliser.
-              </p>
+              <p>Aucun problème détecté. Le projet peut être exporté.</p>
             ) : (
               <ul>
                 {sectionIssues.map((issue, index) => (

@@ -187,6 +187,8 @@ Le premier export autonome a été confirmé hors des sources du Builder. Le Sta
 
 La commande exécute maintenant un contrôle avant génération et refuse les versions, sections ou contenus non exportables avant d'écrire les fichiers. Le parcours manuel est dans `docs/testing/generator-preflight-validation.md` et reste à confirmer.
 
+Le contrôle bloquant en ligne de commande a été confirmé. Le Builder propose maintenant **Exporter React** : après les mêmes contrôles de sections, il génère les dix fichiers, crée une archive ZIP nommée d'après le projet et la télécharge. Le parcours manuel est dans `docs/testing/builder-react-export-validation.md` et reste à confirmer.
+
 ## Milestone 8 — Core CMS
 
 Créer:

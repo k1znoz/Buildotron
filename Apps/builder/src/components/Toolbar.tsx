@@ -7,6 +7,8 @@ type Props = {
   onSave: () => void
   onOpen: (file: File) => void
   onCheckSections: () => void
+  onExport: () => void
+  exporting: boolean
 }
 
 export function Toolbar({
@@ -15,6 +17,8 @@ export function Toolbar({
   onSave,
   onOpen,
   onCheckSections,
+  onExport,
+  exporting,
 }: Props) {
   const input = useRef<HTMLInputElement>(null)
   return (
@@ -39,12 +43,8 @@ export function Toolbar({
         <Button onClick={() => input.current?.click()}>Ouvrir JSON</Button>
         <Button onClick={onSave}>Enregistrer JSON</Button>
         <Button onClick={onCheckSections}>Contrôler les sections</Button>
-        <Button
-          variant="primary"
-          disabled
-          title="Disponible au jalon Code Generator"
-        >
-          Export React
+        <Button variant="primary" onClick={onExport} disabled={exporting}>
+          {exporting ? 'Export en cours…' : 'Exporter React'}
         </Button>
       </nav>
     </header>

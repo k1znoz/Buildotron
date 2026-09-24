@@ -5,7 +5,16 @@ export type GeneratorSection = {
   id: string
   type: string
   slot: string
-  properties: Record<string, unknown>
+  properties: {
+    title: string
+    body: string
+    actionLabel?: string
+    actionHref?: string
+    items?: unknown[]
+    images?: unknown[]
+    questions?: unknown[]
+    links?: unknown[]
+  }
 }
 
 export type GeneratorProject = {
@@ -188,7 +197,7 @@ const packageTemplate = Handlebars.compile(`{
 }
 `)
 
-function packageName(name: string): string {
+export function packageName(name: string): string {
   return (
     name
       .normalize('NFD')
