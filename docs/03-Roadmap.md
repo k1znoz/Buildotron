@@ -193,6 +193,8 @@ Le Starter généré contient maintenant ses propres configurations de build et 
 
 Ces portes qualité ont été confirmées. La commande `npm run export:verified -- <source.json> <sortie.zip>` exécute désormais la génération, `npm install`, le build, le lint et les tests dans un dossier temporaire. Elle écrit le ZIP seulement après leur réussite et nettoie toujours le dossier temporaire. Le parcours manuel est dans `docs/testing/verified-export-pipeline-validation.md` et reste à confirmer.
 
+Le pipeline d'export vérifié a été confirmé. Le jalon 7 est validé.
+
 ## Milestone 8 — Core CMS
 
 Créer:
@@ -208,6 +210,8 @@ Créer:
 -SEO
 
 Premier projet autonome.
+
+Première tranche réalisée : le package `@buildotron/core-cms` sépare le contenu éditable de la structure du projet. Il peut extraire un document de contenu, modifier le contenu d'une section connue et le réappliquer sans changer l'ordre, les identifiants, les types, les slots ou les overrides. Il refuse les ajouts, suppressions, duplications, changements de type et contenus destinés à un autre projet. Cette règle est couverte par des tests automatisés ; l'intégration dans le projet exporté reste à réaliser.
 
 ## Milestone 9 — BIOGRIND
 
