@@ -4,5 +4,15 @@
   "category": "FAQ",
   "version": "1.0.0",
   "supports": ["react"],
-  "defaultSlot": "content"
+  "defaultSlot": "content",
+  "defaults": {
+    "title": "FAQ",
+    "body": "Answer common questions.",
+    "questions": [
+      {
+        "question": "How does it work?",
+        "answer": "Explain the main steps in a few sentences."
+      }
+    ]
+  }
 }

@@ -274,6 +274,8 @@ La première tranche est engagée : le Plugin SDK expose les types du manifeste 
 
 Le modèle canonique du Builder déduit maintenant les types de sections et leurs slots par défaut de ce même catalogue. Les aperçus SVG restent dans un module destiné au navigateur afin que les tests Node puissent lire les métadonnées sans dépendre de Vite.
 
+Chaque manifeste fournit maintenant les propriétés initiales de sa section. La création d'une section ne dépend plus d'une table centrale dans le Builder. La synchronisation refuse un plugin lorsque les clés de ses valeurs initiales ne correspondent pas exactement aux champs annoncés par son schéma.
+
 Le premier périmètre concerne les plugins locaux présents au moment du build. Le chargement de code distant ou non approuvé sera étudié séparément après stabilisation de ce contrat.
 
 ### Critères de validation

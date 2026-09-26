@@ -4,5 +4,11 @@
   "category": "Hero",
   "version": "1.0.0",
   "supports": ["react"],
-  "defaultSlot": "hero"
+  "defaultSlot": "hero",
+  "defaults": {
+    "title": "A clear starting point for your product.",
+    "body": "A structural preview of the selected Blueprint.",
+    "actionLabel": "Learn more",
+    "actionHref": ""
+  }
 }

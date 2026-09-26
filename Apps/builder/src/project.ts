@@ -37,29 +37,6 @@ export type GalleryImage = { src: string; alt: string }
 export type FAQItem = { question: string; answer: string }
 export type FooterLink = { label: string; href: string }
 export type SpecificationItem = { label: string; value: string }
-export const defaultFeatureItems: FeatureItem[] = [
-  { title: 'Fast setup', body: 'Describe the first benefit.' },
-  { title: 'Flexible design', body: 'Describe the second benefit.' },
-  { title: 'Ready to grow', body: 'Describe the third benefit.' },
-]
-export const defaultFAQItems: FAQItem[] = [
-  {
-    question: 'How does it work?',
-    answer: 'Explain the main steps in a few sentences.',
-  },
-]
-export const defaultStepItems: FeatureItem[] = [
-  { title: 'First step', body: 'Describe what the user does first.' },
-  { title: 'Second step', body: 'Describe what happens next.' },
-  { title: 'Final step', body: 'Describe the expected result.' },
-]
-export const defaultSpecifications: SpecificationItem[] = [
-  { label: 'Dimensions', value: 'Add the product dimensions.' },
-  { label: 'Weight', value: 'Add the product weight.' },
-  { label: 'Materials', value: 'List the main materials.' },
-]
-export const defaultCTAActionLabel = 'Get started'
-export const defaultHeroActionLabel = 'Learn more'
 export type SectionInstance = {
   id: string
   type: SectionType
@@ -76,47 +53,27 @@ export type Project = {
   sections: SectionInstance[]
 }
 
-const defaults: Record<SectionType, SectionProperties> = {
-  Navbar: { title: 'Navigation', body: 'Links to the main pages.', links: [] },
-  Hero: {
-    title: 'A clear starting point for your product.',
-    body: 'A structural preview of the selected Blueprint.',
-    actionLabel: defaultHeroActionLabel,
-    actionHref: '',
-  },
-  Features: {
-    title: 'Features',
-    body: 'Describe your key benefits.',
-    items: defaultFeatureItems,
-  },
-  Gallery: { title: 'Gallery', body: 'Showcase your images.', images: [] },
-  Product: {
-    title: 'Our products',
-    body: 'Published products from the CMS catalog appear here.',
-  },
-  Steps: {
-    title: 'How it works',
-    body: 'Explain the process one step at a time.',
-    items: defaultStepItems,
-  },
-  Specifications: {
-    title: 'Specifications',
-    body: 'Technical information about the product.',
-    specifications: defaultSpecifications,
-  },
-  FAQ: {
-    title: 'FAQ',
-    body: 'Answer common questions.',
-    questions: defaultFAQItems,
-  },
-  CTA: {
-    title: 'Get started',
-    body: 'Invite visitors to take action.',
-    actionLabel: defaultCTAActionLabel,
-    actionHref: '',
-  },
-  Footer: { title: 'Footer', body: 'Contact and legal links.', links: [] },
-}
+const defaults = Object.fromEntries(
+  pluginCatalog.map((plugin) => [
+    plugin.manifest.name,
+    plugin.manifest.defaults,
+  ]),
+) as unknown as Record<SectionType, SectionProperties>
+
+export const defaultFeatureItems: FeatureItem[] = structuredClone(
+  defaults.Features.items ?? [],
+)
+export const defaultFAQItems: FAQItem[] = structuredClone(
+  defaults.FAQ.questions ?? [],
+)
+export const defaultStepItems: FeatureItem[] = structuredClone(
+  defaults.Steps.items ?? [],
+)
+export const defaultSpecifications: SpecificationItem[] = structuredClone(
+  defaults.Specifications.specifications ?? [],
+)
+export const defaultCTAActionLabel = defaults.CTA.actionLabel ?? ''
+export const defaultHeroActionLabel = defaults.Hero.actionLabel ?? ''
 
 function cloneProperties(properties: SectionProperties): SectionProperties {
   return structuredClone(properties)

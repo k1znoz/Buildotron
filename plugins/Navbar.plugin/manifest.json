@@ -4,5 +4,10 @@
   "category": "Navigation",
   "version": "1.0.0",
   "supports": ["react"],
-  "defaultSlot": "header"
+  "defaultSlot": "header",
+  "defaults": {
+    "title": "Navigation",
+    "body": "Links to the main pages.",
+    "links": []
+  }
 }

@@ -27,7 +27,11 @@ Le manifeste fournit l'identité et le placement du plugin :
   "category": "Hero",
   "version": "1.0.0",
   "supports": ["react"],
-  "defaultSlot": "hero"
+  "defaultSlot": "hero",
+  "defaults": {
+    "title": "A clear starting point for your product.",
+    "body": "A structural preview of the selected Blueprint."
+  }
 }
 ```
 
@@ -43,6 +47,8 @@ Le schéma décrit les propriétés éditables :
 ```
 
 Les types communs sont exposés par `@buildotron/plugin-sdk`. Les champs reconnus actuellement sont `text`, `textarea`, `url` et `list`.
+
+`defaults` contient une valeur initiale pour chaque champ du schéma, sans champ supplémentaire. Ces données sont utilisées par le Builder lorsqu'un développeur ajoute la section depuis la Library.
 
 ## Catalogue
 

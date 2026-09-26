@@ -4,5 +4,14 @@
   "category": "Content",
   "version": "1.0.0",
   "supports": ["react"],
-  "defaultSlot": "content"
+  "defaultSlot": "content",
+  "defaults": {
+    "title": "How it works",
+    "body": "Explain the process one step at a time.",
+    "items": [
+      { "title": "First step", "body": "Describe what the user does first." },
+      { "title": "Second step", "body": "Describe what happens next." },
+      { "title": "Final step", "body": "Describe the expected result." }
+    ]
+  }
 }

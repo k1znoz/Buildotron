@@ -4,5 +4,10 @@
   "category": "Footer",
   "version": "1.0.0",
   "supports": ["react"],
-  "defaultSlot": "footer"
+  "defaultSlot": "footer",
+  "defaults": {
+    "title": "Footer",
+    "body": "Contact and legal links.",
+    "links": []
+  }
 }

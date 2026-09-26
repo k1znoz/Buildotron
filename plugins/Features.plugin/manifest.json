@@ -4,5 +4,14 @@
   "category": "Content",
   "version": "1.0.0",
   "supports": ["react"],
-  "defaultSlot": "content"
+  "defaultSlot": "content",
+  "defaults": {
+    "title": "Features",
+    "body": "Describe your key benefits.",
+    "items": [
+      { "title": "Fast setup", "body": "Describe the first benefit." },
+      { "title": "Flexible design", "body": "Describe the second benefit." },
+      { "title": "Ready to grow", "body": "Describe the third benefit." }
+    ]
+  }
 }

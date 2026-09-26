@@ -4,5 +4,9 @@
   "category": "Commerce",
   "version": "1.0.0",
   "supports": ["react"],
-  "defaultSlot": "content"
+  "defaultSlot": "content",
+  "defaults": {
+    "title": "Our products",
+    "body": "Published products from the CMS catalog appear here."
+  }
 }

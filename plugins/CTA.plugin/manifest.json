@@ -4,5 +4,11 @@
   "category": "Conversion",
   "version": "1.0.0",
   "supports": ["react"],
-  "defaultSlot": "conversion"
+  "defaultSlot": "conversion",
+  "defaults": {
+    "title": "Get started",
+    "body": "Invite visitors to take action.",
+    "actionLabel": "Get started",
+    "actionHref": ""
+  }
 }

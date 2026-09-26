@@ -4,5 +4,14 @@
   "category": "Content",
   "version": "1.0.0",
   "supports": ["react"],
-  "defaultSlot": "content"
+  "defaultSlot": "content",
+  "defaults": {
+    "title": "Specifications",
+    "body": "Technical information about the product.",
+    "specifications": [
+      { "label": "Dimensions", "value": "Add the product dimensions." },
+      { "label": "Weight", "value": "Add the product weight." },
+      { "label": "Materials", "value": "List the main materials." }
+    ]
+  }
 }

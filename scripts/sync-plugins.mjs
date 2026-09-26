@@ -27,6 +27,7 @@ for (const directory of directories) {
     'version',
     'supports',
     'defaultSlot',
+    'defaults',
   ]) {
     if (manifest[key] === undefined)
       throw new Error(`${directory}: manifest.${key} est requis.`)
@@ -36,6 +37,20 @@ for (const directory of directories) {
   }
   if (!Array.isArray(schema.fields)) {
     throw new Error(`${directory}: schema.fields doit etre un tableau.`)
+  }
+  if (
+    typeof manifest.defaults !== 'object' ||
+    manifest.defaults === null ||
+    Array.isArray(manifest.defaults)
+  ) {
+    throw new Error(`${directory}: manifest.defaults doit etre un objet.`)
+  }
+  const fieldNames = schema.fields.map((field) => field.name).sort()
+  const defaultNames = Object.keys(manifest.defaults).sort()
+  if (JSON.stringify(fieldNames) !== JSON.stringify(defaultNames)) {
+    throw new Error(
+      `${directory}: les valeurs initiales doivent correspondre exactement au schema.`,
+    )
   }
   plugins.push({ directory, manifest, schema })
 }

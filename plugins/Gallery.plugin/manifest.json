@@ -4,5 +4,10 @@
   "category": "Media",
   "version": "1.0.0",
   "supports": ["react"],
-  "defaultSlot": "content"
+  "defaultSlot": "content",
+  "defaults": {
+    "title": "Gallery",
+    "body": "Showcase your images.",
+    "images": []
+  }
 }

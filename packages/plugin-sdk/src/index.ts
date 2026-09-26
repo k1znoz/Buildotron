@@ -38,6 +38,7 @@ export type PluginManifest = {
   version: string
   supports: string[]
   defaultSlot: PluginSlot
+  defaults: Record<string, unknown>
 }
 
 export type PluginFieldType = 'text' | 'textarea' | 'url' | 'list'

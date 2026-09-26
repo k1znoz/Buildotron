@@ -8,6 +8,11 @@ export const pluginCatalog = [
       version: '1.0.0',
       supports: ['react'],
       defaultSlot: 'header',
+      defaults: {
+        title: 'Navigation',
+        body: 'Links to the main pages.',
+        links: [],
+      },
     },
     schema: {
       fields: [
@@ -25,6 +30,12 @@ export const pluginCatalog = [
       version: '1.0.0',
       supports: ['react'],
       defaultSlot: 'hero',
+      defaults: {
+        title: 'A clear starting point for your product.',
+        body: 'A structural preview of the selected Blueprint.',
+        actionLabel: 'Learn more',
+        actionHref: '',
+      },
     },
     schema: {
       fields: [
@@ -43,6 +54,16 @@ export const pluginCatalog = [
       version: '1.0.0',
       supports: ['react'],
       defaultSlot: 'content',
+      defaults: {
+        title: 'FAQ',
+        body: 'Answer common questions.',
+        questions: [
+          {
+            question: 'How does it work?',
+            answer: 'Explain the main steps in a few sentences.',
+          },
+        ],
+      },
     },
     schema: {
       fields: [
@@ -60,6 +81,15 @@ export const pluginCatalog = [
       version: '1.0.0',
       supports: ['react'],
       defaultSlot: 'content',
+      defaults: {
+        title: 'Features',
+        body: 'Describe your key benefits.',
+        items: [
+          { title: 'Fast setup', body: 'Describe the first benefit.' },
+          { title: 'Flexible design', body: 'Describe the second benefit.' },
+          { title: 'Ready to grow', body: 'Describe the third benefit.' },
+        ],
+      },
     },
     schema: {
       fields: [
@@ -77,6 +107,7 @@ export const pluginCatalog = [
       version: '1.0.0',
       supports: ['react'],
       defaultSlot: 'content',
+      defaults: { title: 'Gallery', body: 'Showcase your images.', images: [] },
     },
     schema: {
       fields: [
@@ -94,6 +125,10 @@ export const pluginCatalog = [
       version: '1.0.0',
       supports: ['react'],
       defaultSlot: 'content',
+      defaults: {
+        title: 'Our products',
+        body: 'Published products from the CMS catalog appear here.',
+      },
     },
     schema: {
       fields: [
@@ -110,6 +145,15 @@ export const pluginCatalog = [
       version: '1.0.0',
       supports: ['react'],
       defaultSlot: 'content',
+      defaults: {
+        title: 'Specifications',
+        body: 'Technical information about the product.',
+        specifications: [
+          { label: 'Dimensions', value: 'Add the product dimensions.' },
+          { label: 'Weight', value: 'Add the product weight.' },
+          { label: 'Materials', value: 'List the main materials.' },
+        ],
+      },
     },
     schema: {
       fields: [
@@ -127,6 +171,15 @@ export const pluginCatalog = [
       version: '1.0.0',
       supports: ['react'],
       defaultSlot: 'content',
+      defaults: {
+        title: 'How it works',
+        body: 'Explain the process one step at a time.',
+        items: [
+          { title: 'First step', body: 'Describe what the user does first.' },
+          { title: 'Second step', body: 'Describe what happens next.' },
+          { title: 'Final step', body: 'Describe the expected result.' },
+        ],
+      },
     },
     schema: {
       fields: [
@@ -144,6 +197,12 @@ export const pluginCatalog = [
       version: '1.0.0',
       supports: ['react'],
       defaultSlot: 'conversion',
+      defaults: {
+        title: 'Get started',
+        body: 'Invite visitors to take action.',
+        actionLabel: 'Get started',
+        actionHref: '',
+      },
     },
     schema: {
       fields: [
@@ -162,6 +221,11 @@ export const pluginCatalog = [
       version: '1.0.0',
       supports: ['react'],
       defaultSlot: 'footer',
+      defaults: {
+        title: 'Footer',
+        body: 'Contact and legal links.',
+        links: [],
+      },
     },
     schema: {
       fields: [
