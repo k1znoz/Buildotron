@@ -288,6 +288,10 @@ Les mutations de listes sont également génériques dans l'application : modifi
 
 La validation du JSON canonique utilise maintenant les schémas pour normaliser et contrôler tous les champs simples. Les valeurs absentes des anciens projets viennent des `defaults` du manifeste. Les règles de sécurité des destinations et des images restent un second niveau spécialisé ; la migration des listes constitue la tranche suivante.
 
+Les listes sont maintenant normalisées par le même mécanisme : limites, sous-champs obligatoires, valeurs par défaut, URL sûres et sources d'images. Le parseur canonique ne contient plus de branche de validation propre à Hero, Features, Gallery, FAQ, Navbar, Footer, Steps ou Specifications.
+
+Le contrôle avant export utilise maintenant un registre de validateurs généré depuis les dossiers de plugins. La synchronisation exige la présence du validateur conventionnel de chaque plugin et adapte sa signature dans le fichier généré. `sectionChecks.ts` ne contient plus de chaîne conditionnelle par type.
+
 Le premier périmètre concerne les plugins locaux présents au moment du build. Le chargement de code distant ou non approuvé sera étudié séparément après stabilisation de ce contrat.
 
 ### Critères de validation

@@ -6,6 +6,7 @@
   "exports": {
     ".": "./src/index.ts",
     "./catalog": "./src/generatedCatalog.ts",
+    "./validators": "./src/generatedValidators.ts",
     "./styles.css": "./src/styles.css",
     "./validation": "./src/validation.ts"
   },

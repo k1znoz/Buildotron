@@ -1,12 +1,4 @@
-import {
-  defaultFeatureItems,
-  defaultFAQItems,
-  defaultStepItems,
-  defaultSpecifications,
-  defaultSlot,
-  sectionTypes,
-  slots,
-} from './project.ts'
+import { defaultSlot, sectionTypes, slots } from './project.ts'
 import type {
   Project,
   SectionInstance,
@@ -15,6 +7,7 @@ import type {
   Slot,
 } from './project.ts'
 import { isSafeHref, isSafeImageSrc } from '@buildotron/plugin-sdk'
+import type { PluginListField } from '@buildotron/plugin-sdk'
 import { pluginCatalog } from '@buildotron/plugins/catalog'
 import { blueprintIds } from '../../../blueprints/index.ts'
 import type { BlueprintId } from '../../../blueprints/index.ts'
@@ -27,6 +20,28 @@ function record(value: unknown): value is Record<string, unknown> {
 
 function nonempty(value: unknown): value is string {
   return typeof value === 'string' && value.trim().length > 0
+}
+
+function listError(label: string, type: SectionType, name: string): Error {
+  if (name === 'items')
+    return new Error(
+      `${label} : renseignez entre 1 et 12 éléments de ${type}, chacun avec un titre et un texte.`,
+    )
+  if (name === 'images')
+    return new Error(
+      `${label} : chaque image Gallery doit avoir une URL http(s) ou un chemin /... et un texte alternatif non vide (12 images maximum).`,
+    )
+  if (name === 'questions')
+    return new Error(
+      `${label} : renseignez entre 1 et 12 questions FAQ, chacune avec une question et une réponse.`,
+    )
+  if (name === 'links')
+    return new Error(
+      `${label} : chaque lien ${type} doit avoir un libellé et une URL http(s), un chemin /... ou une ancre #... (12 liens maximum).`,
+    )
+  return new Error(
+    `${label} : renseignez entre 1 et 20 caractéristiques avec un libellé et une valeur.`,
+  )
 }
 
 export function parseProjectJson(json: string): Project {
@@ -103,122 +118,51 @@ export function parseProjectJson(json: string): Project {
         }
         throw new Error(`${label} : le champ ${field.label} est invalide.`)
       }
-      Object.assign(properties, { [field.name]: fieldValue })
-    }
-    if (type === 'CTA' || type === 'Hero') {
-      const actionLabel = properties.actionLabel ?? ''
-      const actionHref = properties.actionHref ?? ''
-      if (actionHref && (!isSafeHref(actionHref) || !actionLabel.trim())) {
+      if (
+        field.type === 'url' &&
+        fieldValue.length > 0 &&
+        !isSafeHref(fieldValue)
+      ) {
         throw new Error(
           `${label} : le lien du ${type} doit être une URL http(s), un chemin /... ou une ancre #..., avec un libellé.`,
         )
       }
+      Object.assign(properties, { [field.name]: fieldValue })
     }
-    if (type === 'Features' || type === 'Steps') {
-      const items =
-        raw.properties.items ??
-        (type === 'Features' ? defaultFeatureItems : defaultStepItems)
+    for (const schemaField of definition.schema.fields) {
+      if (schemaField.type !== 'list' || !('itemFields' in schemaField))
+        continue
+      const field = schemaField as unknown as PluginListField
+      const rawItems =
+        raw.properties[field.name] ?? manifestDefaults[field.name]
       if (
-        !Array.isArray(items) ||
-        items.length < 1 ||
-        items.length > 12 ||
-        !items.every(
-          (item) => record(item) && nonempty(item.title) && nonempty(item.body),
-        )
+        !Array.isArray(rawItems) ||
+        rawItems.length < field.minItems ||
+        rawItems.length > field.maxItems
       ) {
-        throw new Error(
-          `${label} : renseignez entre 1 et 12 éléments de ${type}, chacun avec un titre et un texte.`,
-        )
+        throw listError(label, type, field.name)
       }
-      properties.items = items.map((item) => ({
-        title: item.title as string,
-        body: item.body as string,
-      }))
-    }
-    if (type === 'Gallery') {
-      const images = raw.properties.images ?? []
-      if (
-        !Array.isArray(images) ||
-        images.length > 12 ||
-        !images.every(
-          (image) =>
-            record(image) &&
-            typeof image.src === 'string' &&
-            isSafeImageSrc(image.src) &&
-            nonempty(image.alt),
-        )
-      ) {
-        throw new Error(
-          `${label} : chaque image Gallery doit avoir une URL http(s) ou un chemin /... et un texte alternatif non vide (12 images maximum).`,
-        )
-      }
-      properties.images = images.map((image) => ({
-        src: image.src as string,
-        alt: image.alt as string,
-      }))
-    }
-    if (type === 'FAQ') {
-      const questions = raw.properties.questions ?? defaultFAQItems
-      if (
-        !Array.isArray(questions) ||
-        questions.length < 1 ||
-        questions.length > 12 ||
-        !questions.every(
-          (item) =>
-            record(item) && nonempty(item.question) && nonempty(item.answer),
-        )
-      ) {
-        throw new Error(
-          `${label} : renseignez entre 1 et 12 questions FAQ, chacune avec une question et une réponse.`,
-        )
-      }
-      properties.questions = questions.map((item) => ({
-        question: item.question as string,
-        answer: item.answer as string,
-      }))
-    }
-    if (type === 'Footer' || type === 'Navbar') {
-      const links = raw.properties.links ?? []
-      if (
-        !Array.isArray(links) ||
-        links.length > 12 ||
-        !links.every(
-          (link) =>
-            record(link) &&
-            nonempty(link.label) &&
-            typeof link.href === 'string' &&
-            isSafeHref(link.href),
-        )
-      ) {
-        throw new Error(
-          `${label} : chaque lien ${type} doit avoir un libellé et une URL http(s), un chemin /... ou une ancre #... (12 liens maximum).`,
-        )
-      }
-      properties.links = links.map((link) => ({
-        label: link.label as string,
-        href: link.href as string,
-      }))
-    }
-    if (type === 'Specifications') {
-      const specifications =
-        raw.properties.specifications ?? defaultSpecifications
-      if (
-        !Array.isArray(specifications) ||
-        specifications.length < 1 ||
-        specifications.length > 20 ||
-        !specifications.every(
-          (item) =>
-            record(item) && nonempty(item.label) && nonempty(item.value),
-        )
-      ) {
-        throw new Error(
-          `${label} : renseignez entre 1 et 20 caractéristiques avec un libellé et une valeur.`,
-        )
-      }
-      properties.specifications = specifications.map((item) => ({
-        label: item.label as string,
-        value: item.value as string,
-      }))
+      const normalizedItems = rawItems.map((rawItem) => {
+        if (!record(rawItem)) throw listError(label, type, field.name)
+        const normalizedItem: Record<string, string> = {}
+        for (const itemField of field.itemFields) {
+          const itemValue = rawItem[itemField.name]
+          if (
+            typeof itemValue !== 'string' ||
+            (itemField.required && !itemValue.trim()) ||
+            (itemField.type === 'url' &&
+              itemValue.length > 0 &&
+              (itemField.asset === 'image'
+                ? !isSafeImageSrc(itemValue)
+                : !isSafeHref(itemValue)))
+          ) {
+            throw listError(label, type, field.name)
+          }
+          normalizedItem[itemField.name] = itemValue
+        }
+        return normalizedItem
+      })
+      Object.assign(properties, { [field.name]: normalizedItems })
     }
     return { id: raw.id, type, slot, override: raw.override, properties }
   })

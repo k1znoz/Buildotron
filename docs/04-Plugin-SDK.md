@@ -54,6 +54,10 @@ L'Inspector transmet toutes les modifications de listes par les mêmes opératio
 
 Le parseur du projet canonique lit également les champs simples depuis le schéma. Il applique les valeurs initiales du manifeste aux anciens projets et refuse les chaînes manquantes ou vides lorsque le champ est obligatoire.
 
+Il applique le même contrat aux listes. `minItems`, `maxItems`, `itemFields` et les types des sous-champs déterminent la structure acceptée. Les champs `url` utilisent la validation des destinations sûres ; `asset: image` utilise la validation renforcée des sources d'images.
+
+Chaque plugin fournit aussi `admin/<id>Content.ts` avec une fonction `validate<Nom>Content`. `plugins:sync` vérifie ce point d'entrée et génère le registre commun utilisé par le contrôle avant export.
+
 `defaults` contient une valeur initiale pour chaque champ du schéma, sans champ supplémentaire. Ces données sont utilisées par le Builder lorsqu'un développeur ajoute la section depuis la Library.
 
 ## Catalogue
