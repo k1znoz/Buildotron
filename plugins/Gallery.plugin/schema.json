@@ -1,7 +1,22 @@
 {
   "fields": [
-    { "name": "title", "type": "text", "required": true },
-    { "name": "body", "type": "textarea", "required": true },
-    { "name": "images", "type": "list", "required": true }
+    {
+      "name": "title",
+      "type": "text",
+      "required": true,
+      "label": "Titre"
+    },
+    {
+      "name": "body",
+      "type": "textarea",
+      "required": true,
+      "label": "Texte"
+    },
+    {
+      "name": "images",
+      "type": "list",
+      "required": true,
+      "label": "Images"
+    }
   ]
 }

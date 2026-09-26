@@ -276,6 +276,8 @@ Le modèle canonique du Builder déduit maintenant les types de sections et leur
 
 Chaque manifeste fournit maintenant les propriétés initiales de sa section. La création d'une section ne dépend plus d'une table centrale dans le Builder. La synchronisation refuse un plugin lorsque les clés de ses valeurs initiales ne correspondent pas exactement aux champs annoncés par son schéma.
 
+L'Inspector génère maintenant les champs simples `text`, `textarea` et `url` à partir du schéma du plugin. Chaque champ déclare son libellé, son caractère obligatoire et, si nécessaire, son texte indicatif. Les éditeurs de listes restent spécialisés pendant la prochaine tranche.
+
 Le premier périmètre concerne les plugins locaux présents au moment du build. Le chargement de code distant ou non approuvé sera étudié séparément après stabilisation de ce contrat.
 
 ### Critères de validation

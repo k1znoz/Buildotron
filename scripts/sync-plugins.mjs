@@ -39,6 +39,20 @@ for (const directory of directories) {
     throw new Error(`${directory}: schema.fields doit etre un tableau.`)
   }
   if (
+    schema.fields.some(
+      (field) =>
+        typeof field.name !== 'string' ||
+        typeof field.label !== 'string' ||
+        field.label.trim() === '' ||
+        !['text', 'textarea', 'url', 'list'].includes(field.type) ||
+        typeof field.required !== 'boolean',
+    )
+  ) {
+    throw new Error(
+      `${directory}: un champ du schema est incomplet ou inconnu.`,
+    )
+  }
+  if (
     typeof manifest.defaults !== 'object' ||
     manifest.defaults === null ||
     Array.isArray(manifest.defaults)

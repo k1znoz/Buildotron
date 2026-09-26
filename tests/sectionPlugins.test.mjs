@@ -52,6 +52,11 @@ test('Section plugin metadata matches the canonical project model', () => {
       schema.fields.every((field) => typeof field.required === 'boolean'),
     )
     assert.ok(
+      schema.fields.every(
+        (field) => typeof field.label === 'string' && field.label.length > 0,
+      ),
+    )
+    assert.ok(
       schema.fields
         .filter((field) => field.name !== 'actionHref')
         .every((field) => field.required),

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { defaultSlot, slotLabels, slots } from '../project'
 import type { SectionInstance, Slot } from '../project'
 import { Button } from '@buildotron/design-system'
+import { pluginCatalog } from '@buildotron/plugins/catalog'
 import { blueprintIds, blueprints } from '../../../../blueprints/index.ts'
 import type { BlueprintId } from '../../../../blueprints/index.ts'
 
@@ -74,6 +75,10 @@ export function Inspector({
   onOverride,
 }: Props) {
   const [imageImportError, setImageImportError] = useState<string | null>(null)
+  const fields = section
+    ? (pluginCatalog.find((plugin) => plugin.manifest.name === section.type)
+        ?.schema.fields ?? [])
+    : []
 
   function importGalleryImage(index: number, file: File) {
     const accepted = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
@@ -138,46 +143,48 @@ export function Inspector({
               <span className="field__label">Section</span>
               <span className="field__value">{section.type}</span>
             </div>
-            <label className="field">
-              <span className="field__label">Titre</span>
-              <input
-                className="field__value"
-                value={section.properties.title}
-                onChange={(event) => onProperty('title', event.target.value)}
-              />
-            </label>
-            <label className="field">
-              <span className="field__label">Texte</span>
-              <textarea
-                className="field__value"
-                rows={3}
-                value={section.properties.body}
-                onChange={(event) => onProperty('body', event.target.value)}
-              />
-            </label>
+            {fields
+              .filter((field) => field.type !== 'list')
+              .map((field) => {
+                const key = field.name as
+                  | 'title'
+                  | 'body'
+                  | 'actionLabel'
+                  | 'actionHref'
+                const value = section.properties[key] ?? ''
+                const placeholder =
+                  'placeholder' in field ? field.placeholder : undefined
+                return (
+                  <label className="field" key={field.name}>
+                    <span className="field__label">{field.label}</span>
+                    {field.type === 'textarea' ? (
+                      <textarea
+                        className="field__value"
+                        rows={3}
+                        value={value}
+                        required={field.required}
+                        placeholder={placeholder}
+                        onChange={(event) =>
+                          onProperty(key, event.target.value)
+                        }
+                      />
+                    ) : (
+                      <input
+                        className="field__value"
+                        type={field.type === 'url' ? 'text' : field.type}
+                        value={value}
+                        required={field.required}
+                        placeholder={placeholder}
+                        onChange={(event) =>
+                          onProperty(key, event.target.value)
+                        }
+                      />
+                    )}
+                  </label>
+                )
+              })}
             {(section.type === 'CTA' || section.type === 'Hero') && (
               <>
-                <label className="field">
-                  <span className="field__label">Libellé du bouton</span>
-                  <input
-                    className="field__value"
-                    value={section.properties.actionLabel ?? ''}
-                    onChange={(event) =>
-                      onProperty('actionLabel', event.target.value)
-                    }
-                  />
-                </label>
-                <label className="field">
-                  <span className="field__label">Lien du bouton</span>
-                  <input
-                    className="field__value"
-                    value={section.properties.actionHref ?? ''}
-                    onChange={(event) =>
-                      onProperty('actionHref', event.target.value)
-                    }
-                    placeholder="https://exemple.fr, /contact ou #contact"
-                  />
-                </label>
                 <p className="inspector-note">
                   {section.type === 'CTA'
                     ? "Le CTA reste désactivé tant qu'aucun lien valide n'est renseigné."

@@ -1,8 +1,29 @@
 {
   "fields": [
-    { "name": "title", "type": "text", "required": true },
-    { "name": "body", "type": "textarea", "required": true },
-    { "name": "actionLabel", "type": "text", "required": true },
-    { "name": "actionHref", "type": "url", "required": false }
+    {
+      "name": "title",
+      "type": "text",
+      "required": true,
+      "label": "Titre"
+    },
+    {
+      "name": "body",
+      "type": "textarea",
+      "required": true,
+      "label": "Texte"
+    },
+    {
+      "name": "actionLabel",
+      "type": "text",
+      "required": true,
+      "label": "Libellé du bouton"
+    },
+    {
+      "name": "actionHref",
+      "type": "url",
+      "required": false,
+      "label": "Lien du bouton",
+      "placeholder": "https://exemple.fr, /contact ou #contact"
+    }
   ]
 }

@@ -16,9 +16,9 @@ export const pluginCatalog = [
     },
     schema: {
       fields: [
-        { name: 'title', type: 'text', required: true },
-        { name: 'body', type: 'textarea', required: true },
-        { name: 'links', type: 'list', required: true },
+        { name: 'title', type: 'text', required: true, label: 'Titre' },
+        { name: 'body', type: 'textarea', required: true, label: 'Texte' },
+        { name: 'links', type: 'list', required: true, label: 'Liens' },
       ],
     },
   },
@@ -39,10 +39,21 @@ export const pluginCatalog = [
     },
     schema: {
       fields: [
-        { name: 'title', type: 'text', required: true },
-        { name: 'body', type: 'textarea', required: true },
-        { name: 'actionLabel', type: 'text', required: true },
-        { name: 'actionHref', type: 'url', required: false },
+        { name: 'title', type: 'text', required: true, label: 'Titre' },
+        { name: 'body', type: 'textarea', required: true, label: 'Texte' },
+        {
+          name: 'actionLabel',
+          type: 'text',
+          required: true,
+          label: 'Libellé du bouton',
+        },
+        {
+          name: 'actionHref',
+          type: 'url',
+          required: false,
+          label: 'Lien du bouton',
+          placeholder: 'https://exemple.fr, /contact ou #contact',
+        },
       ],
     },
   },
@@ -67,9 +78,9 @@ export const pluginCatalog = [
     },
     schema: {
       fields: [
-        { name: 'title', type: 'text', required: true },
-        { name: 'body', type: 'textarea', required: true },
-        { name: 'questions', type: 'list', required: true },
+        { name: 'title', type: 'text', required: true, label: 'Titre' },
+        { name: 'body', type: 'textarea', required: true, label: 'Texte' },
+        { name: 'questions', type: 'list', required: true, label: 'Questions' },
       ],
     },
   },
@@ -93,9 +104,9 @@ export const pluginCatalog = [
     },
     schema: {
       fields: [
-        { name: 'title', type: 'text', required: true },
-        { name: 'body', type: 'textarea', required: true },
-        { name: 'items', type: 'list', required: true },
+        { name: 'title', type: 'text', required: true, label: 'Titre' },
+        { name: 'body', type: 'textarea', required: true, label: 'Texte' },
+        { name: 'items', type: 'list', required: true, label: 'Éléments' },
       ],
     },
   },
@@ -111,9 +122,9 @@ export const pluginCatalog = [
     },
     schema: {
       fields: [
-        { name: 'title', type: 'text', required: true },
-        { name: 'body', type: 'textarea', required: true },
-        { name: 'images', type: 'list', required: true },
+        { name: 'title', type: 'text', required: true, label: 'Titre' },
+        { name: 'body', type: 'textarea', required: true, label: 'Texte' },
+        { name: 'images', type: 'list', required: true, label: 'Images' },
       ],
     },
   },
@@ -132,8 +143,8 @@ export const pluginCatalog = [
     },
     schema: {
       fields: [
-        { name: 'title', type: 'text', required: true },
-        { name: 'body', type: 'textarea', required: true },
+        { name: 'title', type: 'text', required: true, label: 'Titre' },
+        { name: 'body', type: 'textarea', required: true, label: 'Texte' },
       ],
     },
   },
@@ -157,9 +168,14 @@ export const pluginCatalog = [
     },
     schema: {
       fields: [
-        { name: 'title', type: 'text', required: true },
-        { name: 'body', type: 'textarea', required: true },
-        { name: 'specifications', type: 'list', required: true },
+        { name: 'title', type: 'text', required: true, label: 'Titre' },
+        { name: 'body', type: 'textarea', required: true, label: 'Texte' },
+        {
+          name: 'specifications',
+          type: 'list',
+          required: true,
+          label: 'Caractéristiques',
+        },
       ],
     },
   },
@@ -183,9 +199,9 @@ export const pluginCatalog = [
     },
     schema: {
       fields: [
-        { name: 'title', type: 'text', required: true },
-        { name: 'body', type: 'textarea', required: true },
-        { name: 'items', type: 'list', required: true },
+        { name: 'title', type: 'text', required: true, label: 'Titre' },
+        { name: 'body', type: 'textarea', required: true, label: 'Texte' },
+        { name: 'items', type: 'list', required: true, label: 'Éléments' },
       ],
     },
   },
@@ -206,10 +222,21 @@ export const pluginCatalog = [
     },
     schema: {
       fields: [
-        { name: 'title', type: 'text', required: true },
-        { name: 'body', type: 'textarea', required: true },
-        { name: 'actionLabel', type: 'text', required: true },
-        { name: 'actionHref', type: 'url', required: false },
+        { name: 'title', type: 'text', required: true, label: 'Titre' },
+        { name: 'body', type: 'textarea', required: true, label: 'Texte' },
+        {
+          name: 'actionLabel',
+          type: 'text',
+          required: true,
+          label: 'Libellé du bouton',
+        },
+        {
+          name: 'actionHref',
+          type: 'url',
+          required: false,
+          label: 'Lien du bouton',
+          placeholder: 'https://exemple.fr, /contact ou #contact',
+        },
       ],
     },
   },
@@ -229,9 +256,9 @@ export const pluginCatalog = [
     },
     schema: {
       fields: [
-        { name: 'title', type: 'text', required: true },
-        { name: 'body', type: 'textarea', required: true },
-        { name: 'links', type: 'list', required: true },
+        { name: 'title', type: 'text', required: true, label: 'Titre' },
+        { name: 'body', type: 'textarea', required: true, label: 'Texte' },
+        { name: 'links', type: 'list', required: true, label: 'Liens' },
       ],
     },
   },

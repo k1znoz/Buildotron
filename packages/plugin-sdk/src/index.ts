@@ -45,8 +45,10 @@ export type PluginFieldType = 'text' | 'textarea' | 'url' | 'list'
 
 export type PluginField = {
   name: string
+  label: string
   type: PluginFieldType
   required: boolean
+  placeholder?: string
 }
 
 export type PluginSchema = {
