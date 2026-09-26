@@ -1,6 +1,4 @@
 import {
-  defaultCTAActionLabel,
-  defaultHeroActionLabel,
   defaultFeatureItems,
   defaultFAQItems,
   defaultStepItems,
@@ -17,6 +15,7 @@ import type {
   Slot,
 } from './project.ts'
 import { isSafeHref, isSafeImageSrc } from '@buildotron/plugin-sdk'
+import { pluginCatalog } from '@buildotron/plugins/catalog'
 import { blueprintIds } from '../../../blueprints/index.ts'
 import type { BlueprintId } from '../../../blueprints/index.ts'
 
@@ -77,34 +76,43 @@ export function parseProjectJson(json: string): Project {
     if (slot !== defaultSlot[type] && !raw.override) {
       throw new Error(`${label} : placement hors slot sans override.`)
     }
-    if (
-      !record(raw.properties) ||
-      !nonempty(raw.properties.title) ||
-      !nonempty(raw.properties.body)
-    ) {
-      throw new Error(
-        `${label} : le titre et le texte sont obligatoires et ne peuvent pas être vides.`,
-      )
-    }
-    const properties: SectionProperties = {
-      title: raw.properties.title,
-      body: raw.properties.body,
+    if (!record(raw.properties))
+      throw new Error(`${label} : propriétés invalides.`)
+    const definition = pluginCatalog.find(
+      (plugin) => plugin.manifest.name === type,
+    )
+    if (!definition) throw new Error(`${label} : définition de plugin absente.`)
+    const properties = {} as SectionProperties
+    const manifestDefaults = definition.manifest.defaults as unknown as Record<
+      string,
+      unknown
+    >
+    for (const field of definition.schema.fields) {
+      if (field.type === 'list') continue
+      const rawValue = raw.properties[field.name]
+      const defaultValue = manifestDefaults[field.name]
+      const fieldValue = rawValue ?? defaultValue
+      if (
+        typeof fieldValue !== 'string' ||
+        (field.required && !fieldValue.trim())
+      ) {
+        if (field.name === 'title' || field.name === 'body') {
+          throw new Error(
+            `${label} : le titre et le texte sont obligatoires et ne peuvent pas être vides.`,
+          )
+        }
+        throw new Error(`${label} : le champ ${field.label} est invalide.`)
+      }
+      Object.assign(properties, { [field.name]: fieldValue })
     }
     if (type === 'CTA' || type === 'Hero') {
-      const actionLabel =
-        raw.properties.actionLabel ??
-        (type === 'CTA' ? defaultCTAActionLabel : defaultHeroActionLabel)
-      const actionHref = raw.properties.actionHref ?? ''
-      if (typeof actionLabel !== 'string' || typeof actionHref !== 'string') {
-        throw new Error(`${label} : action de ${type} invalide.`)
-      }
+      const actionLabel = properties.actionLabel ?? ''
+      const actionHref = properties.actionHref ?? ''
       if (actionHref && (!isSafeHref(actionHref) || !actionLabel.trim())) {
         throw new Error(
           `${label} : le lien du ${type} doit être une URL http(s), un chemin /... ou une ancre #..., avec un libellé.`,
         )
       }
-      properties.actionLabel = actionLabel
-      properties.actionHref = actionHref
     }
     if (type === 'Features' || type === 'Steps') {
       const items =

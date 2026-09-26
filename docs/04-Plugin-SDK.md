@@ -52,6 +52,8 @@ Une liste structurée précise `itemLabel`, `addLabel`, `minItems`, `maxItems`, 
 
 L'Inspector transmet toutes les modifications de listes par les mêmes opérations génériques. Ajouter une nouvelle famille de liste ne demande donc plus de callback React supplémentaire dans l'application.
 
+Le parseur du projet canonique lit également les champs simples depuis le schéma. Il applique les valeurs initiales du manifeste aux anciens projets et refuse les chaînes manquantes ou vides lorsque le champ est obligatoire.
+
 `defaults` contient une valeur initiale pour chaque champ du schéma, sans champ supplémentaire. Ces données sont utilisées par le Builder lorsqu'un développeur ajoute la section depuis la Library.
 
 ## Catalogue

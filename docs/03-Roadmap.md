@@ -286,6 +286,8 @@ Gallery utilise désormais ce même rendu. Son champ source déclare la capacit�
 
 Les mutations de listes sont également génériques dans l'application : modifier, ajouter ou supprimer transmet le nom du champ et les données concernées sans callback propre à Features, FAQ, Footer ou Specifications. Seule l'écriture du fichier binaire Gallery conserve un traitement dédié aux assets.
 
+La validation du JSON canonique utilise maintenant les schémas pour normaliser et contrôler tous les champs simples. Les valeurs absentes des anciens projets viennent des `defaults` du manifeste. Les règles de sécurité des destinations et des images restent un second niveau spécialisé ; la migration des listes constitue la tranche suivante.
+
 Le premier périmètre concerne les plugins locaux présents au moment du build. Le chargement de code distant ou non approuvé sera étudié séparément après stabilisation de ce contrat.
 
 ### Critères de validation
