@@ -5,6 +5,7 @@ import { Button } from '@buildotron/design-system'
 import { pluginCatalog } from '@buildotron/plugins/catalog'
 import { blueprintIds, blueprints } from '../../../../blueprints/index.ts'
 import type { BlueprintId } from '../../../../blueprints/index.ts'
+import type { PluginListField } from '@buildotron/plugin-sdk'
 
 type Props = {
   projectName: string
@@ -17,7 +18,7 @@ type Props = {
     value: string,
   ) => void
   onFeatureItem: (index: number, key: 'title' | 'body', value: string) => void
-  onAddFeatureItem: () => void
+  onAddFeatureItem: (item: { title: string; body: string }) => void
   onRemoveFeatureItem: (index: number) => void
   onGalleryImage: (index: number, key: 'src' | 'alt', value: string) => void
   onGalleryFile: (index: number, file: File) => void
@@ -79,6 +80,9 @@ export function Inspector({
     ? (pluginCatalog.find((plugin) => plugin.manifest.name === section.type)
         ?.schema.fields ?? [])
     : []
+  const itemsField = fields.find(
+    (field) => field.type === 'list' && field.name === 'items',
+  ) as PluginListField | undefined
 
   function importGalleryImage(index: number, file: File) {
     const accepted = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
@@ -192,51 +196,68 @@ export function Inspector({
                 </p>
               </>
             )}
-            {(section.type === 'Features' || section.type === 'Steps') && (
+            {itemsField && (
               <div className="feature-editor">
-                <h4>{section.type === 'Steps' ? 'Étapes' : 'Éléments'}</h4>
+                <h4>{itemsField.label}</h4>
                 {(section.properties.items ?? []).map((item, index) => (
                   <fieldset key={index} className="feature-editor__item">
                     <legend>
-                      {section.type === 'Steps' ? 'Étape' : 'Élément'}{' '}
-                      {index + 1}
+                      {itemsField.itemLabel} {index + 1}
                     </legend>
-                    <label className="field">
-                      <span className="field__label">Titre</span>
-                      <input
-                        className="field__value"
-                        value={item.title}
-                        onChange={(event) =>
-                          onFeatureItem(index, 'title', event.target.value)
-                        }
-                      />
-                    </label>
-                    <label className="field">
-                      <span className="field__label">Texte</span>
-                      <textarea
-                        className="field__value"
-                        rows={2}
-                        value={item.body}
-                        onChange={(event) =>
-                          onFeatureItem(index, 'body', event.target.value)
-                        }
-                      />
-                    </label>
+                    {itemsField.itemFields.map((itemField) => {
+                      const key = itemField.name as 'title' | 'body'
+                      return (
+                        <label className="field" key={itemField.name}>
+                          <span className="field__label">
+                            {itemField.label}
+                          </span>
+                          {itemField.type === 'textarea' ? (
+                            <textarea
+                              className="field__value"
+                              rows={2}
+                              value={item[key]}
+                              required={itemField.required}
+                              onChange={(event) =>
+                                onFeatureItem(index, key, event.target.value)
+                              }
+                            />
+                          ) : (
+                            <input
+                              className="field__value"
+                              value={item[key]}
+                              required={itemField.required}
+                              onChange={(event) =>
+                                onFeatureItem(index, key, event.target.value)
+                              }
+                            />
+                          )}
+                        </label>
+                      )
+                    })}
                     <Button
                       onClick={() => onRemoveFeatureItem(index)}
-                      disabled={section.properties.items?.length === 1}
+                      disabled={
+                        (section.properties.items?.length ?? 0) <=
+                        itemsField.minItems
+                      }
                     >
-                      Retirer{' '}
-                      {section.type === 'Steps' ? 'cette étape' : 'cet élément'}
+                      Retirer {itemsField.itemLabel.toLowerCase()}
                     </Button>
                   </fieldset>
                 ))}
                 <Button
-                  onClick={onAddFeatureItem}
-                  disabled={(section.properties.items?.length ?? 0) >= 12}
+                  onClick={() =>
+                    onAddFeatureItem({
+                      title: itemsField.defaultItem.title ?? '',
+                      body: itemsField.defaultItem.body ?? '',
+                    })
+                  }
+                  disabled={
+                    (section.properties.items?.length ?? 0) >=
+                    itemsField.maxItems
+                  }
                 >
-                  Ajouter{' '}
-                  {section.type === 'Steps' ? 'une étape' : 'un élément'}
+                  {itemsField.addLabel}
                 </Button>
               </div>
             )}

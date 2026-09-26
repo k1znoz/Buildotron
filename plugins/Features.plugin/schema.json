@@ -16,7 +16,21 @@
       "name": "items",
       "type": "list",
       "required": true,
-      "label": "Éléments"
+      "label": "Éléments",
+      "itemLabel": "Élément",
+      "addLabel": "Ajouter un élément",
+      "minItems": 1,
+      "maxItems": 12,
+      "itemFields": [
+        { "name": "title", "label": "Titre", "type": "text", "required": true },
+        {
+          "name": "body",
+          "label": "Texte",
+          "type": "textarea",
+          "required": true
+        }
+      ],
+      "defaultItem": { "title": "New feature", "body": "Describe the benefit." }
     }
   ]
 }

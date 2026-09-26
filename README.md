@@ -56,7 +56,7 @@ Le détail des objectifs et critères de validation se trouve dans [la roadmap](
 | 7 — Code Generator  | OK                        | Export React, ZIP et pipeline génération → installation → build → lint → tests validés.                                                            |
 | 8 — Core CMS        | OK                        | Projet autonome avec authentification, contenu, médias, catalogue Produits et réglages SEO validés.                                                |
 | 9 — BIOGRIND        | OK                        | Projet pilote complet avec médias, Product, Steps, Specifications, export React, CMS et rendu public validés.                                      |
-| 10 — Plugin SDK     | En cours                  | Catalogue utilisé par la Library, le modèle des sections et les champs simples de l'Inspector.                                                     |
+| 10 — Plugin SDK     | En cours                  | Catalogue utilisé par la Library, le modèle, les champs simples et les listes Features/Steps de l'Inspector.                                       |
 
 ## Essayer le Builder
 
@@ -88,4 +88,4 @@ Le [parcours de validation du CTA](docs/testing/cta-validation.md) a été confi
 - Jalon 7 — OK : génération, ZIP, portes qualité et pipeline d'export strict validés.
 - Jalon 8 — OK : projet autonome, SQLite, authentification, édition, médias, Produits et SEO validés dans le projet généré.
 - Jalon 9 — OK : [BIOGRIND](projects/biogrind-complete.buildotron.zip) valide le parcours complet du Builder jusqu'au site autonome et à son CMS.
-- Jalon 10 — en cours : catalogue relié à la Library, au modèle et aux champs simples de l'Inspector ; listes, générateur, CMS et commande de création restent à intégrer.
+- Jalon 10 — en cours : catalogue relié à la Library, au modèle et à l'Inspector ; le contrat de liste est validé par Features et Steps avant généralisation.

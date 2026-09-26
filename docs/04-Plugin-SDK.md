@@ -48,6 +48,8 @@ Le schéma décrit les propriétés éditables :
 
 Les types communs sont exposés par `@buildotron/plugin-sdk`. Les champs reconnus actuellement sont `text`, `textarea`, `url` et `list`. L'Inspector génère directement les trois premiers ; les listes utilisent encore leurs éditeurs spécialisés.
 
+Une liste structurée peut préciser `itemLabel`, `addLabel`, `minItems`, `maxItems`, `itemFields` et `defaultItem`. Features et Steps utilisent déjà ce contrat commun. Les autres familles de listes seront migrées progressivement.
+
 `defaults` contient une valeur initiale pour chaque champ du schéma, sans champ supplémentaire. Ces données sont utilisées par le Builder lorsqu'un développeur ajoute la section depuis la Library.
 
 ## Catalogue

@@ -52,6 +52,32 @@ for (const directory of directories) {
       `${directory}: un champ du schema est incomplet ou inconnu.`,
     )
   }
+  for (const field of schema.fields.filter(
+    (candidate) => candidate.type === 'list' && 'itemFields' in candidate,
+  )) {
+    if (
+      typeof field.itemLabel !== 'string' ||
+      typeof field.addLabel !== 'string' ||
+      !Number.isInteger(field.minItems) ||
+      !Number.isInteger(field.maxItems) ||
+      field.minItems < 0 ||
+      field.maxItems < field.minItems ||
+      !Array.isArray(field.itemFields) ||
+      typeof field.defaultItem !== 'object' ||
+      field.defaultItem === null
+    ) {
+      throw new Error(`${directory}: configuration de liste invalide.`)
+    }
+    const itemFieldNames = field.itemFields
+      .map((itemField) => itemField.name)
+      .sort()
+    const defaultItemNames = Object.keys(field.defaultItem).sort()
+    if (JSON.stringify(itemFieldNames) !== JSON.stringify(defaultItemNames)) {
+      throw new Error(
+        `${directory}: defaultItem doit correspondre aux sous-champs de la liste.`,
+      )
+    }
+  }
   if (
     typeof manifest.defaults !== 'object' ||
     manifest.defaults === null ||

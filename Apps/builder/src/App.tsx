@@ -429,14 +429,9 @@ function App() {
               ),
             )
           }
-          onAddFeatureItem={() =>
+          onAddFeatureItem={(item) =>
             updateFeatureItems((items) =>
-              items.length >= 12
-                ? items
-                : [
-                    ...items,
-                    { title: 'New feature', body: 'Describe the benefit.' },
-                  ],
+              items.length >= 12 ? items : [...items, item],
             )
           }
           onRemoveFeatureItem={(index) =>

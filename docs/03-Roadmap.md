@@ -278,6 +278,8 @@ Chaque manifeste fournit maintenant les propriétés initiales de sa section. La
 
 L'Inspector génère maintenant les champs simples `text`, `textarea` et `url` à partir du schéma du plugin. Chaque champ déclare son libellé, son caractère obligatoire et, si nécessaire, son texte indicatif. Les éditeurs de listes restent spécialisés pendant la prochaine tranche.
 
+Le premier contrat de liste est appliqué à Features et Steps. Le schéma décrit le libellé de la collection, les sous-champs d'un élément, le nombre minimal et maximal ainsi que le contenu d'une nouvelle entrée. Les deux plugins utilisent désormais le même rendu d'Inspector sans branche liée à leur type.
+
 Le premier périmètre concerne les plugins locaux présents au moment du build. Le chargement de code distant ou non approuvé sera étudié séparément après stabilisation de ce contrat.
 
 ### Critères de validation

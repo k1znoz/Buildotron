@@ -43,13 +43,28 @@ export type PluginManifest = {
 
 export type PluginFieldType = 'text' | 'textarea' | 'url' | 'list'
 
-export type PluginField = {
+export type PluginScalarField = {
   name: string
   label: string
-  type: PluginFieldType
+  type: Exclude<PluginFieldType, 'list'>
   required: boolean
   placeholder?: string
 }
+
+export type PluginListField = {
+  name: string
+  label: string
+  type: 'list'
+  required: boolean
+  itemLabel: string
+  addLabel: string
+  minItems: number
+  maxItems: number
+  itemFields: PluginScalarField[]
+  defaultItem: Record<string, string>
+}
+
+export type PluginField = PluginScalarField | PluginListField
 
 export type PluginSchema = {
   fields: PluginField[]
