@@ -180,54 +180,30 @@ function App() {
     }))
   }
 
-  function updateFeatureItems(
-    update: (
-      items: NonNullable<Project['sections'][number]['properties']['items']>,
-    ) => NonNullable<Project['sections'][number]['properties']['items']>,
+  function updateList(
+    name: 'items' | 'images' | 'questions' | 'links' | 'specifications',
+    update: (items: Record<string, string>[]) => Record<string, string>[],
   ) {
-    if (
-      !selected ||
-      (selected.type !== 'Features' && selected.type !== 'Steps')
-    )
-      return
+    if (!selected) return
     setProject((current) => ({
       ...current,
-      sections: current.sections.map((section) =>
-        section.id === selected.id
-          ? {
-              ...section,
-              properties: {
-                ...section.properties,
-                items: update(section.properties.items ?? []),
-              },
-            }
-          : section,
-      ),
+      sections: current.sections.map((section) => {
+        if (section.id !== selected.id) return section
+        const items = section.properties[name]
+        return {
+          ...section,
+          properties: {
+            ...section.properties,
+            [name]: update(
+              Array.isArray(items)
+                ? (items as unknown as Record<string, string>[])
+                : [],
+            ),
+          },
+        }
+      }),
     }))
   }
-
-  function updateGalleryImages(
-    update: (
-      images: NonNullable<Project['sections'][number]['properties']['images']>,
-    ) => NonNullable<Project['sections'][number]['properties']['images']>,
-  ) {
-    if (!selected || selected.type !== 'Gallery') return
-    setProject((current) => ({
-      ...current,
-      sections: current.sections.map((section) =>
-        section.id === selected.id
-          ? {
-              ...section,
-              properties: {
-                ...section.properties,
-                images: update(section.properties.images ?? []),
-              },
-            }
-          : section,
-      ),
-    }))
-  }
-
   function discardAsset(path: string | undefined) {
     if (!path?.startsWith('/assets/')) return
     setAssets((current) => {
@@ -241,79 +217,6 @@ function App() {
       delete next[path]
       return next
     })
-  }
-
-  function updateFAQItems(
-    update: (
-      questions: NonNullable<
-        Project['sections'][number]['properties']['questions']
-      >,
-    ) => NonNullable<Project['sections'][number]['properties']['questions']>,
-  ) {
-    if (!selected || selected.type !== 'FAQ') return
-    setProject((current) => ({
-      ...current,
-      sections: current.sections.map((section) =>
-        section.id === selected.id
-          ? {
-              ...section,
-              properties: {
-                ...section.properties,
-                questions: update(section.properties.questions ?? []),
-              },
-            }
-          : section,
-      ),
-    }))
-  }
-
-  function updateFooterLinks(
-    update: (
-      links: NonNullable<Project['sections'][number]['properties']['links']>,
-    ) => NonNullable<Project['sections'][number]['properties']['links']>,
-  ) {
-    if (!selected || (selected.type !== 'Footer' && selected.type !== 'Navbar'))
-      return
-    setProject((current) => ({
-      ...current,
-      sections: current.sections.map((section) =>
-        section.id === selected.id
-          ? {
-              ...section,
-              properties: {
-                ...section.properties,
-                links: update(section.properties.links ?? []),
-              },
-            }
-          : section,
-      ),
-    }))
-  }
-
-  function updateSpecifications(
-    update: (
-      items: NonNullable<
-        Project['sections'][number]['properties']['specifications']
-      >,
-    ) => NonNullable<
-      Project['sections'][number]['properties']['specifications']
-    >,
-  ) {
-    if (!selected || selected.type !== 'Specifications') return
-    setProject((current) => ({
-      ...current,
-      sections: current.sections.map((section) =>
-        section.id === selected.id
-          ? {
-              ...section,
-              properties: {
-                ...section.properties,
-                specifications: update(section.properties.specifications ?? []),
-              },
-            }
-          : section,
-      ),
-    }))
   }
 
   async function save() {
@@ -422,35 +325,43 @@ function App() {
           onName={setName}
           onBlueprint={setBlueprint}
           onProperty={setProperty}
-          onFeatureItem={(index, key, value) =>
-            updateFeatureItems((items) =>
+          onListItem={(name, index, key, value) => {
+            const listName = name as
+              | 'items'
+              | 'images'
+              | 'questions'
+              | 'links'
+              | 'specifications'
+            if (listName === 'images' && key === 'src')
+              discardAsset(selected?.properties.images?.[index]?.src)
+            updateList(listName, (items) =>
               items.map((item, position) =>
                 position === index ? { ...item, [key]: value } : item,
               ),
             )
-          }
-          onAddFeatureItem={(item) =>
-            updateFeatureItems((items) =>
-              items.length >= 12 ? items : [...items, item],
+          }}
+          onAddListItem={(name, item) =>
+            updateList(
+              name as
+                | 'items'
+                | 'images'
+                | 'questions'
+                | 'links'
+                | 'specifications',
+              (items) => [...items, item],
             )
           }
-          onRemoveFeatureItem={(index) =>
-            updateFeatureItems((items) =>
-              items.length <= 1
-                ? items
-                : items.filter((_, position) => position !== index),
-            )
-          }
-          onGalleryImage={(index, key, value) => {
-            if (
-              key === 'src' &&
-              value !== selected?.properties.images?.[index]?.src
-            )
+          onRemoveListItem={(name, index) => {
+            const listName = name as
+              | 'items'
+              | 'images'
+              | 'questions'
+              | 'links'
+              | 'specifications'
+            if (listName === 'images')
               discardAsset(selected?.properties.images?.[index]?.src)
-            updateGalleryImages((images) =>
-              images.map((image, position) =>
-                position === index ? { ...image, [key]: value } : image,
-              ),
+            updateList(listName, (items) =>
+              items.filter((_, position) => position !== index),
             )
           }}
           onGalleryFile={(index, file) => {
@@ -462,7 +373,7 @@ function App() {
               ...current,
               [path]: URL.createObjectURL(file),
             }))
-            updateGalleryImages((images) =>
+            updateList('images', (images) =>
               images.map((image, position) =>
                 position === index ? { ...image, src: path } : image,
               ),
@@ -470,72 +381,6 @@ function App() {
             setMessage('Image ajoutée aux assets du projet.')
           }}
           onGalleryFileError={(error) => setMessage(`Image refusée : ${error}`)}
-          onAddGalleryImage={(item) =>
-            updateGalleryImages((images) =>
-              images.length >= 12 ? images : [...images, item],
-            )
-          }
-          onRemoveGalleryImage={(index) => {
-            discardAsset(selected?.properties.images?.[index]?.src)
-            updateGalleryImages((images) =>
-              images.filter((_, position) => position !== index),
-            )
-          }}
-          onFAQItem={(index, key, value) =>
-            updateFAQItems((questions) =>
-              questions.map((item, position) =>
-                position === index ? { ...item, [key]: value } : item,
-              ),
-            )
-          }
-          onAddFAQItem={(item) =>
-            updateFAQItems((questions) =>
-              questions.length >= 12 ? questions : [...questions, item],
-            )
-          }
-          onRemoveFAQItem={(index) =>
-            updateFAQItems((questions) =>
-              questions.length <= 1
-                ? questions
-                : questions.filter((_, position) => position !== index),
-            )
-          }
-          onFooterLink={(index, key, value) =>
-            updateFooterLinks((links) =>
-              links.map((link, position) =>
-                position === index ? { ...link, [key]: value } : link,
-              ),
-            )
-          }
-          onAddFooterLink={(item) =>
-            updateFooterLinks((links) =>
-              links.length >= 12 ? links : [...links, item],
-            )
-          }
-          onRemoveFooterLink={(index) =>
-            updateFooterLinks((links) =>
-              links.filter((_, position) => position !== index),
-            )
-          }
-          onSpecification={(index, key, value) =>
-            updateSpecifications((items) =>
-              items.map((item, position) =>
-                position === index ? { ...item, [key]: value } : item,
-              ),
-            )
-          }
-          onAddSpecification={(item) =>
-            updateSpecifications((items) =>
-              items.length >= 20 ? items : [...items, item],
-            )
-          }
-          onRemoveSpecification={(index) =>
-            updateSpecifications((items) =>
-              items.length <= 1
-                ? items
-                : items.filter((_, position) => position !== index),
-            )
-          }
           onDuplicate={duplicate}
           onRemove={remove}
           onMove={move}

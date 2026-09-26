@@ -50,6 +50,8 @@ Les types communs sont exposés par `@buildotron/plugin-sdk`. Les champs reconnu
 
 Une liste structurée précise `itemLabel`, `addLabel`, `minItems`, `maxItems`, `itemFields` et `defaultItem`. Toutes les listes utilisent le même composant d'Inspector. Un sous-champ peut déclarer `asset: image` pour proposer la sélection d'un fichier JPEG, PNG, WebP ou GIF en plus de la saisie d'une URL.
 
+L'Inspector transmet toutes les modifications de listes par les mêmes opérations génériques. Ajouter une nouvelle famille de liste ne demande donc plus de callback React supplémentaire dans l'application.
+
 `defaults` contient une valeur initiale pour chaque champ du schéma, sans champ supplémentaire. Ces données sont utilisées par le Builder lorsqu'un développeur ajoute la section depuis la Library.
 
 ## Catalogue

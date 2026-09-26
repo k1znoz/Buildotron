@@ -284,6 +284,8 @@ Ce rendu commun couvre maintenant aussi FAQ, Navbar, Footer et Specifications. L
 
 Gallery utilise désormais ce même rendu. Son champ source déclare la capacité `asset: image`, qui ajoute la sélection d'un fichier local au champ URL sans rendre l'éditeur dépendant du type Gallery. Toutes les listes de l'Inspector sont maintenant décrites par les schémas.
 
+Les mutations de listes sont également génériques dans l'application : modifier, ajouter ou supprimer transmet le nom du champ et les données concernées sans callback propre à Features, FAQ, Footer ou Specifications. Seule l'écriture du fichier binaire Gallery conserve un traitement dédié aux assets.
+
 Le premier périmètre concerne les plugins locaux présents au moment du build. Le chargement de code distant ou non approuvé sera étudié séparément après stabilisation de ce contrat.
 
 ### Critères de validation

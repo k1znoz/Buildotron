@@ -17,27 +17,11 @@ type Props = {
     key: 'title' | 'body' | 'actionLabel' | 'actionHref',
     value: string,
   ) => void
-  onFeatureItem: (index: number, key: 'title' | 'body', value: string) => void
-  onAddFeatureItem: (item: { title: string; body: string }) => void
-  onRemoveFeatureItem: (index: number) => void
-  onGalleryImage: (index: number, key: 'src' | 'alt', value: string) => void
+  onListItem: (name: string, index: number, key: string, value: string) => void
+  onAddListItem: (name: string, item: Record<string, string>) => void
+  onRemoveListItem: (name: string, index: number) => void
   onGalleryFile: (index: number, file: File) => void
   onGalleryFileError: (message: string) => void
-  onAddGalleryImage: (item: { src: string; alt: string }) => void
-  onRemoveGalleryImage: (index: number) => void
-  onFAQItem: (index: number, key: 'question' | 'answer', value: string) => void
-  onAddFAQItem: (item: { question: string; answer: string }) => void
-  onRemoveFAQItem: (index: number) => void
-  onFooterLink: (index: number, key: 'label' | 'href', value: string) => void
-  onAddFooterLink: (item: { label: string; href: string }) => void
-  onRemoveFooterLink: (index: number) => void
-  onSpecification: (
-    index: number,
-    key: 'label' | 'value',
-    value: string,
-  ) => void
-  onAddSpecification: (item: { label: string; value: string }) => void
-  onRemoveSpecification: (index: number) => void
   onDuplicate: () => void
   onRemove: () => void
   onMove: (id: string, slot: Slot) => void
@@ -140,23 +124,11 @@ export function Inspector({
   onName,
   onBlueprint,
   onProperty,
-  onFeatureItem,
-  onAddFeatureItem,
-  onRemoveFeatureItem,
-  onGalleryImage,
+  onListItem,
+  onAddListItem,
+  onRemoveListItem,
   onGalleryFile,
   onGalleryFileError,
-  onAddGalleryImage,
-  onRemoveGalleryImage,
-  onFAQItem,
-  onAddFAQItem,
-  onRemoveFAQItem,
-  onFooterLink,
-  onAddFooterLink,
-  onRemoveFooterLink,
-  onSpecification,
-  onAddSpecification,
-  onRemoveSpecification,
   onDuplicate,
   onRemove,
   onMove,
@@ -184,52 +156,27 @@ export function Inspector({
     key: string,
     value: string,
   ) {
-    if (name === 'items') onFeatureItem(index, key as 'title' | 'body', value)
-    else if (name === 'questions')
-      onFAQItem(index, key as 'question' | 'answer', value)
-    else if (name === 'links')
-      onFooterLink(index, key as 'label' | 'href', value)
-    else if (name === 'specifications')
-      onSpecification(index, key as 'label' | 'value', value)
-    else if (name === 'images')
-      onGalleryImage(index, key as 'src' | 'alt', value)
+    onListItem(name, index, key, value)
   }
 
   function addListItem(field: PluginListField) {
-    const item = field.defaultItem
-    if (field.name === 'items')
-      onAddFeatureItem({ title: item.title ?? '', body: item.body ?? '' })
-    else if (field.name === 'questions')
-      onAddFAQItem({
-        question: item.question ?? '',
-        answer: item.answer ?? '',
-      })
-    else if (field.name === 'links')
-      onAddFooterLink({ label: item.label ?? '', href: item.href ?? '' })
-    else if (field.name === 'specifications')
-      onAddSpecification({ label: item.label ?? '', value: item.value ?? '' })
-    else if (field.name === 'images')
-      onAddGalleryImage({ src: item.src ?? '', alt: item.alt ?? '' })
+    onAddListItem(field.name, structuredClone(field.defaultItem))
   }
 
   function removeListItem(name: string, index: number) {
-    if (name === 'items') onRemoveFeatureItem(index)
-    else if (name === 'questions') onRemoveFAQItem(index)
-    else if (name === 'links') onRemoveFooterLink(index)
-    else if (name === 'specifications') onRemoveSpecification(index)
-    else if (name === 'images') onRemoveGalleryImage(index)
+    onRemoveListItem(name, index)
   }
 
   function importGalleryImage(index: number, file: File) {
     const accepted = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
     if (!accepted.includes(file.type)) {
-      const message = 'Format acceptÃƒÂ© : JPEG, PNG, WebP ou GIF.'
+      const message = 'Format accepté : JPEG, PNG, WebP ou GIF.'
       setImageImportError(message)
       onGalleryFileError(message)
       return
     }
     if (file.size > 5_000_000) {
-      const message = 'LÃ¢â‚¬â„¢image doit peser moins de 5 Mo.'
+      const message = 'L’image doit peser moins de 5 Mo.'
       setImageImportError(message)
       onGalleryFileError(message)
       return
@@ -327,8 +274,8 @@ export function Inspector({
               <>
                 <p className="inspector-note">
                   {section.type === 'CTA'
-                    ? "Le CTA reste dÃƒÂ©sactivÃƒÂ© tant qu'aucun lien valide n'est renseignÃƒÂ©."
-                    : "L'action du Hero apparaÃƒÂ®t dÃƒÂ¨s qu'un lien valide est renseignÃƒÂ©."}
+                    ? "Le CTA reste désactivé tant qu'aucun lien valide n'est renseigné."
+                    : "L'action du Hero apparaît dès qu'un lien valide est renseigné."}
                 </p>
               </>
             )}
@@ -390,7 +337,7 @@ export function Inspector({
             </label>
             {section.slot !== defaultSlot[section.type] && (
               <p className="inspector-note">
-                Placement hors du slot prÃƒÂ©vu par le Blueprint.
+                Placement hors du slot prévu par le Blueprint.
               </p>
             )}
             <div className="inspector-actions">
@@ -402,7 +349,7 @@ export function Inspector({
           </>
         ) : (
           <p className="inspector-note">
-            SÃƒÂ©lectionnez une section sur le canvas.
+            Sélectionnez une section sur le canvas.
           </p>
         )}
       </section>
