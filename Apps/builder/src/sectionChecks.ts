@@ -8,6 +8,9 @@ import {
   validateGalleryContent,
   validateHeroContent,
   validateNavbarContent,
+  validateProductContent,
+  validateStepsContent,
+  validateSpecificationsContent,
 } from '@buildotron/plugins/validation'
 
 export type SectionCheckIssue = { sectionId?: string; message: string }
@@ -60,23 +63,40 @@ export function checkSectionsForExport(project: Project): SectionCheckIssue[] {
                   body: properties.body,
                   images: properties.images ?? [],
                 })
-              : section.type === 'FAQ'
-                ? validateFAQContent({
+              : section.type === 'Product'
+                ? validateProductContent({
                     title: properties.title,
                     body: properties.body,
-                    questions: properties.questions ?? [],
                   })
-                : section.type === 'Footer'
-                  ? validateFooterContent({
+                : section.type === 'Steps'
+                  ? validateStepsContent({
                       title: properties.title,
                       body: properties.body,
-                      links: properties.links ?? [],
+                      items: properties.items ?? [],
                     })
-                  : validateNavbarContent({
-                      title: properties.title,
-                      body: properties.body,
-                      links: properties.links ?? [],
-                    })
+                  : section.type === 'Specifications'
+                    ? validateSpecificationsContent({
+                        title: properties.title,
+                        body: properties.body,
+                        specifications: properties.specifications ?? [],
+                      })
+                    : section.type === 'FAQ'
+                      ? validateFAQContent({
+                          title: properties.title,
+                          body: properties.body,
+                          questions: properties.questions ?? [],
+                        })
+                      : section.type === 'Footer'
+                        ? validateFooterContent({
+                            title: properties.title,
+                            body: properties.body,
+                            links: properties.links ?? [],
+                          })
+                        : validateNavbarContent({
+                            title: properties.title,
+                            body: properties.body,
+                            links: properties.links ?? [],
+                          })
     if (issue) {
       issues.push({
         sectionId: section.id,

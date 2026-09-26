@@ -16,6 +16,7 @@ export type GeneratorSection = {
     images?: unknown[]
     questions?: unknown[]
     links?: unknown[]
+    specifications?: unknown[]
   }
 }
 
@@ -35,6 +36,9 @@ const supportedSections = [
   'Hero',
   'Features',
   'Gallery',
+  'Product',
+  'Steps',
+  'Specifications',
   'FAQ',
   'CTA',
   'Footer',
@@ -91,10 +95,10 @@ export function validateProjectForGeneration(
     )
       issues.push(`${label} : action Hero invalide.`)
     if (
-      section.type === 'Features' &&
+      (section.type === 'Features' || section.type === 'Steps') &&
       (!Array.isArray(content.items) || content.items.length === 0)
     )
-      issues.push(`${label} : au moins un élément Features requis.`)
+      issues.push(`${label} : au moins un élément ${section.type} requis.`)
     if (
       section.type === 'Gallery' &&
       (!Array.isArray(content.images) ||
@@ -126,6 +130,19 @@ export function validateProjectForGeneration(
         ))
     )
       issues.push(`${label} : au moins un lien valide requis.`)
+    if (
+      section.type === 'Specifications' &&
+      (!Array.isArray(content.specifications) ||
+        content.specifications.length === 0 ||
+        content.specifications.some(
+          (item) =>
+            typeof item !== 'object' ||
+            item === null ||
+            !nonempty((item as { label?: unknown }).label) ||
+            !nonempty((item as { value?: unknown }).value),
+        ))
+    )
+      issues.push(`${label} : au moins une caractéristique valide requise.`)
   })
   return issues
 }
@@ -141,6 +158,7 @@ import './styles.css'
 
 const structure = structureData as ProjectStructure
 const initialContent = contentData as CmsContentDocument
+type Product = { id: string; name: string; description: string; priceCents: number; currency: string; image: string; published: boolean }
 
 function setMeta(name: string, content: string, property = false) {
   const attribute = property ? 'property' : 'name'
@@ -151,6 +169,7 @@ function setMeta(name: string, content: string, property = false) {
 
 export default function App() {
   const [content, setContent] = useState(initialContent)
+  const [products, setProducts] = useState<Product[]>([])
 
   useEffect(() => {
     fetch('/api/content')
@@ -159,6 +178,16 @@ export default function App() {
         return response.json() as Promise<CmsContentDocument>
       })
       .then(setContent)
+      .catch(() => undefined)
+  }, [])
+
+  useEffect(() => {
+    fetch('/api/products')
+      .then((response) => {
+        if (!response.ok) throw new Error('Catalogue indisponible.')
+        return response.json() as Promise<Product[]>
+      })
+      .then(setProducts)
       .catch(() => undefined)
   }, [])
 
@@ -181,7 +210,7 @@ export default function App() {
   return (
     <main>
       <h1 className="visually-hidden">{{projectName}}</h1>
-      {project.sections.map((section) => <SectionView key={section.id} section={section} />)}
+      {project.sections.map((section) => <SectionView key={section.id} section={section} products={products} />)}
     </main>
   )
 }
@@ -237,6 +266,9 @@ function validateContent(document: CmsContentDocument) {
     })
     content.links?.forEach((link, index) => {
       if (!link.label.trim() || !isSafeHref(link.href)) issues.push(section.sectionType + ' — lien ' + (index + 1) + ' : libellé et destination valides obligatoires.')
+    })
+    content.specifications?.forEach((item, index) => {
+      if (!item.label.trim() || !item.value.trim()) issues.push(section.sectionType + ' — caractéristique ' + (index + 1) + ' : libellé et valeur obligatoires.')
     })
   }
   return issues
@@ -297,7 +329,7 @@ export default function Admin() {
     })
   }
 
-  function updateItem(sectionIndex: number, group: 'items' | 'images' | 'questions' | 'links', itemIndex: number, field: string, value: string) {
+  function updateItem(sectionIndex: number, group: 'items' | 'images' | 'questions' | 'links' | 'specifications', itemIndex: number, field: string, value: string) {
     setContent((current) => {
       if (!current) return current
       const next = structuredClone(current)
@@ -466,6 +498,13 @@ export default function Admin() {
                   <label htmlFor={'link-href-' + section.sectionId + '-' + itemIndex}>Destination</label>
                   <input id={'link-href-' + section.sectionId + '-' + itemIndex} value={link.href} onChange={(event) => updateItem(index, 'links', itemIndex, 'href', event.target.value)} required />
                 </div>)}
+                {section.content.specifications?.map((item, itemIndex) => <div className="admin__group" key={itemIndex}>
+                  <h2>{'Caractéristique ' + (itemIndex + 1)}</h2>
+                  <label htmlFor={'specification-label-' + section.sectionId + '-' + itemIndex}>Libellé</label>
+                  <input id={'specification-label-' + section.sectionId + '-' + itemIndex} value={item.label} onChange={(event) => updateItem(index, 'specifications', itemIndex, 'label', event.target.value)} required />
+                  <label htmlFor={'specification-value-' + section.sectionId + '-' + itemIndex}>Valeur</label>
+                  <input id={'specification-value-' + section.sectionId + '-' + itemIndex} value={item.value} onChange={(event) => updateItem(index, 'specifications', itemIndex, 'value', event.target.value)} required />
+                </div>)}
               </fieldset>
             ))}
           </div>
@@ -520,7 +559,9 @@ const sectionsSource = `type Item = { title: string; body: string }
 type Image = { src: string; alt: string }
 type Question = { question: string; answer: string }
 type Link = { label: string; href: string }
-export type Content = { title: string; body: string; items?: Item[]; images?: Image[]; questions?: Question[]; links?: Link[]; actionLabel?: string; actionHref?: string }
+type Specification = { label: string; value: string }
+export type Product = { id: string; name: string; description: string; priceCents: number; currency: string; image: string; published: boolean }
+export type Content = { title: string; body: string; items?: Item[]; images?: Image[]; questions?: Question[]; links?: Link[]; specifications?: Specification[]; actionLabel?: string; actionHref?: string }
 export type Section = { id: string; type: string; properties: Content }
 export type ProjectContent = { sections: Section[] }
 
@@ -528,13 +569,20 @@ function Heading({ section }: { section: Section }) {
   return <><h2>{section.properties.title}</h2><p>{section.properties.body}</p></>
 }
 
-export function SectionView({ section }: { section: Section }) {
+function formatPrice(product: Product) {
+  return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: product.currency }).format(product.priceCents / 100)
+}
+
+export function SectionView({ section, products = [] }: { section: Section; products?: Product[] }) {
   const content = section.properties
   const common = <Heading section={section} />
   let details = null
 
   if (section.type === 'Features' && content.items) details = <div className="cards">{content.items.map((item, index) => <article className="card" key={index}><h3>{item.title}</h3><p>{item.body}</p></article>)}</div>
   if (section.type === 'Gallery' && content.images) details = <div className="gallery">{content.images.map((image, index) => <img key={index} src={image.src} alt={image.alt} />)}</div>
+  if (section.type === 'Product') details = products.length ? <div className="products">{products.map((product) => <article className="card product" key={product.id}>{product.image && <img src={product.image} alt={product.name} />}<div><h3>{product.name}</h3><p>{product.description}</p><p className="product__price">{formatPrice(product)}</p></div></article>)}</div> : <p>Aucun produit publié pour le moment.</p>
+  if (section.type === 'Steps' && content.items) details = <ol className="steps">{content.items.map((item, index) => <li className="card" key={index}><span className="step__number" aria-hidden="true">{index + 1}</span><div><h3>{item.title}</h3><p>{item.body}</p></div></li>)}</ol>
+  if (section.type === 'Specifications' && content.specifications) details = <dl className="specifications">{content.specifications.map((item, index) => <div key={index}><dt>{item.label}</dt><dd>{item.value}</dd></div>)}</dl>
   if (section.type === 'FAQ' && content.questions) details = <div className="faq">{content.questions.map((item, index) => <details className="card" key={index}><summary>{item.question}</summary><p>{item.answer}</p></details>)}</div>
   if ((section.type === 'Navbar' || section.type === 'Footer') && content.links) details = <nav aria-label={section.type === 'Navbar' ? 'Navigation principale' : 'Liens de pied de page'}><ul className="links">{content.links.map((link, index) => <li key={index}><a href={link.href}>{link.label}</a></li>)}</ul></nav>
   if ((section.type === 'Hero' || section.type === 'CTA') && content.actionHref) details = <a className="action" href={content.actionHref}>{content.actionLabel}</a>
@@ -620,7 +668,7 @@ const contentTest = `import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 import { test } from 'node:test'
 
-const supported = new Set(['Navbar', 'Hero', 'Features', 'Gallery', 'FAQ', 'CTA', 'Footer'])
+const supported = new Set(['Navbar', 'Hero', 'Features', 'Gallery', 'Product', 'Steps', 'Specifications', 'FAQ', 'CTA', 'Footer'])
 const structure = JSON.parse(await readFile(new URL('../src/structure.json', import.meta.url), 'utf8'))
 const content = JSON.parse(await readFile(new URL('../src/cms/content.json', import.meta.url), 'utf8'))
 
@@ -659,7 +707,7 @@ function validateSectionContent(section, initialSection) {
   const content = section.content
   if (!content || typeof content.title !== 'string' || !content.title.trim() || typeof content.body !== 'string' || !content.body.trim())
     throw new Error('Le titre et le texte de chaque section sont obligatoires.')
-  for (const group of ['items', 'images', 'questions', 'links']) {
+  for (const group of ['items', 'images', 'questions', 'links', 'specifications']) {
     const initialList = initialSection.content[group]
     if (initialList && (!Array.isArray(content[group]) || content[group].length !== initialList.length))
       throw new Error('Le CMS ne peut pas modifier le nombre d’éléments.')
@@ -672,6 +720,8 @@ function validateSectionContent(section, initialSection) {
     throw new Error('Chaque question doit avoir une réponse.')
   if (content.links?.some((link) => typeof link.label !== 'string' || !link.label.trim() || !isSafeHref(link.href)))
     throw new Error('Chaque lien doit avoir un libellé et une destination valides.')
+  if (content.specifications?.some((item) => typeof item.label !== 'string' || !item.label.trim() || typeof item.value !== 'string' || !item.value.trim()))
+    throw new Error('Chaque caractéristique doit avoir un libellé et une valeur.')
   if (section.sectionType === 'CTA' && (typeof content.actionLabel !== 'string' || !content.actionLabel.trim() || !isSafeHref(content.actionHref)))
     throw new Error('Le CTA doit avoir un libellé et un lien valides.')
   if (section.sectionType === 'Hero' && content.actionHref && (typeof content.actionLabel !== 'string' || !content.actionLabel.trim() || !isSafeHref(content.actionHref)))
@@ -1136,23 +1186,33 @@ export function packageName(name: string): string {
 export function generateReactProject(
   project: GeneratorProject,
 ): GeneratedProject {
+  const slotOrder = ['header', 'hero', 'content', 'conversion', 'footer']
+  const orderedProject = {
+    ...project,
+    sections: [...project.sections].sort(
+      (left, right) =>
+        slotOrder.indexOf(left.slot) - slotOrder.indexOf(right.slot),
+    ),
+  }
   const structure = {
-    formatVersion: project.formatVersion,
-    id: project.id,
-    name: project.name,
-    blueprint: project.blueprint,
-    theme: project.theme,
-    sections: project.sections.map((section) => ({
+    formatVersion: orderedProject.formatVersion,
+    id: orderedProject.id,
+    name: orderedProject.name,
+    blueprint: orderedProject.blueprint,
+    theme: orderedProject.theme,
+    sections: orderedProject.sections.map((section) => ({
       id: section.id,
       type: section.type,
       slot: section.slot,
       override: section.override,
     })),
   }
-  const content = createContentDocument(project)
+  const content = createContentDocument(orderedProject)
   const seo = {
-    title: project.name,
-    description: project.sections[0]?.properties.body ?? project.name,
+    title: orderedProject.name,
+    description:
+      orderedProject.sections.find((section) => section.type === 'Hero')
+        ?.properties.body ?? orderedProject.name,
     canonical: '',
     ogImage: '',
     indexable: true,
@@ -1191,7 +1251,7 @@ export function generateReactProject(
         2,
       ) + '\n',
     'vite.config.ts':
-      "import { defineConfig } from 'vite'\nimport react from '@vitejs/plugin-react'\n\nexport default defineConfig({ plugins: [react()] })\n",
+      "import { defineConfig } from 'vite'\nimport react from '@vitejs/plugin-react'\n\nexport default defineConfig({\n  plugins: [react()],\n  server: { proxy: { '/api': 'http://127.0.0.1:3000' } },\n})\n",
     'eslint.config.js': eslintConfig,
     'src/main.tsx':
       "import { StrictMode } from 'react'\nimport { createRoot } from 'react-dom/client'\nimport App from './App'\nimport Admin from './cms/Admin'\n\nconst Page = window.location.pathname === '/admin' ? Admin : App\ncreateRoot(document.getElementById('root')!).render(<StrictMode><Page /></StrictMode>)\n",
@@ -1207,10 +1267,10 @@ export function generateReactProject(
     'server/productStore.mjs': productStoreSource,
     'server/seoStore.mjs': seoStoreSource,
     'media/.gitkeep': '',
-    'src/styles.css': `:root { font-family: system-ui, sans-serif; color: #1d2935; background: #fff; }\n* { box-sizing: border-box; }\nbody { margin: 0; }\nmain { max-width: 72rem; margin: auto; }\n.section { padding: 4rem 2rem; }\n.section--hero { padding-block: 7rem; background: #eef5ee; }\n.section--navbar, .section--footer { background: #f3f6f5; }\n.cards, .gallery, .faq { display: grid; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); gap: 1rem; }\n.card { border: 1px solid #d6dfdc; border-radius: .5rem; padding: 1rem; }\n.gallery img { width: 100%; height: 14rem; object-fit: cover; border-radius: .5rem; }\n.links { display: flex; flex-wrap: wrap; gap: 1rem; padding: 0; list-style: none; }\n.action, button { display: inline-block; margin-top: 1rem; padding: .75rem 1rem; color: white; background: #0d7667; border: 0; border-radius: .25rem; cursor: pointer; }\nbutton:disabled { cursor: not-allowed; opacity: .5; }\n.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); }\n.admin { max-width: 56rem; padding: 3rem 1.5rem; }\n.admin__header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }\n.admin__eyebrow { color: #0d7667; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; }\n.admin__login { max-width: 24rem; }\n.admin__sections { display: grid; gap: 1.5rem; margin-top: 2rem; }\n.admin__section { display: grid; gap: .5rem; padding: 1.25rem; border: 1px solid #d6dfdc; border-radius: .5rem; }\n.admin__section legend { padding-inline: .5rem; font-weight: 700; }\n.admin__group { display: grid; gap: .5rem; margin-top: 1rem; padding: 1rem; background: #f3f6f5; border-radius: .35rem; }\n.admin__group h2 { margin: 0 0 .25rem; font-size: 1rem; }\n.admin label { margin-top: .5rem; font-weight: 600; }\n.admin input, .admin textarea { width: 100%; padding: .75rem; color: inherit; font: inherit; border: 1px solid #9baaa5; border-radius: .25rem; }\n.admin__file { padding: .4rem; background: white; }\n.admin__file::file-selector-button { margin-right: .75rem; padding: .65rem .9rem; color: white; background: #0d7667; border: 0; border-radius: .25rem; font: inherit; font-weight: 600; cursor: pointer; }\n.admin__file::file-selector-button:hover { background: #095f54; }\n.admin__file:focus-visible { outline: 3px solid #5eead4; outline-offset: 2px; }\n.admin__errors { position: fixed; z-index: 10; top: 1rem; right: 1rem; width: min(28rem, calc(100vw - 2rem)); max-height: calc(100vh - 2rem); overflow: auto; padding: 1rem; color: #7f1d1d; background: #fef2f2; border: 1px solid #fca5a5; border-radius: .5rem; box-shadow: 0 .75rem 2rem rgb(0 0 0 / .2); }\n.admin__errors ul { margin: .75rem 0 0; padding-left: 1.25rem; }\n.admin__errors li + li { margin-top: .5rem; }\n.admin__catalog { margin-top: 4rem; padding-top: 2rem; border-top: 2px solid #d6dfdc; }\n.admin__product { display: grid; gap: .5rem; margin-top: 1.5rem; padding: 1.25rem; background: #f3f6f5; border-radius: .5rem; }\n.admin__check { display: flex; align-items: center; gap: .5rem; }\n.admin__check input { width: auto; }\n.admin__danger { background: #991b1b; }\n.admin__notice { position: fixed; z-index: 11; right: 1rem; bottom: 1rem; width: min(28rem, calc(100vw - 2rem)); margin: 0; padding: 1rem; color: #14532d; background: #f0fdf4; border: 1px solid #86efac; border-radius: .5rem; box-shadow: 0 .75rem 2rem rgb(0 0 0 / .2); font-weight: 600; }\n.admin__status { min-height: 1.5rem; margin-top: 1rem; }\n`,
+    'src/styles.css': `:root { font-family: system-ui, sans-serif; color: #1d2935; background: #fff; }\n* { box-sizing: border-box; }\nbody { margin: 0; }\nmain { max-width: 72rem; margin: auto; }\n.section { padding: 4rem 2rem; }\n.section--hero { padding-block: 7rem; background: #eef5ee; }\n.section--navbar, .section--footer { background: #f3f6f5; }\n.cards, .gallery, .faq, .products, .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); gap: 1rem; }\n.card { border: 1px solid #d6dfdc; border-radius: .5rem; padding: 1rem; }\n.gallery img { width: 100%; height: 14rem; object-fit: cover; border-radius: .5rem; }\n.product { overflow: hidden; padding: 0; }\n.product img { width: 100%; height: 14rem; object-fit: cover; }\n.product > div { padding: 1rem; }\n.product__price { font-weight: 700; }\n.steps { padding: 0; list-style: none; }\n.steps li { display: flex; gap: 1rem; }\n.step__number { display: grid; place-items: center; width: 2rem; height: 2rem; flex: none; border-radius: 50%; color: white; background: #0d7667; font-weight: 700; }\n.specifications { display: grid; margin: 0; border-top: 1px solid #d6dfdc; }\n.specifications > div { display: grid; grid-template-columns: minmax(10rem, 1fr) 2fr; gap: 1rem; padding: .75rem 0; border-bottom: 1px solid #d6dfdc; }\n.specifications dt { font-weight: 700; }\n.specifications dd { margin: 0; }\n.links { display: flex; flex-wrap: wrap; gap: 1rem; padding: 0; list-style: none; }\n.action, button { display: inline-block; margin-top: 1rem; padding: .75rem 1rem; color: white; background: #0d7667; border: 0; border-radius: .25rem; cursor: pointer; }\nbutton:disabled { cursor: not-allowed; opacity: .5; }\n.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); }\n.admin { max-width: 56rem; padding: 3rem 1.5rem; }\n.admin__header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }\n.admin__eyebrow { color: #0d7667; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; }\n.admin__login { max-width: 24rem; }\n.admin__sections { display: grid; gap: 1.5rem; margin-top: 2rem; }\n.admin__section { display: grid; gap: .5rem; padding: 1.25rem; border: 1px solid #d6dfdc; border-radius: .5rem; }\n.admin__section legend { padding-inline: .5rem; font-weight: 700; }\n.admin__group { display: grid; gap: .5rem; margin-top: 1rem; padding: 1rem; background: #f3f6f5; border-radius: .35rem; }\n.admin__group h2 { margin: 0 0 .25rem; font-size: 1rem; }\n.admin label { margin-top: .5rem; font-weight: 600; }\n.admin input, .admin textarea { width: 100%; padding: .75rem; color: inherit; font: inherit; border: 1px solid #9baaa5; border-radius: .25rem; }\n.admin__file { padding: .4rem; background: white; }\n.admin__file::file-selector-button { margin-right: .75rem; padding: .65rem .9rem; color: white; background: #0d7667; border: 0; border-radius: .25rem; font: inherit; font-weight: 600; cursor: pointer; }\n.admin__file::file-selector-button:hover { background: #095f54; }\n.admin__file:focus-visible { outline: 3px solid #5eead4; outline-offset: 2px; }\n.admin__errors { position: fixed; z-index: 10; top: 1rem; right: 1rem; width: min(28rem, calc(100vw - 2rem)); max-height: calc(100vh - 2rem); overflow: auto; padding: 1rem; color: #7f1d1d; background: #fef2f2; border: 1px solid #fca5a5; border-radius: .5rem; box-shadow: 0 .75rem 2rem rgb(0 0 0 / .2); }\n.admin__errors ul { margin: .75rem 0 0; padding-left: 1.25rem; }\n.admin__errors li + li { margin-top: .5rem; }\n.admin__catalog { margin-top: 4rem; padding-top: 2rem; border-top: 2px solid #d6dfdc; }\n.admin__product { display: grid; gap: .5rem; margin-top: 1.5rem; padding: 1.25rem; background: #f3f6f5; border-radius: .5rem; }\n.admin__check { display: flex; align-items: center; gap: .5rem; }\n.admin__check input { width: auto; }\n.admin__danger { background: #991b1b; }\n.admin__notice { position: fixed; z-index: 11; right: 1rem; bottom: 1rem; width: min(28rem, calc(100vw - 2rem)); margin: 0; padding: 1rem; color: #14532d; background: #f0fdf4; border: 1px solid #86efac; border-radius: .5rem; box-shadow: 0 .75rem 2rem rgb(0 0 0 / .2); font-weight: 600; }\n.admin__status { min-height: 1.5rem; margin-top: 1rem; }\n`,
     'tests/content.test.mjs': contentTest,
     'tests/content-store.test.mjs': contentStoreTest,
     'tests/cms-server.test.mjs': cmsServerTest,
-    'README.md': `# ${project.name}\n\nProjet React généré par Buildotron depuis le Blueprint \`${project.blueprint}\`. Node.js 24 ou une version ultérieure est requis.\n\nLe contenu du CMS est stocké dans \`database/site.db\`. Ce fichier local est ignoré par Git. Les images envoyées depuis le CMS sont conservées dans \`media/\` : ce dossier doit être sauvegardé et conservé lors d'un déploiement.\n\n## Développement du site\n\n\`\`\`bash\nnpm install\nnpm run dev\n\`\`\`\n\n## Site et CMS local\n\nDéfinir un mot de passe d'au moins 12 caractères avant de démarrer le serveur. Sous PowerShell :\n\n\`\`\`powershell\n$env:CMS_PASSWORD = "remplacer-par-un-secret-long"\nnpm run build\nnpm start\n\`\`\`\n\nLe site est disponible sur \`http://127.0.0.1:3000\` et son administration sur \`http://127.0.0.1:3000/admin\`. Les sessions sont conservées en mémoire et invalidées au redémarrage.\n\n## Vérifications\n\n\`\`\`bash\nnpm run build\nnpm run lint\nnpm test\n\`\`\`\n`,
+    'README.md': `# ${project.name}\n\nProjet React généré par Buildotron depuis le Blueprint \`${project.blueprint}\`. Node.js 24 ou une version ultérieure est requis.\n\nLe contenu du CMS est stocké dans \`database/site.db\`. Ce fichier local est ignoré par Git. Les images envoyées depuis le CMS sont conservées dans \`media/\` : ce dossier doit être sauvegardé et conservé lors d'un déploiement.\n\n## Développement du site\n\n\`\`\`bash\nnpm install\nnpm run dev\n\`\`\`\n\nPour afficher les contenus dynamiques sur le serveur Vite, démarrer aussi le CMS avec \`npm start\` dans un second terminal. Les appels \`/api\` de Vite sont transmis au port 3000.\n\n## Site et CMS local\n\nDéfinir un mot de passe d'au moins 12 caractères avant de démarrer le serveur. Sous PowerShell :\n\n\`\`\`powershell\n$env:CMS_PASSWORD = "remplacer-par-un-secret-long"\nnpm run build\nnpm start\n\`\`\`\n\nLe site est disponible sur \`http://127.0.0.1:3000\` et son administration sur \`http://127.0.0.1:3000/admin\`. Les sessions sont conservées en mémoire et invalidées au redémarrage.\n\n## Vérifications\n\n\`\`\`bash\nnpm run build\nnpm run lint\nnpm test\n\`\`\`\n`,
   }
 }

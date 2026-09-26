@@ -5,3 +5,6 @@ export { validateGalleryContent } from '../Gallery.plugin/admin/galleryContent.t
 export { validateFAQContent } from '../FAQ.plugin/admin/faqContent.ts'
 export { validateFooterContent } from '../Footer.plugin/admin/footerContent.ts'
 export { validateNavbarContent } from '../Navbar.plugin/admin/navbarContent.ts'
+export { validateProductContent } from '../Product.plugin/admin/productContent.ts'
+export { validateStepsContent } from '../Steps.plugin/admin/stepsContent.ts'
+export { validateSpecificationsContent } from '../Specifications.plugin/admin/specificationsContent.ts'

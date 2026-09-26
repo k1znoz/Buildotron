@@ -124,6 +124,7 @@ export function Canvas({
                       images={section.properties.images}
                       questions={section.properties.questions}
                       links={section.properties.links}
+                      specifications={section.properties.specifications}
                     />
                   )}
                 </section>

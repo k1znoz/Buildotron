@@ -3,6 +3,8 @@ import {
   defaultHeroActionLabel,
   defaultFeatureItems,
   defaultFAQItems,
+  defaultStepItems,
+  defaultSpecifications,
   defaultSlot,
   sectionTypes,
   slots,
@@ -104,8 +106,10 @@ export function parseProjectJson(json: string): Project {
       properties.actionLabel = actionLabel
       properties.actionHref = actionHref
     }
-    if (type === 'Features') {
-      const items = raw.properties.items ?? defaultFeatureItems
+    if (type === 'Features' || type === 'Steps') {
+      const items =
+        raw.properties.items ??
+        (type === 'Features' ? defaultFeatureItems : defaultStepItems)
       if (
         !Array.isArray(items) ||
         items.length < 1 ||
@@ -115,7 +119,7 @@ export function parseProjectJson(json: string): Project {
         )
       ) {
         throw new Error(
-          `${label} : renseignez entre 1 et 12 éléments de Features, chacun avec un titre et un texte.`,
+          `${label} : renseignez entre 1 et 12 éléments de ${type}, chacun avec un titre et un texte.`,
         )
       }
       properties.items = items.map((item) => ({
@@ -185,6 +189,27 @@ export function parseProjectJson(json: string): Project {
       properties.links = links.map((link) => ({
         label: link.label as string,
         href: link.href as string,
+      }))
+    }
+    if (type === 'Specifications') {
+      const specifications =
+        raw.properties.specifications ?? defaultSpecifications
+      if (
+        !Array.isArray(specifications) ||
+        specifications.length < 1 ||
+        specifications.length > 20 ||
+        !specifications.every(
+          (item) =>
+            record(item) && nonempty(item.label) && nonempty(item.value),
+        )
+      ) {
+        throw new Error(
+          `${label} : renseignez entre 1 et 20 caractéristiques avec un libellé et une valeur.`,
+        )
+      }
+      properties.specifications = specifications.map((item) => ({
+        label: item.label as string,
+        value: item.value as string,
       }))
     }
     return { id: raw.id, type, slot, override: raw.override, properties }

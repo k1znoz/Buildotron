@@ -7,4 +7,5 @@ export type SectionContentProps = {
   images?: { src: string; alt: string }[]
   questions?: { question: string; answer: string }[]
   links?: { label: string; href: string }[]
+  specifications?: { label: string; value: string }[]
 }

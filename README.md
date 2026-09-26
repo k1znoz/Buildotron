@@ -55,7 +55,7 @@ Le détail des objectifs et critères de validation se trouve dans [la roadmap](
 | 6 — Blueprints      | OK                        | Sélection, structure, contenus initiaux et indépendance des trois recettes validés dans le navigateur.                                             |
 | 7 — Code Generator  | OK                        | Export React, ZIP et pipeline génération → installation → build → lint → tests validés.                                                            |
 | 8 — Core CMS        | OK                        | Projet autonome avec authentification, contenu, médias, catalogue Produits et réglages SEO validés.                                                |
-| 9 — BIOGRIND        | En cours                  | Brief initial, projet canonique et paquet ZIP avec médias locaux validés ; sections Product, Steps et Specifications encore à intégrer.            |
+| 9 — BIOGRIND        | OK                        | Projet pilote complet avec médias, Product, Steps, Specifications, export React, CMS et rendu public validés.                                      |
 
 ## Essayer le Builder
 
@@ -86,4 +86,4 @@ Le [parcours de validation du CTA](docs/testing/cta-validation.md) a été confi
 - Jalon 6 — OK : registre, sélection et contenus indépendants des trois Blueprints validés dans le navigateur.
 - Jalon 7 — OK : génération, ZIP, portes qualité et pipeline d'export strict validés.
 - Jalon 8 — OK : projet autonome, SQLite, authentification, édition, médias, Produits et SEO validés dans le projet généré.
-- Jalon 9 — en cours : [brief BIOGRIND](docs/biogrind-brief.md), projet canonique et paquet ZIP avec médias locaux validés ; intégration de Product, Steps et Specifications à poursuivre.
+- Jalon 9 — OK : [BIOGRIND](projects/biogrind-complete.buildotron.zip) valide le parcours complet du Builder jusqu'au site autonome et à son CMS.

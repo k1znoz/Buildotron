@@ -71,6 +71,10 @@ test('the generator creates a self-contained React starter from canonical data',
   assert.match(files['src/styles.css'], /position: fixed/)
   assert.match(files['src/cms/Admin.tsx'], /destination valides obligatoires/)
   assert.match(files['server/index.mjs'], /\/api\/media/)
+  assert.match(files['src/App.tsx'], /fetch\('\/api\/products'\)/)
+  assert.match(files['vite.config.ts'], /'\/api': 'http:\/\/127\.0\.0\.1:3000'/)
+  assert.match(files['src/sections.tsx'], /Aucun produit publié/)
+  assert.match(files['tests/content.test.mjs'], /'Specifications'/)
   assert.match(
     files['src/main.tsx'],
     /window\.location\.pathname === '\/admin'/,
@@ -80,6 +84,9 @@ test('the generator creates a self-contained React starter from canonical data',
     'Hero',
     'Features',
     'Gallery',
+    'Product',
+    'Steps',
+    'Specifications',
     'FAQ',
     'CTA',
     'Footer',
@@ -122,4 +129,37 @@ test('generation preflight rejects unsupported and incomplete sections', () => {
     'Section 1 : type non pris en charge.',
     'Section 2 : action CTA valide requise.',
   ])
+})
+
+test('generation orders sections by slot while preserving order inside a slot', () => {
+  const section = project.sections[0]
+  const files = generateReactProject({
+    ...project,
+    sections: [
+      { ...section, id: 'footer', type: 'Footer', slot: 'footer' },
+      { ...section, id: 'content-1', type: 'Features', slot: 'content' },
+      { ...section, id: 'header', type: 'Navbar', slot: 'header' },
+      { ...section, id: 'content-2', type: 'Steps', slot: 'content' },
+      { ...section, id: 'conversion', type: 'CTA', slot: 'conversion' },
+      { ...section, id: 'hero', type: 'Hero', slot: 'hero' },
+    ],
+  })
+  const structure = JSON.parse(files['src/structure.json'])
+  const content = JSON.parse(files['src/cms/content.json'])
+  const expected = [
+    'header',
+    'hero',
+    'content-1',
+    'content-2',
+    'conversion',
+    'footer',
+  ]
+  assert.deepEqual(
+    structure.sections.map((section) => section.id),
+    expected,
+  )
+  assert.deepEqual(
+    content.sections.map((section) => section.sectionId),
+    expected,
+  )
 })

@@ -4,7 +4,19 @@ import { sectionPreviewImages } from '@buildotron/plugins'
 
 const libraryGroups: { title: string; items: SectionType[] }[] = [
   { title: 'Navigation', items: ['Navbar'] },
-  { title: 'Sections', items: ['Hero', 'Features', 'Gallery', 'FAQ', 'CTA'] },
+  {
+    title: 'Sections',
+    items: [
+      'Hero',
+      'Features',
+      'Gallery',
+      'Product',
+      'Steps',
+      'Specifications',
+      'FAQ',
+      'CTA',
+    ],
+  },
   { title: 'Footer', items: ['Footer'] },
 ]
 

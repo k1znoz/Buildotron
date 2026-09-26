@@ -29,6 +29,13 @@ type Props = {
   onFooterLink: (index: number, key: 'label' | 'href', value: string) => void
   onAddFooterLink: () => void
   onRemoveFooterLink: (index: number) => void
+  onSpecification: (
+    index: number,
+    key: 'label' | 'value',
+    value: string,
+  ) => void
+  onAddSpecification: () => void
+  onRemoveSpecification: (index: number) => void
   onDuplicate: () => void
   onRemove: () => void
   onMove: (id: string, slot: Slot) => void
@@ -57,6 +64,9 @@ export function Inspector({
   onFooterLink,
   onAddFooterLink,
   onRemoveFooterLink,
+  onSpecification,
+  onAddSpecification,
+  onRemoveSpecification,
   onDuplicate,
   onRemove,
   onMove,
@@ -175,12 +185,15 @@ export function Inspector({
                 </p>
               </>
             )}
-            {section.type === 'Features' && (
+            {(section.type === 'Features' || section.type === 'Steps') && (
               <div className="feature-editor">
-                <h4>Éléments</h4>
+                <h4>{section.type === 'Steps' ? 'Étapes' : 'Éléments'}</h4>
                 {(section.properties.items ?? []).map((item, index) => (
                   <fieldset key={index} className="feature-editor__item">
-                    <legend>Élément {index + 1}</legend>
+                    <legend>
+                      {section.type === 'Steps' ? 'Étape' : 'Élément'}{' '}
+                      {index + 1}
+                    </legend>
                     <label className="field">
                       <span className="field__label">Titre</span>
                       <input
@@ -206,7 +219,8 @@ export function Inspector({
                       onClick={() => onRemoveFeatureItem(index)}
                       disabled={section.properties.items?.length === 1}
                     >
-                      Retirer cet élément
+                      Retirer{' '}
+                      {section.type === 'Steps' ? 'cette étape' : 'cet élément'}
                     </Button>
                   </fieldset>
                 ))}
@@ -214,7 +228,8 @@ export function Inspector({
                   onClick={onAddFeatureItem}
                   disabled={(section.properties.items?.length ?? 0) >= 12}
                 >
-                  Ajouter un élément
+                  Ajouter{' '}
+                  {section.type === 'Steps' ? 'une étape' : 'un élément'}
                 </Button>
               </div>
             )}
@@ -357,6 +372,49 @@ export function Inspector({
                   disabled={(section.properties.links?.length ?? 0) >= 12}
                 >
                   Ajouter un lien
+                </Button>
+              </div>
+            )}
+            {section.type === 'Specifications' && (
+              <div className="feature-editor">
+                <h4>Caractéristiques</h4>
+                {(section.properties.specifications ?? []).map(
+                  (item, index) => (
+                    <fieldset key={index} className="feature-editor__item">
+                      <legend>Caractéristique {index + 1}</legend>
+                      <label className="field">
+                        <span className="field__label">Libellé</span>
+                        <input
+                          className="field__value"
+                          value={item.label}
+                          onChange={(event) =>
+                            onSpecification(index, 'label', event.target.value)
+                          }
+                        />
+                      </label>
+                      <label className="field">
+                        <span className="field__label">Valeur</span>
+                        <input
+                          className="field__value"
+                          value={item.value}
+                          onChange={(event) =>
+                            onSpecification(index, 'value', event.target.value)
+                          }
+                        />
+                      </label>
+                      <Button onClick={() => onRemoveSpecification(index)}>
+                        Retirer cette caractéristique
+                      </Button>
+                    </fieldset>
+                  ),
+                )}
+                <Button
+                  onClick={onAddSpecification}
+                  disabled={
+                    (section.properties.specifications?.length ?? 0) >= 20
+                  }
+                >
+                  Ajouter une caractéristique
                 </Button>
               </div>
             )}

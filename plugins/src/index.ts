@@ -3,6 +3,9 @@ import type { ComponentType } from 'react'
 import { HeroPreview } from '../Hero.plugin/editor/HeroPreview'
 import { FeaturesPreview } from '../Features.plugin/editor/FeaturesPreview'
 import { GalleryPreview } from '../Gallery.plugin/editor/GalleryPreview'
+import { ProductPreview } from '../Product.plugin/editor/ProductPreview'
+import { StepsPreview } from '../Steps.plugin/editor/StepsPreview'
+import { SpecificationsPreview } from '../Specifications.plugin/editor/SpecificationsPreview'
 import { FAQPreview } from '../FAQ.plugin/editor/FAQPreview'
 import { CTAPreview } from '../CTA.plugin/editor/CTAPreview'
 import { FooterPreview } from '../Footer.plugin/editor/FooterPreview'
@@ -11,6 +14,9 @@ import type { SectionContentProps } from './types'
 import heroPreviewImage from '../Hero.plugin/preview.svg?url'
 import featuresPreviewImage from '../Features.plugin/preview.svg?url'
 import galleryPreviewImage from '../Gallery.plugin/preview.svg?url'
+import productPreviewImage from '../Product.plugin/preview.svg?url'
+import stepsPreviewImage from '../Steps.plugin/preview.svg?url'
+import specificationsPreviewImage from '../Specifications.plugin/preview.svg?url'
 import faqPreviewImage from '../FAQ.plugin/preview.svg?url'
 import ctaPreviewImage from '../CTA.plugin/preview.svg?url'
 import footerPreviewImage from '../Footer.plugin/preview.svg?url'
@@ -21,6 +27,9 @@ export const sectionPreviewImages: Record<string, string> = {
   Hero: heroPreviewImage,
   Features: featuresPreviewImage,
   Gallery: galleryPreviewImage,
+  Product: productPreviewImage,
+  Steps: stepsPreviewImage,
+  Specifications: specificationsPreviewImage,
   FAQ: faqPreviewImage,
   CTA: ctaPreviewImage,
   Footer: footerPreviewImage,
@@ -34,6 +43,9 @@ export const sectionPreviews: Record<
   Hero: HeroPreview,
   Features: FeaturesPreview,
   Gallery: GalleryPreview,
+  Product: ProductPreview,
+  Steps: StepsPreview,
+  Specifications: SpecificationsPreview,
   FAQ: FAQPreview,
   CTA: CTAPreview,
   Footer: FooterPreview,
@@ -49,6 +61,7 @@ export function SectionPreview({
   images,
   questions,
   links,
+  specifications,
 }: SectionContentProps & { type: string }) {
   const Preview = sectionPreviews[type]
   return Preview
@@ -61,6 +74,7 @@ export function SectionPreview({
         images,
         questions,
         links,
+        specifications,
       })
     : null
 }
@@ -77,6 +91,15 @@ export { Gallery } from '../Gallery.plugin/react/Gallery'
 export { GalleryAdminForm } from '../Gallery.plugin/admin/GalleryAdminForm'
 export { validateGalleryContent } from '../Gallery.plugin/admin/galleryContent'
 export type { GalleryContent } from '../Gallery.plugin/admin/galleryContent'
+export { Product } from '../Product.plugin/react/Product'
+export { validateProductContent } from '../Product.plugin/admin/productContent'
+export type { ProductContent } from '../Product.plugin/admin/productContent'
+export { Steps } from '../Steps.plugin/react/Steps'
+export { validateStepsContent } from '../Steps.plugin/admin/stepsContent'
+export type { StepsContent } from '../Steps.plugin/admin/stepsContent'
+export { Specifications } from '../Specifications.plugin/react/Specifications'
+export { validateSpecificationsContent } from '../Specifications.plugin/admin/specificationsContent'
+export type { SpecificationsContent } from '../Specifications.plugin/admin/specificationsContent'
 export { FAQ } from '../FAQ.plugin/react/FAQ'
 export { FAQAdminForm } from '../FAQ.plugin/admin/FAQAdminForm'
 export { validateFAQContent } from '../FAQ.plugin/admin/faqContent'

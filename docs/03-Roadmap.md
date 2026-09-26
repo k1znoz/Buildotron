@@ -246,3 +246,13 @@ L'Inspector Gallery permet maintenant de choisir un fichier JPEG, PNG, WebP ou G
 Le stockage Base64 a ensuite été remplacé par un paquet de projet `.buildotron.zip`. L'archive contient `project.json` comme source de vérité et les fichiers binaires dans `assets/`. Le Builder ouvre encore les JSON historiques. L'export React copie les médias locaux dans `public/assets/`, ce qui évite de gonfler le document canonique lorsque Gallery contient plusieurs images.
 
 Le parcours de sauvegarde, réouverture et export des médias locaux a été confirmé dans le navigateur avec `docs/testing/builder-project-package-validation.md`.
+
+La section Product est maintenant déclarée comme plugin et disponible dans la Library. Le Builder configure son titre et son texte sans dupliquer le catalogue dans le JSON. Dans le projet autonome, elle charge `/api/products` et affiche uniquement les produits publiés avec leur prix et leur image éventuelle. Son parcours a été confirmé dans le navigateur avec `docs/testing/product-section-validation.md`.
+
+La section Steps est maintenant disponible comme plugin pour représenter un processus ordonné. Ses étapes sont éditables dans le Builder et dans le CMS sans permettre au client d'en changer le nombre. Le JSON, le contrôle avant export et le générateur conservent leur ordre. Son parcours a été confirmé dans le navigateur avec `docs/testing/steps-section-validation.md`.
+
+La section Specifications structure les données techniques en couples libellé/valeur. Elle est éditable dans le Builder et dans le CMS, validée avant export et rendue comme une liste descriptive accessible. Le parcours manuel est dans `docs/testing/specifications-section-validation.md` et reste à confirmer.
+
+Le parcours Specifications et l'ordre des slots exportés ont été confirmés. Les sections Product, Steps et Specifications sont maintenant intégrées au projet BIOGRIND avec les contenus issus du brief. Le paquet `projects/biogrind-complete.buildotron.zip` réunit le JSON canonique et son image locale sans duplication Base64. Son parcours d'intégration a été confirmé dans le navigateur avec `docs/testing/biogrind-integration-validation.md`.
+
+BIOGRIND valide le parcours complet du Builder au site autonome : conception, médias, sections spécialisées, export React, CMS, catalogue et rendu public. Le jalon 9 est terminé.

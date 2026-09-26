@@ -1,0 +1,8 @@
+{
+  "id": "product",
+  "name": "Product",
+  "category": "Commerce",
+  "version": "1.0.0",
+  "supports": ["react"],
+  "defaultSlot": "content"
+}

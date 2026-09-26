@@ -1,0 +1,8 @@
+{
+  "id": "steps",
+  "name": "Steps",
+  "category": "Content",
+  "version": "1.0.0",
+  "supports": ["react"],
+  "defaultSlot": "content"
+}

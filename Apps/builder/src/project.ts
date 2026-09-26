@@ -12,6 +12,9 @@ export const sectionTypes = [
   'Hero',
   'Features',
   'Gallery',
+  'Product',
+  'Steps',
+  'Specifications',
   'FAQ',
   'CTA',
   'Footer',
@@ -23,6 +26,9 @@ export const defaultSlot: Record<SectionType, Slot> = {
   Hero: 'hero',
   Features: 'content',
   Gallery: 'content',
+  Product: 'content',
+  Steps: 'content',
+  Specifications: 'content',
   FAQ: 'content',
   CTA: 'conversion',
   Footer: 'footer',
@@ -37,11 +43,13 @@ export type SectionProperties = {
   images?: GalleryImage[]
   questions?: FAQItem[]
   links?: FooterLink[]
+  specifications?: SpecificationItem[]
 }
 export type FeatureItem = { title: string; body: string }
 export type GalleryImage = { src: string; alt: string }
 export type FAQItem = { question: string; answer: string }
 export type FooterLink = { label: string; href: string }
+export type SpecificationItem = { label: string; value: string }
 export const defaultFeatureItems: FeatureItem[] = [
   { title: 'Fast setup', body: 'Describe the first benefit.' },
   { title: 'Flexible design', body: 'Describe the second benefit.' },
@@ -52,6 +60,16 @@ export const defaultFAQItems: FAQItem[] = [
     question: 'How does it work?',
     answer: 'Explain the main steps in a few sentences.',
   },
+]
+export const defaultStepItems: FeatureItem[] = [
+  { title: 'First step', body: 'Describe what the user does first.' },
+  { title: 'Second step', body: 'Describe what happens next.' },
+  { title: 'Final step', body: 'Describe the expected result.' },
+]
+export const defaultSpecifications: SpecificationItem[] = [
+  { label: 'Dimensions', value: 'Add the product dimensions.' },
+  { label: 'Weight', value: 'Add the product weight.' },
+  { label: 'Materials', value: 'List the main materials.' },
 ]
 export const defaultCTAActionLabel = 'Get started'
 export const defaultHeroActionLabel = 'Learn more'
@@ -85,6 +103,20 @@ const defaults: Record<SectionType, SectionProperties> = {
     items: defaultFeatureItems,
   },
   Gallery: { title: 'Gallery', body: 'Showcase your images.', images: [] },
+  Product: {
+    title: 'Our products',
+    body: 'Published products from the CMS catalog appear here.',
+  },
+  Steps: {
+    title: 'How it works',
+    body: 'Explain the process one step at a time.',
+    items: defaultStepItems,
+  },
+  Specifications: {
+    title: 'Specifications',
+    body: 'Technical information about the product.',
+    specifications: defaultSpecifications,
+  },
   FAQ: {
     title: 'FAQ',
     body: 'Answer common questions.',

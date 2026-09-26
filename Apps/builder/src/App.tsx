@@ -185,7 +185,11 @@ function App() {
       items: NonNullable<Project['sections'][number]['properties']['items']>,
     ) => NonNullable<Project['sections'][number]['properties']['items']>,
   ) {
-    if (!selected || selected.type !== 'Features') return
+    if (
+      !selected ||
+      (selected.type !== 'Features' && selected.type !== 'Steps')
+    )
+      return
     setProject((current) => ({
       ...current,
       sections: current.sections.map((section) =>
@@ -279,6 +283,32 @@ function App() {
               properties: {
                 ...section.properties,
                 links: update(section.properties.links ?? []),
+              },
+            }
+          : section,
+      ),
+    }))
+  }
+
+  function updateSpecifications(
+    update: (
+      items: NonNullable<
+        Project['sections'][number]['properties']['specifications']
+      >,
+    ) => NonNullable<
+      Project['sections'][number]['properties']['specifications']
+    >,
+  ) {
+    if (!selected || selected.type !== 'Specifications') return
+    setProject((current) => ({
+      ...current,
+      sections: current.sections.map((section) =>
+        section.id === selected.id
+          ? {
+              ...section,
+              properties: {
+                ...section.properties,
+                specifications: update(section.properties.specifications ?? []),
               },
             }
           : section,
@@ -497,6 +527,27 @@ function App() {
           onRemoveFooterLink={(index) =>
             updateFooterLinks((links) =>
               links.filter((_, position) => position !== index),
+            )
+          }
+          onSpecification={(index, key, value) =>
+            updateSpecifications((items) =>
+              items.map((item, position) =>
+                position === index ? { ...item, [key]: value } : item,
+              ),
+            )
+          }
+          onAddSpecification={() =>
+            updateSpecifications((items) =>
+              items.length >= 20
+                ? items
+                : [...items, { label: 'New specification', value: 'Value' }],
+            )
+          }
+          onRemoveSpecification={(index) =>
+            updateSpecifications((items) =>
+              items.length <= 1
+                ? items
+                : items.filter((_, position) => position !== index),
             )
           }
           onDuplicate={duplicate}
