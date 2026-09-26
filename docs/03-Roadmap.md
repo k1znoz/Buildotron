@@ -282,6 +282,8 @@ Le premier contrat de liste est appliqué à Features et Steps. Le schéma décr
 
 Ce rendu commun couvre maintenant aussi FAQ, Navbar, Footer et Specifications. Leurs sous-champs, placeholders, limites et nouvelles entrées viennent de leurs schémas. Gallery reste la dernière liste spécialisée en raison de l'import de fichiers locaux.
 
+Gallery utilise désormais ce même rendu. Son champ source déclare la capacité `asset: image`, qui ajoute la sélection d'un fichier local au champ URL sans rendre l'éditeur dépendant du type Gallery. Toutes les listes de l'Inspector sont maintenant décrites par les schémas.
+
 Le premier périmètre concerne les plugins locaux présents au moment du build. Le chargement de code distant ou non approuvé sera étudié séparément après stabilisation de ce contrat.
 
 ### Critères de validation

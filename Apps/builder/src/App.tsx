@@ -470,9 +470,9 @@ function App() {
             setMessage('Image ajoutée aux assets du projet.')
           }}
           onGalleryFileError={(error) => setMessage(`Image refusée : ${error}`)}
-          onAddGalleryImage={() =>
+          onAddGalleryImage={(item) =>
             updateGalleryImages((images) =>
-              images.length >= 12 ? images : [...images, { src: '', alt: '' }],
+              images.length >= 12 ? images : [...images, item],
             )
           }
           onRemoveGalleryImage={(index) => {

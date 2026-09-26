@@ -16,7 +16,28 @@
       "name": "images",
       "type": "list",
       "required": true,
-      "label": "Images"
+      "label": "Images",
+      "itemLabel": "Image",
+      "addLabel": "Ajouter une image",
+      "minItems": 0,
+      "maxItems": 12,
+      "itemFields": [
+        {
+          "name": "src",
+          "label": "URL ou chemin",
+          "type": "url",
+          "required": true,
+          "placeholder": "https://exemple.fr/photo.jpg ou /photo.jpg",
+          "asset": "image"
+        },
+        {
+          "name": "alt",
+          "label": "Texte alternatif",
+          "type": "text",
+          "required": true
+        }
+      ],
+      "defaultItem": { "src": "", "alt": "" }
     }
   ]
 }

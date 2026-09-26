@@ -63,6 +63,14 @@ for (const directory of directories) {
       field.minItems < 0 ||
       field.maxItems < field.minItems ||
       !Array.isArray(field.itemFields) ||
+      field.itemFields.some(
+        (itemField) =>
+          typeof itemField.name !== 'string' ||
+          typeof itemField.label !== 'string' ||
+          !['text', 'textarea', 'url'].includes(itemField.type) ||
+          typeof itemField.required !== 'boolean' ||
+          (itemField.asset !== undefined && itemField.asset !== 'image'),
+      ) ||
       typeof field.defaultItem !== 'object' ||
       field.defaultItem === null
     ) {

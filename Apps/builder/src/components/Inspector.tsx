@@ -23,7 +23,7 @@ type Props = {
   onGalleryImage: (index: number, key: 'src' | 'alt', value: string) => void
   onGalleryFile: (index: number, file: File) => void
   onGalleryFileError: (message: string) => void
-  onAddGalleryImage: () => void
+  onAddGalleryImage: (item: { src: string; alt: string }) => void
   onRemoveGalleryImage: (index: number) => void
   onFAQItem: (index: number, key: 'question' | 'answer', value: string) => void
   onAddFAQItem: (item: { question: string; answer: string }) => void
@@ -51,12 +51,16 @@ function StructuredListEditor({
   onChange,
   onAdd,
   onRemove,
+  onFile,
+  fileError,
 }: {
   field: PluginListField
   items: Record<string, string>[]
   onChange: (index: number, key: string, value: string) => void
   onAdd: () => void
   onRemove: (index: number) => void
+  onFile?: (index: number, file: File) => void
+  fileError?: string | null
 }) {
   return (
     <div className="feature-editor">
@@ -67,32 +71,53 @@ function StructuredListEditor({
             {field.itemLabel} {index + 1}
           </legend>
           {field.itemFields.map((itemField) => (
-            <label className="field" key={itemField.name}>
-              <span className="field__label">{itemField.label}</span>
-              {itemField.type === 'textarea' ? (
-                <textarea
-                  className="field__value"
-                  rows={2}
-                  value={item[itemField.name] ?? ''}
-                  required={itemField.required}
-                  placeholder={itemField.placeholder}
-                  onChange={(event) =>
-                    onChange(index, itemField.name, event.target.value)
-                  }
-                />
-              ) : (
-                <input
-                  className="field__value"
-                  value={item[itemField.name] ?? ''}
-                  required={itemField.required}
-                  placeholder={itemField.placeholder}
-                  onChange={(event) =>
-                    onChange(index, itemField.name, event.target.value)
-                  }
-                />
+            <div key={itemField.name}>
+              <label className="field">
+                <span className="field__label">{itemField.label}</span>
+                {itemField.type === 'textarea' ? (
+                  <textarea
+                    className="field__value"
+                    rows={2}
+                    value={item[itemField.name] ?? ''}
+                    required={itemField.required}
+                    placeholder={itemField.placeholder}
+                    onChange={(event) =>
+                      onChange(index, itemField.name, event.target.value)
+                    }
+                  />
+                ) : (
+                  <input
+                    className="field__value"
+                    value={item[itemField.name] ?? ''}
+                    required={itemField.required}
+                    placeholder={itemField.placeholder}
+                    onChange={(event) =>
+                      onChange(index, itemField.name, event.target.value)
+                    }
+                  />
+                )}
+              </label>
+              {itemField.asset === 'image' && onFile && (
+                <label className="field">
+                  <span className="field__label">Ou choisir un fichier</span>
+                  <input
+                    className="field__value field__file"
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp,image/gif"
+                    onChange={(event) => {
+                      const file = event.target.files?.[0]
+                      if (file) onFile(index, file)
+                    }}
+                  />
+                </label>
               )}
-            </label>
+            </div>
           ))}
+          {fileError && field.name === 'images' && (
+            <p className="field__error" role="alert">
+              {fileError}
+            </p>
+          )}
           <Button
             onClick={() => onRemove(index)}
             disabled={items.length <= field.minItems}
@@ -166,6 +191,8 @@ export function Inspector({
       onFooterLink(index, key as 'label' | 'href', value)
     else if (name === 'specifications')
       onSpecification(index, key as 'label' | 'value', value)
+    else if (name === 'images')
+      onGalleryImage(index, key as 'src' | 'alt', value)
   }
 
   function addListItem(field: PluginListField) {
@@ -181,6 +208,8 @@ export function Inspector({
       onAddFooterLink({ label: item.label ?? '', href: item.href ?? '' })
     else if (field.name === 'specifications')
       onAddSpecification({ label: item.label ?? '', value: item.value ?? '' })
+    else if (field.name === 'images')
+      onAddGalleryImage({ src: item.src ?? '', alt: item.alt ?? '' })
   }
 
   function removeListItem(name: string, index: number) {
@@ -188,18 +217,19 @@ export function Inspector({
     else if (name === 'questions') onRemoveFAQItem(index)
     else if (name === 'links') onRemoveFooterLink(index)
     else if (name === 'specifications') onRemoveSpecification(index)
+    else if (name === 'images') onRemoveGalleryImage(index)
   }
 
   function importGalleryImage(index: number, file: File) {
     const accepted = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
     if (!accepted.includes(file.type)) {
-      const message = 'Format acceptÃ© : JPEG, PNG, WebP ou GIF.'
+      const message = 'Format acceptÃƒÂ© : JPEG, PNG, WebP ou GIF.'
       setImageImportError(message)
       onGalleryFileError(message)
       return
     }
     if (file.size > 5_000_000) {
-      const message = 'Lâ€™image doit peser moins de 5 Mo.'
+      const message = 'LÃ¢â‚¬â„¢image doit peser moins de 5 Mo.'
       setImageImportError(message)
       onGalleryFileError(message)
       return
@@ -297,8 +327,8 @@ export function Inspector({
               <>
                 <p className="inspector-note">
                   {section.type === 'CTA'
-                    ? "Le CTA reste dÃ©sactivÃ© tant qu'aucun lien valide n'est renseignÃ©."
-                    : "L'action du Hero apparaÃ®t dÃ¨s qu'un lien valide est renseignÃ©."}
+                    ? "Le CTA reste dÃƒÂ©sactivÃƒÂ© tant qu'aucun lien valide n'est renseignÃƒÂ©."
+                    : "L'action du Hero apparaÃƒÂ®t dÃƒÂ¨s qu'un lien valide est renseignÃƒÂ©."}
                 </p>
               </>
             )}
@@ -312,67 +342,16 @@ export function Inspector({
                 }
                 onAdd={() => addListItem(field)}
                 onRemove={(index) => removeListItem(field.name, index)}
+                onFile={
+                  field.name === 'images'
+                    ? (index, file) => importGalleryImage(index, file)
+                    : undefined
+                }
+                fileError={
+                  field.name === 'images' ? imageImportError : undefined
+                }
               />
             ))}{' '}
-            {section.type === 'Gallery' && (
-              <div className="feature-editor">
-                <h4>Images</h4>
-                {(section.properties.images ?? []).map((image, index) => (
-                  <fieldset key={index} className="feature-editor__item">
-                    <legend>Image {index + 1}</legend>
-                    <label className="field">
-                      <span className="field__label">URL ou chemin</span>
-                      <input
-                        className="field__value"
-                        value={image.src}
-                        onChange={(event) =>
-                          onGalleryImage(index, 'src', event.target.value)
-                        }
-                        placeholder="https://exemple.fr/photo.jpg ou /photo.jpg"
-                      />
-                    </label>
-                    <label className="field">
-                      <span className="field__label">
-                        Ou choisir un fichier
-                      </span>
-                      <input
-                        className="field__value field__file"
-                        type="file"
-                        accept="image/jpeg,image/png,image/webp,image/gif"
-                        onChange={(event) => {
-                          const file = event.target.files?.[0]
-                          if (file) void importGalleryImage(index, file)
-                        }}
-                      />
-                    </label>
-                    {imageImportError && (
-                      <p className="field__error" role="alert">
-                        {imageImportError}
-                      </p>
-                    )}
-                    <label className="field">
-                      <span className="field__label">Texte alternatif</span>
-                      <input
-                        className="field__value"
-                        value={image.alt}
-                        onChange={(event) =>
-                          onGalleryImage(index, 'alt', event.target.value)
-                        }
-                      />
-                    </label>
-                    <Button onClick={() => onRemoveGalleryImage(index)}>
-                      Retirer cette image
-                    </Button>
-                  </fieldset>
-                ))}
-                <Button
-                  onClick={onAddGalleryImage}
-                  disabled={(section.properties.images?.length ?? 0) >= 12}
-                >
-                  Ajouter une image
-                </Button>
-              </div>
-            )}
             <label className="field">
               <span className="field__label">Slot</span>
               <select
@@ -411,7 +390,7 @@ export function Inspector({
             </label>
             {section.slot !== defaultSlot[section.type] && (
               <p className="inspector-note">
-                Placement hors du slot prÃ©vu par le Blueprint.
+                Placement hors du slot prÃƒÂ©vu par le Blueprint.
               </p>
             )}
             <div className="inspector-actions">
@@ -423,7 +402,7 @@ export function Inspector({
           </>
         ) : (
           <p className="inspector-note">
-            SÃ©lectionnez une section sur le canvas.
+            SÃƒÂ©lectionnez une section sur le canvas.
           </p>
         )}
       </section>

@@ -48,7 +48,7 @@ Le schéma décrit les propriétés éditables :
 
 Les types communs sont exposés par `@buildotron/plugin-sdk`. Les champs reconnus actuellement sont `text`, `textarea`, `url` et `list`. L'Inspector génère directement les trois premiers ; les listes utilisent encore leurs éditeurs spécialisés.
 
-Une liste structurée précise `itemLabel`, `addLabel`, `minItems`, `maxItems`, `itemFields` et `defaultItem`. Features, Steps, FAQ, Navbar, Footer et Specifications utilisent ce contrat et le même composant d'Inspector. Gallery garde provisoirement son éditeur spécialisé pour l'import de fichiers.
+Une liste structurée précise `itemLabel`, `addLabel`, `minItems`, `maxItems`, `itemFields` et `defaultItem`. Toutes les listes utilisent le même composant d'Inspector. Un sous-champ peut déclarer `asset: image` pour proposer la sélection d'un fichier JPEG, PNG, WebP ou GIF en plus de la saisie d'une URL.
 
 `defaults` contient une valeur initiale pour chaque champ du schéma, sans champ supplémentaire. Ces données sont utilisées par le Builder lorsqu'un développeur ajoute la section depuis la Library.
 

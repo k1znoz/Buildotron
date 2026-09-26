@@ -49,6 +49,7 @@ export type PluginScalarField = {
   type: Exclude<PluginFieldType, 'list'>
   required: boolean
   placeholder?: string
+  asset?: 'image'
 }
 
 export type PluginListField = {

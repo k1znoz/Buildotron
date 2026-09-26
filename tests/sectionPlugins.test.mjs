@@ -57,7 +57,7 @@ test('Section plugin metadata matches the canonical project model', () => {
       ),
     )
     for (const field of schema.fields.filter(
-      (field) => field.type === 'list' && field.name !== 'images',
+      (field) => field.type === 'list',
     )) {
       assert.ok(Array.isArray(field.itemFields))
       assert.deepEqual(
