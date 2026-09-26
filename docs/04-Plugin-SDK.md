@@ -1,42 +1,82 @@
-Structure officielle :
+# Plugin SDK
 
+Le Plugin SDK doit permettre d'ajouter une section locale à Buildotron avec un dossier autonome et un minimum de raccords manuels.
+
+## Structure officielle
+
+```text
 MonPlugin.plugin/
+├── editor/       aperçu et champs propres au Builder
+├── admin/        validation et formulaire du CMS
+├── react/        rendu du site généré
+├── manifest.json
+├── schema.json
+├── preview.svg
+├── tests/
+└── README.md
+```
 
-editor/
-admin/
-react/
+## Contrat actuel
 
-manifest.json
-schema.json
-preview.svg
-tests/
-README.md
+Le manifeste fournit l'identité et le placement du plugin :
 
-Checklist:
+```json
+{
+  "id": "hero",
+  "name": "Hero",
+  "category": "Hero",
+  "version": "1.0.0",
+  "supports": ["react"],
+  "defaultSlot": "hero"
+}
+```
 
--Manifest.
--Schema.
--Preview SVG dans la Library.
--Editor.
--Admin.
--React.
--Tests.
+Le schéma décrit les propriétés éditables :
 
-Enfin:
+```json
+{
+  "fields": [
+    { "name": "title", "type": "text", "required": true },
+    { "name": "body", "type": "textarea", "required": true }
+  ]
+}
+```
 
-La commande.
+Les types communs sont exposés par `@buildotron/plugin-sdk`. Les champs reconnus actuellement sont `text`, `textarea`, `url` et `list`.
 
-npm run create:plugin Hero
+## Catalogue
 
-Même si elle n'existe pas encore, elle est définie.
+```bash
+npm run plugins:sync
+npm run plugins:check
+```
 
----
+`plugins:sync` parcourt les dossiers `plugins/*.plugin`, valide les fichiers obligatoires et produit `plugins/src/generatedCatalog.ts`. La Library utilise ce catalogue pour afficher le nom, le slot et la vignette de chaque plugin. Le fichier généré ne doit pas être modifié à la main.
 
-## Capacités d'un plugin
+`plugins:check` vérifie que le catalogue versionné correspond aux dossiers présents. Cette commande est destinée aux tests locaux et à la CI.
 
-Chaque plugin doit pouvoir déclarer des métadonnées complémentaires.
+## Parcours cible
 
-### Exemple
+```bash
+npm run create:plugin -- Testimonials
+```
+
+Cette commande devra créer la structure complète, synchroniser le catalogue et ajouter un test de départ. Elle sera ajoutée après le raccordement du catalogue à la création des sections, à l'Inspector, au générateur et au CMS.
+
+## Checklist d'un plugin
+
+- manifeste valide ;
+- schéma valide ;
+- vignette SVG ;
+- aperçu Builder ;
+- rendu React autonome ;
+- formulaire et validation CMS ;
+- contrôles avant export ;
+- tests du plugin et de son export.
+
+## Capacités futures
+
+Le manifeste pourra déclarer des métadonnées SEO :
 
 ```json
 {
@@ -47,8 +87,4 @@ Chaque plugin doit pouvoir déclarer des métadonnées complémentaires.
 }
 ```
 
-Ces informations permettent au générateur de produire automatiquement :
-
-- les balises HTML adaptées ;
-- le JSON-LD ;
-- les vérifications du SEO Report.
+Elles permettront au générateur de choisir les balises HTML, de produire le JSON-LD et d'alimenter le rapport SEO.

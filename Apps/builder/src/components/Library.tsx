@@ -1,24 +1,16 @@
 import type { SectionType } from '../project'
 import { Button } from '@buildotron/design-system'
-import { sectionPreviewImages } from '@buildotron/plugins'
+import { pluginCatalog } from '@buildotron/plugins'
 
-const libraryGroups: { title: string; items: SectionType[] }[] = [
-  { title: 'Navigation', items: ['Navbar'] },
-  {
-    title: 'Sections',
-    items: [
-      'Hero',
-      'Features',
-      'Gallery',
-      'Product',
-      'Steps',
-      'Specifications',
-      'FAQ',
-      'CTA',
-    ],
-  },
-  { title: 'Footer', items: ['Footer'] },
-]
+const groupTitle = (slot: string) =>
+  slot === 'header' ? 'Navigation' : slot === 'footer' ? 'Footer' : 'Sections'
+
+const libraryGroups = ['Navigation', 'Sections', 'Footer'].map((title) => ({
+  title,
+  items: pluginCatalog.filter(
+    (plugin) => groupTitle(plugin.manifest.defaultSlot) === title,
+  ),
+}))
 
 export function Library({ onAdd }: { onAdd: (type: SectionType) => void }) {
   return (
@@ -33,19 +25,19 @@ export function Library({ onAdd }: { onAdd: (type: SectionType) => void }) {
           aria-label={group.title}
         >
           <h3 className="library-group__title">{group.title}</h3>
-          {group.items.map((item) => (
+          {group.items.map((plugin) => (
             <Button
               className="library-item"
-              key={item}
-              onClick={() => onAdd(item)}
+              key={plugin.manifest.id}
+              onClick={() => onAdd(plugin.manifest.name as SectionType)}
             >
               <img
                 className="library-item__preview"
-                src={sectionPreviewImages[item]}
+                src={plugin.previewImage}
                 alt=""
                 aria-hidden="true"
               />
-              <span>+ {item}</span>
+              <span>+ {plugin.manifest.name}</span>
             </Button>
           ))}
         </section>

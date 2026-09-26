@@ -11,29 +11,13 @@ import { CTAPreview } from '../CTA.plugin/editor/CTAPreview'
 import { FooterPreview } from '../Footer.plugin/editor/FooterPreview'
 import { NavbarPreview } from '../Navbar.plugin/editor/NavbarPreview'
 import type { SectionContentProps } from './types'
-import heroPreviewImage from '../Hero.plugin/preview.svg?url'
-import featuresPreviewImage from '../Features.plugin/preview.svg?url'
-import galleryPreviewImage from '../Gallery.plugin/preview.svg?url'
-import productPreviewImage from '../Product.plugin/preview.svg?url'
-import stepsPreviewImage from '../Steps.plugin/preview.svg?url'
-import specificationsPreviewImage from '../Specifications.plugin/preview.svg?url'
-import faqPreviewImage from '../FAQ.plugin/preview.svg?url'
-import ctaPreviewImage from '../CTA.plugin/preview.svg?url'
-import footerPreviewImage from '../Footer.plugin/preview.svg?url'
-import navbarPreviewImage from '../Navbar.plugin/preview.svg?url'
+import { pluginCatalog } from './generatedCatalog'
 
-export const sectionPreviewImages: Record<string, string> = {
-  Navbar: navbarPreviewImage,
-  Hero: heroPreviewImage,
-  Features: featuresPreviewImage,
-  Gallery: galleryPreviewImage,
-  Product: productPreviewImage,
-  Steps: stepsPreviewImage,
-  Specifications: specificationsPreviewImage,
-  FAQ: faqPreviewImage,
-  CTA: ctaPreviewImage,
-  Footer: footerPreviewImage,
-}
+export { pluginCatalog } from './generatedCatalog'
+
+export const sectionPreviewImages: Record<string, string> = Object.fromEntries(
+  pluginCatalog.map((plugin) => [plugin.manifest.name, plugin.previewImage]),
+)
 
 export const sectionPreviews: Record<
   string,

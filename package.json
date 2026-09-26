@@ -11,6 +11,8 @@
     "react-dom": "19.2.8"
   },
   "scripts": {
+    "plugins:sync": "node scripts/sync-plugins.mjs",
+    "plugins:check": "node scripts/sync-plugins.mjs --check",
     "generate": "node --experimental-strip-types packages/generator/src/cli.ts",
     "export:verified": "node --experimental-strip-types packages/generator/src/verifiedExport.ts",
     "format": "prettier --write .",

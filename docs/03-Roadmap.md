@@ -256,3 +256,30 @@ La section Specifications structure les données techniques en couples libellé/
 Le parcours Specifications et l'ordre des slots exportés ont été confirmés. Les sections Product, Steps et Specifications sont maintenant intégrées au projet BIOGRIND avec les contenus issus du brief. Le paquet `projects/biogrind-complete.buildotron.zip` réunit le JSON canonique et son image locale sans duplication Base64. Son parcours d'intégration a été confirmé dans le navigateur avec `docs/testing/biogrind-integration-validation.md`.
 
 BIOGRIND valide le parcours complet du Builder au site autonome : conception, médias, sections spécialisées, export React, CMS, catalogue et rendu public. Le jalon 9 est terminé.
+
+## Milestone 10 — Plugin SDK et extensibilité
+
+Rendre l'ajout d'une section prévisible et rapide, sans modifier manuellement une série de registres centraux.
+
+Ordre de réalisation :
+
+1. Définir le contrat commun d'un plugin : manifeste, schéma de contenu, slot par défaut, vignette et points d'entrée Builder, site et CMS.
+2. Construire automatiquement un catalogue typé à partir des dossiers `plugins/*.plugin`.
+3. Alimenter la Library, la création des sections et les contrôles communs depuis ce catalogue.
+4. Faire consommer le même contrat par l'Inspector, le générateur React et les formulaires du CMS.
+5. Ajouter `npm run create:plugin -- <Nom>` pour créer le squelette, synchroniser le catalogue et fournir un test de départ.
+6. Valider le parcours avec un plugin témoin créé sans retoucher les fichiers centraux.
+
+La première tranche est engagée : le Plugin SDK expose les types du manifeste et du schéma. La commande `npm run plugins:sync` découvre les dossiers `.plugin`, contrôle leurs métadonnées et génère le catalogue utilisé par la Library. `npm run plugins:check` permet à la CI de refuser un catalogue obsolète.
+
+Le premier périmètre concerne les plugins locaux présents au moment du build. Le chargement de code distant ou non approuvé sera étudié séparément après stabilisation de ce contrat.
+
+### Critères de validation
+
+- Un nouveau dossier de plugin valide apparaît dans la Library après synchronisation.
+- Le développeur n'ajoute aucun import à la main dans la Library.
+- Un manifeste ou un schéma incomplet produit une erreur explicite.
+- Le Builder, l'export React et le CMS utilisent le même identifiant et le même schéma de plugin.
+- La commande de création produit un plugin fonctionnel, testable et documenté.
+
+Livrable : un premier plugin témoin ajouté de bout en bout par la commande du SDK.
