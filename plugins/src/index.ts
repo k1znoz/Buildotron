@@ -11,13 +11,18 @@ import { CTAPreview } from '../CTA.plugin/editor/CTAPreview'
 import { FooterPreview } from '../Footer.plugin/editor/FooterPreview'
 import { NavbarPreview } from '../Navbar.plugin/editor/NavbarPreview'
 import type { SectionContentProps } from './types'
-import { pluginCatalog } from './generatedCatalog'
+import { pluginCatalog as pluginMetadata } from './generatedCatalog'
+import { pluginPreviewImages } from './generatedPreviews'
 
-export { pluginCatalog } from './generatedCatalog'
+export const pluginCatalog = pluginMetadata.map((plugin) => ({
+  ...plugin,
+  previewImage:
+    pluginPreviewImages[
+      plugin.manifest.name as keyof typeof pluginPreviewImages
+    ],
+}))
 
-export const sectionPreviewImages: Record<string, string> = Object.fromEntries(
-  pluginCatalog.map((plugin) => [plugin.manifest.name, plugin.previewImage]),
-)
+export const sectionPreviewImages: Record<string, string> = pluginPreviewImages
 
 export const sectionPreviews: Record<
   string,

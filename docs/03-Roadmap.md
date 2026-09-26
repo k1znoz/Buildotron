@@ -272,6 +272,8 @@ Ordre de réalisation :
 
 La première tranche est engagée : le Plugin SDK expose les types du manifeste et du schéma. La commande `npm run plugins:sync` découvre les dossiers `.plugin`, contrôle leurs métadonnées et génère le catalogue utilisé par la Library. `npm run plugins:check` permet à la CI de refuser un catalogue obsolète.
 
+Le modèle canonique du Builder déduit maintenant les types de sections et leurs slots par défaut de ce même catalogue. Les aperçus SVG restent dans un module destiné au navigateur afin que les tests Node puissent lire les métadonnées sans dépendre de Vite.
+
 Le premier périmètre concerne les plugins locaux présents au moment du build. Le chargement de code distant ou non approuvé sera étudié séparément après stabilisation de ce contrat.
 
 ### Critères de validation

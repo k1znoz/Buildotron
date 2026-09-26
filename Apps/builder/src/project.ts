@@ -1,3 +1,5 @@
+import { pluginCatalog } from '@buildotron/plugins/catalog'
+
 export const slots = [
   'header',
   'hero',
@@ -7,32 +9,17 @@ export const slots = [
 ] as const
 export type Slot = (typeof slots)[number]
 
-export const sectionTypes = [
-  'Navbar',
-  'Hero',
-  'Features',
-  'Gallery',
-  'Product',
-  'Steps',
-  'Specifications',
-  'FAQ',
-  'CTA',
-  'Footer',
-] as const
-export type SectionType = (typeof sectionTypes)[number]
+export type SectionType = (typeof pluginCatalog)[number]['manifest']['name']
+export const sectionTypes: readonly SectionType[] = pluginCatalog.map(
+  (plugin) => plugin.manifest.name,
+)
 
-export const defaultSlot: Record<SectionType, Slot> = {
-  Navbar: 'header',
-  Hero: 'hero',
-  Features: 'content',
-  Gallery: 'content',
-  Product: 'content',
-  Steps: 'content',
-  Specifications: 'content',
-  FAQ: 'content',
-  CTA: 'conversion',
-  Footer: 'footer',
-}
+export const defaultSlot = Object.fromEntries(
+  pluginCatalog.map((plugin) => [
+    plugin.manifest.name,
+    plugin.manifest.defaultSlot,
+  ]),
+) as Record<SectionType, Slot>
 
 export type SectionProperties = {
   title: string

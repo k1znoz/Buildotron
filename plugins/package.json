@@ -5,6 +5,7 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
+    "./catalog": "./src/generatedCatalog.ts",
     "./styles.css": "./src/styles.css",
     "./validation": "./src/validation.ts"
   },

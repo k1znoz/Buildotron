@@ -1,8 +1,13 @@
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { test } from 'node:test'
-import { createSection, defaultSlot } from '../Apps/builder/src/project.ts'
+import {
+  createSection,
+  defaultSlot,
+  sectionTypes,
+} from '../Apps/builder/src/project.ts'
 import { parseProjectJson } from '../Apps/builder/src/projectJson.ts'
+import { pluginCatalog } from '@buildotron/plugins/catalog'
 
 const project = parseProjectJson(
   readFileSync(
@@ -14,18 +19,11 @@ const project = parseProjectJson(
 test('Section plugin metadata matches the canonical project model', () => {
   const hero = project.sections.find((section) => section.type === 'Hero')
   assert.ok(hero)
-  for (const type of [
-    'Navbar',
-    'Hero',
-    'Features',
-    'Gallery',
-    'Product',
-    'Steps',
-    'Specifications',
-    'FAQ',
-    'CTA',
-    'Footer',
-  ]) {
+  assert.deepEqual(
+    sectionTypes,
+    pluginCatalog.map((plugin) => plugin.manifest.name),
+  )
+  for (const type of sectionTypes) {
     const manifest = JSON.parse(
       readFileSync(
         new URL(`../plugins/${type}.plugin/manifest.json`, import.meta.url),
