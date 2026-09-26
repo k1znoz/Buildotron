@@ -280,6 +280,8 @@ L'Inspector génère maintenant les champs simples `text`, `textarea` et `url` �
 
 Le premier contrat de liste est appliqué à Features et Steps. Le schéma décrit le libellé de la collection, les sous-champs d'un élément, le nombre minimal et maximal ainsi que le contenu d'une nouvelle entrée. Les deux plugins utilisent désormais le même rendu d'Inspector sans branche liée à leur type.
 
+Ce rendu commun couvre maintenant aussi FAQ, Navbar, Footer et Specifications. Leurs sous-champs, placeholders, limites et nouvelles entrées viennent de leurs schémas. Gallery reste la dernière liste spécialisée en raison de l'import de fichiers locaux.
+
 Le premier périmètre concerne les plugins locaux présents au moment du build. Le chargement de code distant ou non approuvé sera étudié séparément après stabilisation de ce contrat.
 
 ### Critères de validation

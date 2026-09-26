@@ -26,23 +26,86 @@ type Props = {
   onAddGalleryImage: () => void
   onRemoveGalleryImage: (index: number) => void
   onFAQItem: (index: number, key: 'question' | 'answer', value: string) => void
-  onAddFAQItem: () => void
+  onAddFAQItem: (item: { question: string; answer: string }) => void
   onRemoveFAQItem: (index: number) => void
   onFooterLink: (index: number, key: 'label' | 'href', value: string) => void
-  onAddFooterLink: () => void
+  onAddFooterLink: (item: { label: string; href: string }) => void
   onRemoveFooterLink: (index: number) => void
   onSpecification: (
     index: number,
     key: 'label' | 'value',
     value: string,
   ) => void
-  onAddSpecification: () => void
+  onAddSpecification: (item: { label: string; value: string }) => void
   onRemoveSpecification: (index: number) => void
   onDuplicate: () => void
   onRemove: () => void
   onMove: (id: string, slot: Slot) => void
   onMoveBy: (offset: number) => void
   onOverride: (enabled: boolean) => void
+}
+
+function StructuredListEditor({
+  field,
+  items,
+  onChange,
+  onAdd,
+  onRemove,
+}: {
+  field: PluginListField
+  items: Record<string, string>[]
+  onChange: (index: number, key: string, value: string) => void
+  onAdd: () => void
+  onRemove: (index: number) => void
+}) {
+  return (
+    <div className="feature-editor">
+      <h4>{field.label}</h4>
+      {items.map((item, index) => (
+        <fieldset key={index} className="feature-editor__item">
+          <legend>
+            {field.itemLabel} {index + 1}
+          </legend>
+          {field.itemFields.map((itemField) => (
+            <label className="field" key={itemField.name}>
+              <span className="field__label">{itemField.label}</span>
+              {itemField.type === 'textarea' ? (
+                <textarea
+                  className="field__value"
+                  rows={2}
+                  value={item[itemField.name] ?? ''}
+                  required={itemField.required}
+                  placeholder={itemField.placeholder}
+                  onChange={(event) =>
+                    onChange(index, itemField.name, event.target.value)
+                  }
+                />
+              ) : (
+                <input
+                  className="field__value"
+                  value={item[itemField.name] ?? ''}
+                  required={itemField.required}
+                  placeholder={itemField.placeholder}
+                  onChange={(event) =>
+                    onChange(index, itemField.name, event.target.value)
+                  }
+                />
+              )}
+            </label>
+          ))}
+          <Button
+            onClick={() => onRemove(index)}
+            disabled={items.length <= field.minItems}
+          >
+            Retirer {field.itemLabel.toLowerCase()}
+          </Button>
+        </fieldset>
+      ))}
+      <Button onClick={onAdd} disabled={items.length >= field.maxItems}>
+        {field.addLabel}
+      </Button>
+    </div>
+  )
 }
 
 export function Inspector({
@@ -80,20 +143,63 @@ export function Inspector({
     ? (pluginCatalog.find((plugin) => plugin.manifest.name === section.type)
         ?.schema.fields ?? [])
     : []
-  const itemsField = fields.find(
-    (field) => field.type === 'list' && field.name === 'items',
-  ) as PluginListField | undefined
+  const structuredListFields = fields.filter(
+    (field) => field.type === 'list' && 'itemFields' in field,
+  ) as unknown as PluginListField[]
+
+  function listItems(name: string): Record<string, string>[] {
+    if (!section) return []
+    const value = section.properties[name as keyof typeof section.properties]
+    return Array.isArray(value) ? (value as Record<string, string>[]) : []
+  }
+
+  function changeListItem(
+    name: string,
+    index: number,
+    key: string,
+    value: string,
+  ) {
+    if (name === 'items') onFeatureItem(index, key as 'title' | 'body', value)
+    else if (name === 'questions')
+      onFAQItem(index, key as 'question' | 'answer', value)
+    else if (name === 'links')
+      onFooterLink(index, key as 'label' | 'href', value)
+    else if (name === 'specifications')
+      onSpecification(index, key as 'label' | 'value', value)
+  }
+
+  function addListItem(field: PluginListField) {
+    const item = field.defaultItem
+    if (field.name === 'items')
+      onAddFeatureItem({ title: item.title ?? '', body: item.body ?? '' })
+    else if (field.name === 'questions')
+      onAddFAQItem({
+        question: item.question ?? '',
+        answer: item.answer ?? '',
+      })
+    else if (field.name === 'links')
+      onAddFooterLink({ label: item.label ?? '', href: item.href ?? '' })
+    else if (field.name === 'specifications')
+      onAddSpecification({ label: item.label ?? '', value: item.value ?? '' })
+  }
+
+  function removeListItem(name: string, index: number) {
+    if (name === 'items') onRemoveFeatureItem(index)
+    else if (name === 'questions') onRemoveFAQItem(index)
+    else if (name === 'links') onRemoveFooterLink(index)
+    else if (name === 'specifications') onRemoveSpecification(index)
+  }
 
   function importGalleryImage(index: number, file: File) {
     const accepted = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
     if (!accepted.includes(file.type)) {
-      const message = 'Format accepté : JPEG, PNG, WebP ou GIF.'
+      const message = 'Format acceptÃ© : JPEG, PNG, WebP ou GIF.'
       setImageImportError(message)
       onGalleryFileError(message)
       return
     }
     if (file.size > 5_000_000) {
-      const message = 'L’image doit peser moins de 5 Mo.'
+      const message = 'Lâ€™image doit peser moins de 5 Mo.'
       setImageImportError(message)
       onGalleryFileError(message)
       return
@@ -191,76 +297,23 @@ export function Inspector({
               <>
                 <p className="inspector-note">
                   {section.type === 'CTA'
-                    ? "Le CTA reste désactivé tant qu'aucun lien valide n'est renseigné."
-                    : "L'action du Hero apparaît dès qu'un lien valide est renseigné."}
+                    ? "Le CTA reste dÃ©sactivÃ© tant qu'aucun lien valide n'est renseignÃ©."
+                    : "L'action du Hero apparaÃ®t dÃ¨s qu'un lien valide est renseignÃ©."}
                 </p>
               </>
             )}
-            {itemsField && (
-              <div className="feature-editor">
-                <h4>{itemsField.label}</h4>
-                {(section.properties.items ?? []).map((item, index) => (
-                  <fieldset key={index} className="feature-editor__item">
-                    <legend>
-                      {itemsField.itemLabel} {index + 1}
-                    </legend>
-                    {itemsField.itemFields.map((itemField) => {
-                      const key = itemField.name as 'title' | 'body'
-                      return (
-                        <label className="field" key={itemField.name}>
-                          <span className="field__label">
-                            {itemField.label}
-                          </span>
-                          {itemField.type === 'textarea' ? (
-                            <textarea
-                              className="field__value"
-                              rows={2}
-                              value={item[key]}
-                              required={itemField.required}
-                              onChange={(event) =>
-                                onFeatureItem(index, key, event.target.value)
-                              }
-                            />
-                          ) : (
-                            <input
-                              className="field__value"
-                              value={item[key]}
-                              required={itemField.required}
-                              onChange={(event) =>
-                                onFeatureItem(index, key, event.target.value)
-                              }
-                            />
-                          )}
-                        </label>
-                      )
-                    })}
-                    <Button
-                      onClick={() => onRemoveFeatureItem(index)}
-                      disabled={
-                        (section.properties.items?.length ?? 0) <=
-                        itemsField.minItems
-                      }
-                    >
-                      Retirer {itemsField.itemLabel.toLowerCase()}
-                    </Button>
-                  </fieldset>
-                ))}
-                <Button
-                  onClick={() =>
-                    onAddFeatureItem({
-                      title: itemsField.defaultItem.title ?? '',
-                      body: itemsField.defaultItem.body ?? '',
-                    })
-                  }
-                  disabled={
-                    (section.properties.items?.length ?? 0) >=
-                    itemsField.maxItems
-                  }
-                >
-                  {itemsField.addLabel}
-                </Button>
-              </div>
-            )}
+            {structuredListFields.map((field) => (
+              <StructuredListEditor
+                key={field.name}
+                field={field}
+                items={listItems(field.name)}
+                onChange={(index, key, value) =>
+                  changeListItem(field.name, index, key, value)
+                }
+                onAdd={() => addListItem(field)}
+                onRemove={(index) => removeListItem(field.name, index)}
+              />
+            ))}{' '}
             {section.type === 'Gallery' && (
               <div className="feature-editor">
                 <h4>Images</h4>
@@ -320,132 +373,6 @@ export function Inspector({
                 </Button>
               </div>
             )}
-            {section.type === 'FAQ' && (
-              <div className="feature-editor">
-                <h4>Questions</h4>
-                {(section.properties.questions ?? []).map((item, index) => (
-                  <fieldset key={index} className="feature-editor__item">
-                    <legend>Question {index + 1}</legend>
-                    <label className="field">
-                      <span className="field__label">Question</span>
-                      <input
-                        className="field__value"
-                        value={item.question}
-                        onChange={(event) =>
-                          onFAQItem(index, 'question', event.target.value)
-                        }
-                      />
-                    </label>
-                    <label className="field">
-                      <span className="field__label">Réponse</span>
-                      <textarea
-                        className="field__value"
-                        rows={3}
-                        value={item.answer}
-                        onChange={(event) =>
-                          onFAQItem(index, 'answer', event.target.value)
-                        }
-                      />
-                    </label>
-                    <Button
-                      onClick={() => onRemoveFAQItem(index)}
-                      disabled={section.properties.questions?.length === 1}
-                    >
-                      Retirer cette question
-                    </Button>
-                  </fieldset>
-                ))}
-                <Button
-                  onClick={onAddFAQItem}
-                  disabled={(section.properties.questions?.length ?? 0) >= 12}
-                >
-                  Ajouter une question
-                </Button>
-              </div>
-            )}
-            {(section.type === 'Footer' || section.type === 'Navbar') && (
-              <div className="feature-editor">
-                <h4>Liens</h4>
-                {(section.properties.links ?? []).map((link, index) => (
-                  <fieldset key={index} className="feature-editor__item">
-                    <legend>Lien {index + 1}</legend>
-                    <label className="field">
-                      <span className="field__label">Libellé</span>
-                      <input
-                        className="field__value"
-                        value={link.label}
-                        onChange={(event) =>
-                          onFooterLink(index, 'label', event.target.value)
-                        }
-                      />
-                    </label>
-                    <label className="field">
-                      <span className="field__label">URL ou chemin</span>
-                      <input
-                        className="field__value"
-                        value={link.href}
-                        onChange={(event) =>
-                          onFooterLink(index, 'href', event.target.value)
-                        }
-                        placeholder="https://exemple.fr, /legal ou #contact"
-                      />
-                    </label>
-                    <Button onClick={() => onRemoveFooterLink(index)}>
-                      Retirer ce lien
-                    </Button>
-                  </fieldset>
-                ))}
-                <Button
-                  onClick={onAddFooterLink}
-                  disabled={(section.properties.links?.length ?? 0) >= 12}
-                >
-                  Ajouter un lien
-                </Button>
-              </div>
-            )}
-            {section.type === 'Specifications' && (
-              <div className="feature-editor">
-                <h4>Caractéristiques</h4>
-                {(section.properties.specifications ?? []).map(
-                  (item, index) => (
-                    <fieldset key={index} className="feature-editor__item">
-                      <legend>Caractéristique {index + 1}</legend>
-                      <label className="field">
-                        <span className="field__label">Libellé</span>
-                        <input
-                          className="field__value"
-                          value={item.label}
-                          onChange={(event) =>
-                            onSpecification(index, 'label', event.target.value)
-                          }
-                        />
-                      </label>
-                      <label className="field">
-                        <span className="field__label">Valeur</span>
-                        <input
-                          className="field__value"
-                          value={item.value}
-                          onChange={(event) =>
-                            onSpecification(index, 'value', event.target.value)
-                          }
-                        />
-                      </label>
-                      <Button onClick={() => onRemoveSpecification(index)}>
-                        Retirer cette caractéristique
-                      </Button>
-                    </fieldset>
-                  ),
-                )}
-                <Button
-                  onClick={onAddSpecification}
-                  disabled={
-                    (section.properties.specifications?.length ?? 0) >= 20
-                  }
-                >
-                  Ajouter une caractéristique
-                </Button>
-              </div>
-            )}
             <label className="field">
               <span className="field__label">Slot</span>
               <select
@@ -484,7 +411,7 @@ export function Inspector({
             </label>
             {section.slot !== defaultSlot[section.type] && (
               <p className="inspector-note">
-                Placement hors du slot prévu par le Blueprint.
+                Placement hors du slot prÃ©vu par le Blueprint.
               </p>
             )}
             <div className="inspector-actions">
@@ -496,7 +423,7 @@ export function Inspector({
           </>
         ) : (
           <p className="inspector-note">
-            Sélectionnez une section sur le canvas.
+            SÃ©lectionnez une section sur le canvas.
           </p>
         )}
       </section>

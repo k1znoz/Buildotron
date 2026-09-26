@@ -488,14 +488,9 @@ function App() {
               ),
             )
           }
-          onAddFAQItem={() =>
+          onAddFAQItem={(item) =>
             updateFAQItems((questions) =>
-              questions.length >= 12
-                ? questions
-                : [
-                    ...questions,
-                    { question: 'New question', answer: 'Write the answer.' },
-                  ],
+              questions.length >= 12 ? questions : [...questions, item],
             )
           }
           onRemoveFAQItem={(index) =>
@@ -512,11 +507,9 @@ function App() {
               ),
             )
           }
-          onAddFooterLink={() =>
+          onAddFooterLink={(item) =>
             updateFooterLinks((links) =>
-              links.length >= 12
-                ? links
-                : [...links, { label: 'New link', href: '' }],
+              links.length >= 12 ? links : [...links, item],
             )
           }
           onRemoveFooterLink={(index) =>
@@ -531,11 +524,9 @@ function App() {
               ),
             )
           }
-          onAddSpecification={() =>
+          onAddSpecification={(item) =>
             updateSpecifications((items) =>
-              items.length >= 20
-                ? items
-                : [...items, { label: 'New specification', value: 'Value' }],
+              items.length >= 20 ? items : [...items, item],
             )
           }
           onRemoveSpecification={(index) =>

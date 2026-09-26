@@ -56,6 +56,16 @@ test('Section plugin metadata matches the canonical project model', () => {
         (field) => typeof field.label === 'string' && field.label.length > 0,
       ),
     )
+    for (const field of schema.fields.filter(
+      (field) => field.type === 'list' && field.name !== 'images',
+    )) {
+      assert.ok(Array.isArray(field.itemFields))
+      assert.deepEqual(
+        field.itemFields.map((itemField) => itemField.name).sort(),
+        Object.keys(field.defaultItem).sort(),
+      )
+      assert.ok(field.maxItems >= field.minItems)
+    }
     assert.ok(
       schema.fields
         .filter((field) => field.name !== 'actionHref')

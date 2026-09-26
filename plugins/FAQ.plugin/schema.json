@@ -16,7 +16,29 @@
       "name": "questions",
       "type": "list",
       "required": true,
-      "label": "Questions"
+      "label": "Questions",
+      "itemLabel": "Question",
+      "addLabel": "Ajouter une question",
+      "minItems": 1,
+      "maxItems": 12,
+      "itemFields": [
+        {
+          "name": "question",
+          "label": "Question",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "answer",
+          "label": "Réponse",
+          "type": "textarea",
+          "required": true
+        }
+      ],
+      "defaultItem": {
+        "question": "New question",
+        "answer": "Write the answer."
+      }
     }
   ]
 }

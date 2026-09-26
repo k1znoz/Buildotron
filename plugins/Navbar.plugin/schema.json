@@ -16,7 +16,27 @@
       "name": "links",
       "type": "list",
       "required": true,
-      "label": "Liens"
+      "label": "Liens",
+      "itemLabel": "Lien",
+      "addLabel": "Ajouter un lien",
+      "minItems": 0,
+      "maxItems": 12,
+      "itemFields": [
+        {
+          "name": "label",
+          "label": "Libellé",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "href",
+          "label": "URL ou chemin",
+          "type": "url",
+          "required": true,
+          "placeholder": "https://exemple.fr, /page ou #section"
+        }
+      ],
+      "defaultItem": { "label": "New link", "href": "" }
     }
   ]
 }

@@ -16,7 +16,21 @@
       "name": "specifications",
       "type": "list",
       "required": true,
-      "label": "Caractéristiques"
+      "label": "Caractéristiques",
+      "itemLabel": "Caractéristique",
+      "addLabel": "Ajouter une caractéristique",
+      "minItems": 1,
+      "maxItems": 20,
+      "itemFields": [
+        {
+          "name": "label",
+          "label": "Libellé",
+          "type": "text",
+          "required": true
+        },
+        { "name": "value", "label": "Valeur", "type": "text", "required": true }
+      ],
+      "defaultItem": { "label": "New specification", "value": "Value" }
     }
   ]
 }
